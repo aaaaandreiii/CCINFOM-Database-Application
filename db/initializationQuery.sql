@@ -86,6 +86,49 @@ CREATE TABLE IF NOT EXISTS Inventory (
     FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id)
 );
 
+INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address, customer_rating)
+VALUES
+('John', 'Doe', 'johndoe@example.com', '123-456-7890', '123 Main St', 4.5),
+('Jane', 'Smith', 'janesmith@example.com', '987-654-3210', '456 Elm St', 3.8);
+
+INSERT INTO Item (name, item_category, srp, brand, description)
+VALUES
+('Laptop', 'Electronics', 899.99, 'Acer', 'Powerful laptop for work and play'),
+('Smartphone', 'Electronics', 599.99, 'Samsung', 'Latest smartphone with advanced features'),
+('Jeans', 'Clothing', 49.99, 'Levis', 'Classic denim jeans');
+
+INSERT INTO Supplier (supplier_fname, supplier_lname, email, phone, address, supplier_rating)
+VALUES
+('Alice', 'Johnson', 'alicejohnson@example.com', '555-123-4567', '789 Oak St', 4.2),
+('Bob', 'Williams', 'bobwilliams@example.com', '555-987-6543', '321 Pine St', 3.9);
+
+INSERT INTO ShoppingCart (customer_id, item_id, quantity, supplier_id)
+VALUES
+(1, 1, 2, 1),
+(2, 2, 1, 2);
+
+INSERT INTO Wishlist (customer_id, item_id, supplier_id)
+VALUES
+(1, 3, 1),
+(2, 1, 2);
+
+INSERT INTO OrderInfo (customer_id, order_date, supplier_id, total_amount, status)
+VALUES
+(1, '2023-11-22', 1, 1799.98, 'Completed'),
+(2, '2023-12-01', 2, 599.99, 'Pending');
+
+INSERT INTO OrderItem (order_id, item_id, quantity, price_at_order)
+VALUES
+(1, 1, 2, 899.99),
+(2, 2, 1, 599.99);
+
+INSERT INTO Inventory (item_id, supplier_id, quantity)
+VALUES
+(1, 1, 100),
+(2, 2, 50),
+(3, 1, 200);
+
+
 SELECT * FROM customer;
 SELECT * FROM inventory;
 SELECT * FROM item;
@@ -94,8 +137,3 @@ SELECT * FROM orderitem;
 SELECT * FROM shoppingcart;
 SELECT * FROM supplier;
 SELECT * FROM wishlist;
-
-INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address, customer_rating)
-VALUES
-    ('Jane', 'Smith', 'janesmith@example.com', '987-654-3210', '456 Elm St, Anytown, CA 12345', 3.8),
-    ('Michael', 'Johnson', 'michaeljohnson@example.com', '555-555-5555', '789 Oak St, Anytown, CA 12345', 4.2);
