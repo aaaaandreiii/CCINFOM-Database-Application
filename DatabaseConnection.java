@@ -3,8 +3,6 @@ import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.mysql.cj.xdevapi.Statement;
-
 public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/ccinfom_mp";
     private static final String USER = "root";
