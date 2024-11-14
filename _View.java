@@ -9,93 +9,98 @@ public class _View implements ActionListener {
     private JPanel parentPanel;
     private CardLayout panelSwitcher;
 
-    private MainMenuGUI MainMenu;
-    private CreateHotelGUI CreateHotel;
-    private ViewHotelGUI ViewHotel;
-    private ManageHotelGUI ManageHotel;
-    private SimulateBookingGUI SimulateBooking;
-    private SimulateBookingGUIPage2 SimulateBookingP2;
-    private SimulateBookingGUIPage3 SimulateBookingP3;
+    private View_MainMenu MainMenu;
+    // private CreateHotelGUI CreateHotel;
+    // private ViewHotelGUI ViewHotel;
+    // private ManageHotelGUI ManageHotel;
+    // private SimulateBookingGUI SimulateBooking;
+    // private SimulateBookingGUIPage2 SimulateBookingP2;
+    // private SimulateBookingGUIPage3 SimulateBookingP3;
 
-    private static Color beige = new Color(254, 243, 226);
+    private static Color blue1 = new Color(48, 93, 122);
+    private static Color blue2 = new Color(48, 93, 122);
+    private static Color blue3 = new Color(48, 93, 122);
+
     private static ImageIcon logo = new ImageIcon("./src/photos/Logo.png");
 
-    public View() {
-        this.MainMenu = new MainMenuGUI();
-        this.CreateHotel = new CreateHotelGUI();
-        this.ViewHotel = new ViewHotelGUI();
-        this.ManageHotel = new ManageHotelGUI();
-        this.SimulateBooking = new SimulateBookingGUI();
-        this.SimulateBookingP2 = new SimulateBookingGUIPage2();
-        this.SimulateBookingP3 = new SimulateBookingGUIPage3();
+    public _View() {
+        this.MainMenu = new View_MainMenu();
+        // this.CreateHotel = new CreateHotelGUI();
+        // this.ViewHotel = new ViewHotelGUI();
+        // this.ManageHotel = new ManageHotelGUI();
+        // this.SimulateBooking = new SimulateBookingGUI();
+        // this.SimulateBookingP2 = new SimulateBookingGUIPage2();
+        // this.SimulateBookingP3 = new SimulateBookingGUIPage3();
 
         
         frame = new JFrame();
         parentPanel = new JPanel();
         panelSwitcher = new CardLayout();
 
-        parentPanel.setBackground(beige);
+        parentPanel.setBackground(blue1);
         parentPanel.setBorder(null);
         parentPanel.setLayout(panelSwitcher);
 
         
-        parentPanel.add(SimulateBooking.getParentPanel(), "1");
-        parentPanel.add(MainMenu.getParentPanel(), "2");
-        parentPanel.add(CreateHotel.getParentPanel(), "3");
-        parentPanel.add(ViewHotel.getParentPanel(), "4");
-        parentPanel.add(ManageHotel.getParentPanel(), "5");
-        parentPanel.add(SimulateBookingP2.getParentPanel(), "1.2");
-        parentPanel.add(SimulateBookingP3.getParentPanel(), "1.3");
+        parentPanel.add(MainMenu.getParentPanel(), "1");
+        // parentPanel.add(SimulateBooking.getParentPanel(), "2");
+        // parentPanel.add(CreateHotel.getParentPanel(), "3");
+        // parentPanel.add(ViewHotel.getParentPanel(), "4");
+        // parentPanel.add(ManageHotel.getParentPanel(), "5");
+        // parentPanel.add(SimulateBookingP2.getParentPanel(), "1.2");
+        // parentPanel.add(SimulateBookingP3.getParentPanel(), "1.3");
 
         panelSwitcher.show(parentPanel, "1");
 
-        addMouseListenerToButton(this.SimulateBooking.getBtnAdminMode(), darkBlue1, darkBlue2, darkBlue3);
-        addMouseListenerToButton(this.SimulateBooking.getBtnSearchButton(), darkBlue1, darkBlue2, darkBlue3);
-        addMouseListenerToButton(this.SimulateBookingP2.getBtnnextButton(), darkBlue1, darkBlue2, darkBlue3);
-        addMouseListenerToButton(this.SimulateBookingP3.getBtnnextButton(), darkBlue1, darkBlue2, darkBlue3);
+        // addMouseListenerToButton(this.SimulateBooking.getBtnAdminMode(), darkBlue1, darkBlue2, darkBlue3);
+        // addMouseListenerToButton(this.SimulateBooking.getBtnSearchButton(), darkBlue1, darkBlue2, darkBlue3);
+        // addMouseListenerToButton(this.SimulateBookingP2.getBtnnextButton(), darkBlue1, darkBlue2, darkBlue3);
+        // addMouseListenerToButton(this.SimulateBookingP3.getBtnnextButton(), darkBlue1, darkBlue2, darkBlue3);
 
-        addMouseListenerToButton(this.MainMenu.getlogoButton(), null, null, null);
-        addMouseListenerToButton(this.MainMenu.getBtnCreateHotel(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.MainMenu.getBtnViewHotel(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.MainMenu.getBtnManageHotel(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.MainMenu.getBtnSimulateBooking(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.MainMenu.getlogoButton(), null, null, null);
+        // addMouseListenerToButton(this.MainMenu.getBtnCreateHotel(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.MainMenu.getBtnViewHotel(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.MainMenu.getBtnManageHotel(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.MainMenu.getBtnSimulateBooking(), paleGreen1, paleGreen2, paleGreen3);
 
-        addMouseListenerToButton(this.CreateHotel.getsubmitButton(), darkBlue1, darkBlue2, darkBlue3);
-        addMouseListenerToButton(this.CreateHotel.getMainMenuButton(), darkBlue1, darkBlue2, darkBlue3);
+        // addMouseListenerToButton(this.CreateHotel.getsubmitButton(), darkBlue1, darkBlue2, darkBlue3);
+        // addMouseListenerToButton(this.CreateHotel.getMainMenuButton(), darkBlue1, darkBlue2, darkBlue3);
 
-        addMouseListenerToButton(this.ViewHotel.getBtnViewHighLevelHotelInformation(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.ViewHotel.getBtnViewHotelsAvailableandBookedRooms(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.ViewHotel.getBtnViewInfoOfSelectedReservation(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.ViewHotel.getBtnViewInfoOfSelectedRoom(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.ViewHotel.getMainMenuButton(), darkBlue1, darkBlue2, darkBlue3);
+        // addMouseListenerToButton(this.ViewHotel.getBtnViewHighLevelHotelInformation(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.ViewHotel.getBtnViewHotelsAvailableandBookedRooms(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.ViewHotel.getBtnViewInfoOfSelectedReservation(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.ViewHotel.getBtnViewInfoOfSelectedRoom(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.ViewHotel.getMainMenuButton(), darkBlue1, darkBlue2, darkBlue3);
 
-        addMouseListenerToButton(this.ManageHotel.getBtnChangeNameofHotel(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.ManageHotel.getBtnAddRooms(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.ManageHotel.getBtnRemoveRooms(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.ManageHotel.getBtnUpdateBasePriceofRooms(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.ManageHotel.getRemoveReservation(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.ManageHotel.getRemoveHotel(), paleGreen1, paleGreen2, paleGreen3);
-        addMouseListenerToButton(this.ManageHotel.getMainMenuButton(), darkBlue1, darkBlue2, darkBlue3);
+        // addMouseListenerToButton(this.ManageHotel.getBtnChangeNameofHotel(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.ManageHotel.getBtnAddRooms(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.ManageHotel.getBtnRemoveRooms(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.ManageHotel.getBtnUpdateBasePriceofRooms(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.ManageHotel.getRemoveReservation(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.ManageHotel.getRemoveHotel(), paleGreen1, paleGreen2, paleGreen3);
+        // addMouseListenerToButton(this.ManageHotel.getMainMenuButton(), darkBlue1, darkBlue2, darkBlue3);
         
-        setPlaceholder(this.SimulateBooking.getcheckInField(), " DD-MM-YYYY", beige, 22);
-        setPlaceholder(this.SimulateBooking.getcheckOutField(), " DD-MM-YYYY", beige, 22);
-        setPlaceholder(this.CreateHotel.getnewHotelTextField(), " Enter name of new hotel here: ", darkBlue1, 30);
-        setPlaceholder(this.SimulateBookingP2.getcheckInField(), " DD-MM-YYYY", beige, 22);
-        setPlaceholder(this.SimulateBookingP2.getcheckOutField(), " DD-MM-YYYY", beige, 22);
-        setPlaceholder(this.SimulateBookingP2.getguestNameTextField(), " Enter your name here: ", beige, 35);
-        setPlaceholder(this.SimulateBookingP3.getcheckInField(), " DD-MM-YYYY", beige, 22);
-        setPlaceholder(this.SimulateBookingP3.getcheckOutField(), " DD-MM-YYYY", beige, 22);
-        setPlaceholder(this.SimulateBookingP3.getdiscountTextField(), " CCPROG3_EZ4.0 ", beige, 35);
+        // setPlaceholder(this.SimulateBooking.getcheckInField(), " DD-MM-YYYY", beige, 22);
+        // setPlaceholder(this.SimulateBooking.getcheckOutField(), " DD-MM-YYYY", beige, 22);
+        // setPlaceholder(this.CreateHotel.getnewHotelTextField(), " Enter name of new hotel here: ", darkBlue1, 30);
+        // setPlaceholder(this.SimulateBookingP2.getcheckInField(), " DD-MM-YYYY", beige, 22);
+        // setPlaceholder(this.SimulateBookingP2.getcheckOutField(), " DD-MM-YYYY", beige, 22);
+        // setPlaceholder(this.SimulateBookingP2.getguestNameTextField(), " Enter your name here: ", beige, 35);
+        // setPlaceholder(this.SimulateBookingP3.getcheckInField(), " DD-MM-YYYY", beige, 22);
+        // setPlaceholder(this.SimulateBookingP3.getcheckOutField(), " DD-MM-YYYY", beige, 22);
+        // setPlaceholder(this.SimulateBookingP3.getdiscountTextField(), " CCPROG3_EZ4.0 ", beige, 35);
 
 
         frame.setTitle("Opulence Oasis");
         frame.add(parentPanel);
         frame.setIconImage(logo.getImage());
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(1000, 1000));
-        frame.setMaximumSize(new Dimension(1000, 1000));
+        frame.setPreferredSize(new Dimension(1920, 1080));
+        frame.setMaximumSize(new Dimension(1920, 1080));
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);                          //supposed to be set to full screen, but does not work
+
         frame.pack();
-        frame.getContentPane().setBackground(beige);
+        frame.getContentPane().setBackground(blue1);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.addWindowListener(new WindowAdapter() {
@@ -213,43 +218,43 @@ public class _View implements ActionListener {
 		this.panelSwitcher = panelSwitcher;
 	}
 
-    public MainMenuGUI getMainMenu(){
+    public View_MainMenu getMainMenu(){
         return MainMenu;
     }
-    public CreateHotelGUI getCreateHotel(){
-        return CreateHotel;
-    }
-    public ViewHotelGUI getViewHotel(){
-        return ViewHotel;
-    }
-    public ManageHotelGUI getManageHotel(){
-        return ManageHotel;
-    }
-    public SimulateBookingGUI getSimulateBooking(){
-        return SimulateBooking;
-    }
+    // public CreateHotelGUI getCreateHotel(){
+    //     return CreateHotel;
+    // }
+    // public ViewHotelGUI getViewHotel(){
+    //     return ViewHotel;
+    // }
+    // public ManageHotelGUI getManageHotel(){
+    //     return ManageHotel;
+    // }
+    // public SimulateBookingGUI getSimulateBooking(){
+    //     return SimulateBooking;
+    // }
 
-    public SimulateBookingGUIPage2 getSimulateBookingP2() {
-        return SimulateBookingP2;
-    }
+    // public SimulateBookingGUIPage2 getSimulateBookingP2() {
+    //     return SimulateBookingP2;
+    // }
 
-    public SimulateBookingGUIPage3 getSimulateBookingP3() {
-        return SimulateBookingP3;
-    }
+    // public SimulateBookingGUIPage3 getSimulateBookingP3() {
+    //     return SimulateBookingP3;
+    // }
 
-	public void setMainMenu(MainMenuGUI mainMenu) {
-		MainMenu = mainMenu;
-	}
-	public void setCreateHotel(CreateHotelGUI createHotel) {
-		CreateHotel = createHotel;
-	}
-	public void setViewHotel(ViewHotelGUI viewHotel) {
-		ViewHotel = viewHotel;
-	}
-	public void setManageHotel(ManageHotelGUI manageHotel) {
-		ManageHotel = manageHotel;
-	}
-	public void setSimulateBooking(SimulateBookingGUI simulateBooking) {
-		SimulateBooking = simulateBooking;
-	}
+	// public void setMainMenu(MainMenuGUI mainMenu) {
+	// 	MainMenu = mainMenu;
+	// }
+	// public void setCreateHotel(CreateHotelGUI createHotel) {
+	// 	CreateHotel = createHotel;
+	// }
+	// public void setViewHotel(ViewHotelGUI viewHotel) {
+	// 	ViewHotel = viewHotel;
+	// }
+	// public void setManageHotel(ManageHotelGUI manageHotel) {
+	// 	ManageHotel = manageHotel;
+	// }
+	// public void setSimulateBooking(SimulateBookingGUI simulateBooking) {
+	// 	SimulateBooking = simulateBooking;
+	// }
 }
