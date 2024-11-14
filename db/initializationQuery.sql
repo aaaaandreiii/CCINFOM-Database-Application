@@ -707,11 +707,42 @@ INSERT INTO Wishlist (customer_id, item_id, supplier_id) VALUES
 (100, 43, 23);
 
 
--- INSERT INTO OrderInfo (customer_id, order_date, supplier_id, total_amount, status) VALUES
+INSERT INTO OrderInfo (customer_id, order_date, supplier_id, total_amount, status) VALUES
+(10,'2024-10-31',32,2069.93,'Completed'),
+(25,'2024-10-06',19,21.68,'Completed'),
+(59,'2024-10-28',35,176.98,'Completed'),
+(39,'2024-10-15',42,210.35,'Completed'),
+(50,'2024-12-24',51,80.19,'Cancelled'),
+(34,'2024-11-30',4,135.85,'Pending'),
+(71,'2024-10-01',69,104.96,'Returned'),
+(1,'2024-10-11',70,13.19,'Completed'),
+(41,'2024-10-31',48,512.49,'Completed'),
+(26,'2024-11-01',11,237.41,'Completed'),
+(29,'2024-12-01',32,388.58,'Pending');
 
-
- -- INSERT INTO OrderItem (order_id, item_id, quantity, price_at_order) VALUES
-
+INSERT INTO OrderItem (order_id, item_id, quantity, price_at_order) VALUES
+(1,17,6,344.99),
+(2,46,1,13.64),
+(2,48,1,8.04),
+(3,10,1,94.49),
+(3,3,1,82.49),
+(4,60,1,16.64),
+(4,34,1,13.77),
+(4,37,6,29.99),
+(5,60,5,16.04),
+(6,66,1,13.19),
+(6,8,2,76.28),
+(6,35,1,21.39),
+(6,12,1,24.99),
+(7,18,4,26.24),
+(8,40,1,13.19),
+(9,22,1,22.19),
+(9,47,18,27.24),
+(10,3,1,76.49),
+(10,11,7,22.99),
+(11,25,1,43.59),
+(11,17,1,344.99);
+    
 
 INSERT INTO Inventory (item_id, supplier_id, quantity,price) VALUES
 (15,40,22,62.9895),
