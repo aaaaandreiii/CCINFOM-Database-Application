@@ -2,11 +2,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.io.File;
 
-import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,14 +22,17 @@ import javax.swing.border.EmptyBorder;
 public class View_MainMenu extends JPanel {
     private JPanel parentPanel;
 
-    private JPanel panelLeft;
+    private RoundedPanel panelLeft;
     private JPanel panelLeftTop;
     private JPanel panelLeftBottom;
+    private JPanel panelLeftBottom1;
+    private JPanel panelLeftBottom2;
+    private JPanel panelLeftBottom3;
     private JLabel usernameText;
-    private JTextField usernameInput;
+    private RoundedTextField usernameInput;
     private JLabel passwordText;
-    private JTextField passwordInput;
-    private JButton loginButton;
+    private RoundedTextField passwordInput;
+    private RoundedButton loginButton;
 
     private JPanel panelRight;
     private JLabel logoPhoto;
@@ -36,8 +42,6 @@ public class View_MainMenu extends JPanel {
     private static Color blue3 = new Color(48, 93, 122);
     private static Color paleBlue = new Color(135, 152, 163);
     private static Color orange = new Color(225, 106, 51);
-
-    private static Color beige = new Color(112, 136, 113);
     
     private static ImageIcon fullLogoImageIcon = new ImageIcon("./photos/ClickCollect_Logo.png");
 
@@ -52,14 +56,17 @@ public class View_MainMenu extends JPanel {
         parentPanel.setBackground(blue1);
 
         
-        panelLeft = new JPanel();
+        panelLeft = new RoundedPanel();
         panelLeftTop = new JPanel();
         panelLeftBottom = new JPanel();
+        panelLeftBottom1 = new JPanel();
+        panelLeftBottom2 = new JPanel();
+        panelLeftBottom3 = new JPanel();
         usernameText = new JLabel("Username: ");
-        usernameInput = new JTextField("username/email");
+        usernameInput = new RoundedTextField("username/email", 25);
         passwordText = new JLabel("Password: ");
-        passwordInput = new JTextField("password123");
-        loginButton = new JButton("Login");
+        passwordInput = new RoundedTextField("password123", 25);
+        loginButton = new RoundedButton("Login");
 
         panelRight = new JPanel();
         logoPhoto = new JLabel();
@@ -68,17 +75,30 @@ public class View_MainMenu extends JPanel {
         panelLeft.setBackground(blue2);
         panelLeftTop.setBackground(blue2);
         panelLeftBottom.setBackground(blue2);
+        panelLeftBottom1.setBackground(blue2);
+        panelLeftBottom2.setBackground(blue2);
+        panelLeftBottom3.setBackground(blue2);
 
+        panelRight.setBorder(new EmptyBorder(0, 175, 0, -160));
+        panelLeft.setBorder(new EmptyBorder(100, 100, 100, 100));
+        panelLeftTop.setBorder(new EmptyBorder(100, 0, 100, 0));
+        panelLeftBottom1.setBorder(new EmptyBorder(10, 0, 10, 0));
+        panelLeftBottom2.setBorder(new EmptyBorder(10, 0, 0, 0));
+        panelLeftBottom3.setBorder(new EmptyBorder(0, 0, 0, 0));
+        
+        panelRight.setBackground(blue1);
         usernameInput.setBackground(paleBlue);
         passwordInput.setBackground(paleBlue);
-        panelRight.setBackground(blue1);
         loginButton.setBorderPainted(false);
         loginButton.setBackground(orange);
-        loginButton.setBorder(null);
 
         panelLeft.setLayout(new GridLayout(2, 1));
-        panelLeftBottom.setLayout(new GridLayout(5, 1));
+        panelLeftBottom.setLayout(new GridLayout(3, 1));
+        panelLeftBottom1.setLayout(new GridLayout(2, 1));
+        panelLeftBottom2.setLayout(new GridLayout(2, 1));
+        panelLeftBottom3.setLayout(new GridLayout(3, 3));
 
+        
         try {
 			File fontStyle = new File("./fonts/horizon.otf");
 			Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(17f);
@@ -117,52 +137,44 @@ public class View_MainMenu extends JPanel {
             passwordInput.setForeground(Color.white);
         }
 
-        // panelSelection = new JPanel();
-        
-        // panelSelection.setBorder(new EmptyBorder(125, 0, 0, 0));
-        // panelSelection.setBackground(blue1);
-        // panelSelection.setLayout(new GridLayout(4, 1));
-        // try {
-		// 	File fontStyle = new File("./src/fonts/NotoSerifEthiopic_ExtraCondensed-Regular.ttf");
-		// 	Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(30f);
-        //     // CreateHotel.setFont(font);
-        //     // ViewHotel.setFont(font);
-        //     // ManageHotel.setFont(font);
-        //     // SimulateBooking.setFont(font);
-		// } catch (Exception e) {
-		// 	e.printStackTrace();
-		// 	Font font = new Font("Serif", Font.PLAIN, 30);
-        //     // CreateHotel.setFont(font);
-        //     // ViewHotel.setFont(font);
-        //     // ManageHotel.setFont(font);
-        //     // SimulateBooking.setFont(font);
-        // }
 
-        // // CreateHotel.setBackground(blue1);
-        // // CreateHotel.setBorder(null);
-        // // CreateHotel.setForeground(beige);
-        // // ViewHotel.setBackground(blue1);
-        // // ViewHotel.setBorder(null);
-        // // ViewHotel.setForeground(beige);
-        // // ManageHotel.setBackground(blue1);
-        // // ManageHotel.setBorder(null);
-        // // ManageHotel.setForeground(beige);
-        // // SimulateBooking.setBackground(blue1);
-        // // SimulateBooking.setBorder(null);
-        // // SimulateBooking.setForeground(beige);
-        // // CreateHotel.setPreferredSize(new Dimension(700, 60));
-        // // CreateHotel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        // // ViewHotel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        // // ManageHotel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        // // SimulateBooking.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panelLeftBottom1.add(usernameText);
+        panelLeftBottom1.add(usernameInput);
+        panelLeftBottom2.add(passwordText);
+        panelLeftBottom2.add(passwordInput);
 
-        panelLeftBottom.add(usernameText);
-        panelLeftBottom.add(usernameInput);
-        panelLeftBottom.add(passwordText);
-        panelLeftBottom.add(passwordInput);
-        panelLeftBottom.add(loginButton);
+        JPanel blue2Panel1 = new JPanel();
+        blue2Panel1.setBackground(blue2);
+        blue2Panel1.setBorder(new EmptyBorder(0, 0, -100, 0));
+        JPanel blue2Panel2 = new JPanel();
+        blue2Panel2.setBackground(blue2);
+        JPanel blue2Panel3 = new JPanel();
+        blue2Panel3.setBackground(blue2);
+        JPanel blue2Panel4 = new JPanel();
+        blue2Panel4.setBackground(blue2);
+        JPanel blue2Panel5 = new JPanel();
+        blue2Panel5.setBackground(blue2);
+        JPanel blue2Panel6 = new JPanel();
+        blue2Panel6.setBackground(blue2);
+        JPanel blue2Panel7 = new JPanel();
+        blue2Panel7.setBackground(blue2);
+        JPanel blue2Panel8 = new JPanel();
+        blue2Panel8.setBackground(blue2);
+        panelLeftBottom3.add(blue2Panel1);
+        panelLeftBottom3.add(blue2Panel2);
+        panelLeftBottom3.add(blue2Panel3);
+        panelLeftBottom3.add(blue2Panel4);
+        panelLeftBottom3.add(loginButton);
+        panelLeftBottom3.add(blue2Panel5);
+        panelLeftBottom3.add(blue2Panel6);
+        panelLeftBottom3.add(blue2Panel7);
+        panelLeftBottom3.add(blue2Panel8);
 
-        panelLeft.add(panelLeftTop, BorderLayout.NORTH);
+        panelLeftBottom.add(panelLeftBottom1);
+        panelLeftBottom.add(panelLeftBottom2);
+        panelLeftBottom.add(panelLeftBottom3);
+
+        panelLeft.add(Box.createVerticalStrut(20));
         panelLeft.add(panelLeftBottom, BorderLayout.SOUTH);
 
         panelRight.add(logoPhoto);
@@ -171,12 +183,60 @@ public class View_MainMenu extends JPanel {
         parentPanel.add(panelRight, BorderLayout.WEST);
     }
 
+    public JPanel getParentPanel() {
+        return parentPanel;
+    }
 
-    public JButton getLoginButton() {
+    public RoundedPanel getPanelLeft() {
+        return panelLeft;
+    }
+
+    public JPanel getPanelLeftTop() {
+        return panelLeftTop;
+    }
+
+    public JPanel getPanelLeftBottom() {
+        return panelLeftBottom;
+    }
+
+    public JPanel getPanelLeftBottom1() {
+        return panelLeftBottom1;
+    }
+
+    public JPanel getPanelLeftBottom2() {
+        return panelLeftBottom2;
+    }
+
+    public JPanel getPanelLeftBottom3() {
+        return panelLeftBottom3;
+    }
+
+    public JLabel getUsernameText() {
+        return usernameText;
+    }
+
+    public RoundedTextField getUsernameInput() {
+        return usernameInput;
+    }
+
+    public JLabel getPasswordText() {
+        return passwordText;
+    }
+
+    public RoundedTextField getPasswordInput() {
+        return passwordInput;
+    }
+
+    public RoundedButton getLoginButton() {
         return loginButton;
     }
 
-    public JPanel getParentPanel(){
-        return parentPanel;
+    public JPanel getPanelRight() {
+        return panelRight;
     }
+
+    public JLabel getLogoPhoto() {
+        return logoPhoto;
+    }
+    
 }

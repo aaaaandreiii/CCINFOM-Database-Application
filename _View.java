@@ -80,15 +80,9 @@ public class _View implements ActionListener {
         // addMouseListenerToButton(this.ManageHotel.getRemoveHotel(), paleGreen1, paleGreen2, paleGreen3);
         // addMouseListenerToButton(this.ManageHotel.getMainMenuButton(), darkBlue1, darkBlue2, darkBlue3);
         
-        // setPlaceholder(this.SimulateBooking.getcheckInField(), " DD-MM-YYYY", beige, 22);
-        // setPlaceholder(this.SimulateBooking.getcheckOutField(), " DD-MM-YYYY", beige, 22);
-        // setPlaceholder(this.CreateHotel.getnewHotelTextField(), " Enter name of new hotel here: ", darkBlue1, 30);
-        // setPlaceholder(this.SimulateBookingP2.getcheckInField(), " DD-MM-YYYY", beige, 22);
-        // setPlaceholder(this.SimulateBookingP2.getcheckOutField(), " DD-MM-YYYY", beige, 22);
-        // setPlaceholder(this.SimulateBookingP2.getguestNameTextField(), " Enter your name here: ", beige, 35);
-        // setPlaceholder(this.SimulateBookingP3.getcheckInField(), " DD-MM-YYYY", beige, 22);
-        // setPlaceholder(this.SimulateBookingP3.getcheckOutField(), " DD-MM-YYYY", beige, 22);
-        // setPlaceholder(this.SimulateBookingP3.getdiscountTextField(), " CCPROG3_EZ4.0 ", beige, 35);
+        setPlaceholder(this.MainMenu.getUsernameInput(), "username/email", Color.WHITE, 17, "./fonts/WorkSans-Medium.ttf", "./fonts/WorkSans-Light.ttf");
+        setPlaceholder(this.MainMenu.getPasswordInput(), "password123", Color.WHITE, 17, "./fonts/WorkSans-Medium.ttf", "./fonts/WorkSans-Light.ttf");
+        
 
 
         frame.setTitle("Opulence Oasis");
@@ -144,7 +138,41 @@ public class _View implements ActionListener {
         });
     }
 
-    public void setPlaceholder(JTextField textField, String placeholder, Color color, float size) {
+    // TODO fix, rounded buttons arent glowing anymore at hover
+    public static void addMouseListenerToButton(RoundedButton btn, Color color1, Color color2, Color color3) {        
+        btn.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                String currentText = btn.getText();
+                if (!currentText.startsWith("<html>"))
+                    btn.setText("<html><b>" + currentText + "</b></html>");
+                else
+                    btn.setText(currentText.replace("<html>", "<html><b>").replace("</html>", "</b></html>"));
+                // btn.setSize(btn.getSize().width + 5, btn.getSize().height + 5);
+                btn.setBackground(color2);
+            }
+                
+            public void mouseExited(MouseEvent e) {
+                String currentText = btn.getText();
+                if (currentText.contains("<b>") && currentText.contains("</b>")) 
+                    btn.setText(currentText.replace("<html><b>", "<html>").replace("</b></html>", "</html>"));
+                else 
+                    btn.setText("<html>" + currentText.replace("<b>", "").replace("</b>", "") + "</html>");
+
+                // btn.setSize(btn.getSize().width - 5, btn.getSize().height - 5);
+                btn.setBackground(color1);
+            }
+
+            public void mouseClicked(MouseEvent e) {
+                btn.setBackground(color1);
+            }
+
+            public void mousePressed(MouseEvent e) {
+                btn.setBackground(color3);
+            }
+        });
+    }
+
+    public void setPlaceholder(JTextField textField, String placeholder, Color color, float size, String fontWhenFocusGainedPath, String fontWhenFocusLostPath) {
         textField.setText(placeholder);
         textField.setForeground(color);
 
@@ -152,7 +180,7 @@ public class _View implements ActionListener {
             @Override
             public void focusGained(FocusEvent fe) {
                 try {
-                    File fontStyle = new File("./src/fonts/NotoSerifEthiopic_ExtraCondensed-Medium.ttf");
+                    File fontStyle = new File(fontWhenFocusGainedPath);
                     Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(size);
                     textField.setFont(font);
                 } catch (Exception e) {
@@ -169,7 +197,7 @@ public class _View implements ActionListener {
             @Override
             public void focusLost(FocusEvent fe) {
                 try {
-                    File fontStyle = new File("./src/fonts/NotoSerifEthiopic_ExtraCondensed-Light.ttf");
+                    File fontStyle = new File(fontWhenFocusLostPath);
                     Font font = Font.createFont(Font.TRUETYPE_FONT, fontStyle).deriveFont(size);
                     textField.setFont(font);
                 } catch (Exception e) {
