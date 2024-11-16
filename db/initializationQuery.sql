@@ -13,9 +13,9 @@ CREATE TABLE IF NOT EXISTS Customer (
 CREATE TABLE IF NOT EXISTS Item (
     item_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
-    item_category VARCHAR(50),
+    manufacturer_id VARCHAR(50),
     srp DECIMAL(10, 2),
-    brand VARCHAR(50),
+    manufacturer VARCHAR(50),
     description TEXT
 );
 
