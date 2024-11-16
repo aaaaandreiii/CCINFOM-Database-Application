@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Item (
     manufacturer VARCHAR(50),
     description TEXT
 );
-
+-- Hello
 -- Table 7: Supplier Information
 CREATE TABLE IF NOT EXISTS Supplier (
     supplier_id INT AUTO_INCREMENT PRIMARY KEY,
