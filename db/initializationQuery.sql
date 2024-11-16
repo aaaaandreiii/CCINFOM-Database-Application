@@ -87,6 +87,16 @@ CREATE TABLE IF NOT EXISTS Inventory (
     FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id)
 );
 
+-- Table 9: Order Payment
+CREATE TABLE IF NOT EXISTS OrderPayment (
+	payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    payment_date DATE,
+    payment_mode VARCHAR(20),
+    payment_status VARCHAR(20),
+    FOREIGN KEY (order_id) REFERENCES OrderInfo (order_id)
+);
+
 INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address, customer_rating)
 VALUES
 ('John', 'Doe', 'johndoe@gmail.com', '123-456-7890', '123 Main St', 4.5),
