@@ -87,14 +87,26 @@ CREATE TABLE IF NOT EXISTS Inventory (
     FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id)
 );
 
--- Table 9: Order Payment
-CREATE TABLE IF NOT EXISTS OrderPayment (
+-- Table 9: Order Payment -- Customer
+CREATE TABLE IF NOT EXISTS CustomerPayment (
 	payment_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT,
     payment_date DATE,
-    payment_mode VARCHAR(20),
-    payment_status VARCHAR(20),
+    payment_mode ENUM('Cash On Delivery', 'Online Payment', 'Credit Card', 'Debit Card'),
+    payment_status ENUM('Unpaid','Paid'),
     FOREIGN KEY (order_id) REFERENCES OrderInfo (order_id)
+);
+
+-- Table 10: Manufacturer Supplue -- Supplier 
+CREATE TABLE IF NOT EXISTS ManufacturerPayment (
+	payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    payment_date DATE,
+    payment_mode ENUM('Cash On Delivery', 'Online Payment', 'Credit Card', 'Debit Card'),
+    payment_status ENUM('Unpaid', 'Paid'),
+    manufacturer_id INT,
+    FOREIGN KEY (order_id) REFERENCES OrderInfo (order_id),
+    FOREIGN KEY (manufacturer_id) REFERENCES Item (item_category)
 );
 
 INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address, customer_rating)
