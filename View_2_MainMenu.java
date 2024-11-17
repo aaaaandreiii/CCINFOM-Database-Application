@@ -1,38 +1,30 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Insets;
 import java.io.File;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-public class View_MainMenu extends JPanel {
+public class View_2_MainMenu extends JPanel {
     private JPanel parentPanel;
 
-    private RoundedPanel panelLeft;
+    private Object_RoundedPanel panelLeft;
     private JPanel panelLeftTop;
     private JPanel panelLeftBottom;
     private JPanel panelLeftBottom1;
     private JPanel panelLeftBottom2;
     private JPanel panelLeftBottom3;
     private JLabel usernameText;
-    private RoundedTextField usernameInput;
+    private Object_RoundedTextField usernameInput;
     private JLabel passwordText;
-    private RoundedTextField passwordInput;
-    private RoundedButton loginButton;
+    private Object_RoundedTextField passwordInput;
+    private Object_RoundedButton loginButton;
 
     private JPanel panelRight;
     private JLabel logoPhoto;
@@ -45,7 +37,7 @@ public class View_MainMenu extends JPanel {
     
     private static ImageIcon fullLogoImageIcon = new ImageIcon("./photos/ClickCollect_Logo.png");
 
-    public View_MainMenu() {
+    public View_2_MainMenu() {
         parentPanel = new JPanel();
 
         // Image fullLogoImage = fullLogoImageIcon.getImage();
@@ -56,17 +48,17 @@ public class View_MainMenu extends JPanel {
         parentPanel.setBackground(blue1);
 
         
-        panelLeft = new RoundedPanel();
+        panelLeft = new Object_RoundedPanel();
         panelLeftTop = new JPanel();
         panelLeftBottom = new JPanel();
         panelLeftBottom1 = new JPanel();
         panelLeftBottom2 = new JPanel();
         panelLeftBottom3 = new JPanel();
         usernameText = new JLabel("Username: ");
-        usernameInput = new RoundedTextField("username/email", 25);
+        usernameInput = new Object_RoundedTextField("username/email", 25);
         passwordText = new JLabel("Password: ");
-        passwordInput = new RoundedTextField("password123", 25);
-        loginButton = new RoundedButton("Login");
+        passwordInput = new Object_RoundedTextField("password123", 25);
+        loginButton = new Object_RoundedButton("Login");
 
         panelRight = new JPanel();
         logoPhoto = new JLabel();
@@ -187,7 +179,7 @@ public class View_MainMenu extends JPanel {
         return parentPanel;
     }
 
-    public RoundedPanel getPanelLeft() {
+    public Object_RoundedPanel getPanelLeft() {
         return panelLeft;
     }
 
@@ -215,7 +207,7 @@ public class View_MainMenu extends JPanel {
         return usernameText;
     }
 
-    public RoundedTextField getUsernameInput() {
+    public Object_RoundedTextField getUsernameInput() {
         return usernameInput;
     }
 
@@ -223,11 +215,11 @@ public class View_MainMenu extends JPanel {
         return passwordText;
     }
 
-    public RoundedTextField getPasswordInput() {
+    public Object_RoundedTextField getPasswordInput() {
         return passwordInput;
     }
 
-    public RoundedButton getLoginButton() {
+    public Object_RoundedButton getLoginButton() {
         return loginButton;
     }
 

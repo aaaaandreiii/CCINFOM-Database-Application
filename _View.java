@@ -9,7 +9,7 @@ public class _View implements ActionListener {
     private JPanel parentPanel;
     private CardLayout panelSwitcher;
 
-    private View_MainMenu MainMenu;
+    private View_1_LogInPage MainMenu;
     // private CreateHotelGUI CreateHotel;
     // private ViewHotelGUI ViewHotel;
     // private ManageHotelGUI ManageHotel;
@@ -24,7 +24,7 @@ public class _View implements ActionListener {
     private static ImageIcon logo = new ImageIcon("./src/photos/Logo.png");
 
     public _View() {
-        this.MainMenu = new View_MainMenu();
+        this.MainMenu = new View_1_LogInPage();
         // this.CreateHotel = new CreateHotelGUI();
         // this.ViewHotel = new ViewHotelGUI();
         // this.ManageHotel = new ManageHotelGUI();
@@ -139,7 +139,7 @@ public class _View implements ActionListener {
     }
 
     // TODO fix, rounded buttons arent glowing anymore at hover
-    public static void addMouseListenerToButton(RoundedButton btn, Color color1, Color color2, Color color3) {        
+    public static void addMouseListenerToButton(Object_RoundedButton btn, Color color1, Color color2, Color color3) {        
         btn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 String currentText = btn.getText();
@@ -246,12 +246,9 @@ public class _View implements ActionListener {
 		this.panelSwitcher = panelSwitcher;
 	}
 
-    public View_MainMenu getMainMenu(){
+    public View_1_LogInPage get_1_LogInPage(){
         return MainMenu;
     }
-    // public CreateHotelGUI getCreateHotel(){
-    //     return CreateHotel;
-    // }
     // public ViewHotelGUI getViewHotel(){
     //     return ViewHotel;
     // }

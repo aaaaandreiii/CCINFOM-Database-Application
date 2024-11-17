@@ -1,8 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class RoundedButton extends JButton {
-    public RoundedButton(String text) {
+public class Object_RoundedButton extends JButton {
+    public Object_RoundedButton(String text) {
         super(text);
         setContentAreaFilled(false);
     }

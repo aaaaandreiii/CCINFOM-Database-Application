@@ -13,8 +13,8 @@ public class _Driver {
         DatabaseConnection jdbc = new DatabaseConnection();
         jdbc.createConnection();
 
-        jdbc.selectAllFromTable("customer");
-
+        // jdbc.selectAllFromTable("customer");
+        // jdbc.executeQuery();
 
 
         System.out.println("Opening GUI");
@@ -24,6 +24,9 @@ public class _Driver {
 		// view = new View();
 		// controller = new Controller(model, view);
 
-        
+        //to put in controller/model
+        String username = view.get_1_LogInPage().getUsernameInput().getText();
+        String password = view.get_1_LogInPage().getPasswordInput().getText();
+        jdbc.validateLogIn(username, password);        
     }
 }

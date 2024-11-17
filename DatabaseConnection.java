@@ -1,11 +1,10 @@
-import java.math.BigDecimal;
+
 import java.sql.*;
-import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/ccinfom_mp";
+    private static final String URL = "jdbc:mysql://localhost:3306/ccinfom";
     private static final String USER = "root";
     private static final String PASSWORD = "009900";
 
@@ -52,30 +51,22 @@ public class DatabaseConnection {
         }
     }
 
-    public void selectAllFromTable(String selectedTable) {
+    public void validateLogIn(String usernameInput, String passwordInput) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             
-            String sqlQueryStatement = "SELECT * FROM " + selectedTable;
+            String sqlQueryStatement = "SELECT * FROM LogInCredentials";
 
             ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
             while (rs.next()) {
-                int customer_id = rs.getInt("customer_id");
-                String first_name = rs.getString("first_name");
-                String last_name = rs.getString("last_name");
-                String email = rs.getString("email");
-                String phone_number = rs.getString("phone_number");
-                String delivery_address = rs.getString("delivery_address");
-                String customer_rating = rs.getString("delivery_address");          //does not work
-                
-                System.out.println(customer_id + "\t" + 
-                                   first_name + "\t" + 
-                                   last_name  + "\t" + 
-                                   email + "\t\t" + 
-                                   phone_number  + "\t" + 
-                                   delivery_address  + "\t\t" + 
-                                   customer_rating);
+                String username = rs.getString("username");
+                String password_hash = rs.getString("password_hash");
+
+                if (usernameInput == username){
+                    if (passwordInput == password_hash)
+                        System.out.println("Password Validated");
+                }
             }
         } catch (SQLException e) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);

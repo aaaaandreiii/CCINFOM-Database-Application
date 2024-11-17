@@ -3,11 +3,11 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class RoundedPanel extends JPanel {
+public class Object_RoundedPanel extends JPanel {
 
     private int arcRadius = 75; // Adjust the radius as needed
 
-    public RoundedPanel() {
+    public Object_RoundedPanel() {
         super();
         setOpaque(false);
     }

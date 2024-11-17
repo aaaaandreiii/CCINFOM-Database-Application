@@ -1,18 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class RoundedTextField extends JTextField {
+public class Object_RoundedTextField extends JTextField {
 
     private int arcRadius = 30;
     private Insets textInsets = new Insets(5, 10, 5, 10);
 
-    public RoundedTextField(int columns) {
+    public Object_RoundedTextField(int columns) {
         super(columns);
         setOpaque(false);
         setMargin(textInsets);
     }
 
-    public RoundedTextField(String text, int columns) {
+    public Object_RoundedTextField(String text, int columns) {
         super(null, text, columns);
         setOpaque(false); 
         setMargin(textInsets);
