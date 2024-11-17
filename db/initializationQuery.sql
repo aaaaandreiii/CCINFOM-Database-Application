@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Customer (
 
 -- Table 12: Manufacturer Information
 CREATE TABLE IF NOT EXISTS Manufacturer (
-	manufacturer_id INT AUTO_INCREMENT PRIMARY KEY,
+	manufacturer_id INT PRIMARY KEY,
     manufacturer_name VARCHAR(50),
     address TEXT
 );
