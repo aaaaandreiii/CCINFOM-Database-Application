@@ -1,3 +1,9 @@
+-- Table 11: Login Data   -  Email and Password
+CREATE TABLE IF NOT EXISTS LoginCredentials (
+email VARCHAR(100) PRIMARY KEY,
+password VARCHAR(256)
+);
+
 -- Table 1: Customer Information
 CREATE TABLE IF NOT EXISTS Customer (
     customer_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -6,14 +12,15 @@ CREATE TABLE IF NOT EXISTS Customer (
     email VARCHAR(100) UNIQUE,
     phone_number VARCHAR(20),
     delivery_address TEXT,
-    customer_rating DECIMAL(2, 1) CHECK (customer_rating BETWEEN 0 AND 5)
+    customer_rating DECIMAL(2, 1) CHECK (customer_rating BETWEEN 0 AND 5),
+    FOREIGN KEY (email) REFERENCES LoginCredentials(email)
 );
 
 -- Table 6: Item Entities
 CREATE TABLE IF NOT EXISTS Item (
     item_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
-    manufacturer_id VARCHAR(50),
+    manufacturer_id INT,
     srp DECIMAL(10, 2),
     manufacturer VARCHAR(50),
     description TEXT
@@ -27,7 +34,8 @@ CREATE TABLE IF NOT EXISTS Supplier (
     email VARCHAR(100) UNIQUE,
     phone VARCHAR(20),
     address TEXT,
-    supplier_rating DECIMAL(2, 1) CHECK (supplier_rating BETWEEN 0 AND 5)
+    supplier_rating DECIMAL(2, 1) CHECK (supplier_rating BETWEEN 0 AND 5),
+    FOREIGN KEY (email) REFERENCES LoginCredentials(email)
 );
 
 -- Table 2: Shopping Cart
@@ -105,9 +113,11 @@ CREATE TABLE IF NOT EXISTS ManufacturerPayment (
     payment_mode ENUM('Cash On Delivery', 'Online Payment', 'Credit Card', 'Debit Card'),
     payment_status ENUM('Unpaid', 'Paid'),
     manufacturer_id INT,
-    FOREIGN KEY (order_id) REFERENCES OrderInfo (order_id),
-    FOREIGN KEY (manufacturer_id) REFERENCES Item (item_category)
+    FOREIGN KEY (order_id) REFERENCES OrderInfo(order_id),
+    FOREIGN KEY (manufacturer_id) REFERENCES Item(manufacturer_id)
 );
+
+
 
 INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address, customer_rating)
 VALUES
