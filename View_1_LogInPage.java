@@ -31,7 +31,7 @@ public class View_1_LogInPage extends JPanel {
 
     private static Color blue1 = new Color(48, 93, 122);
     private static Color blue2 = new Color(53, 87, 108);
-    private static Color blue3 = new Color(48, 93, 122);
+    // private static Color blue3 = new Color(48, 93, 122);
     private static Color paleBlue = new Color(135, 152, 163);
     private static Color orange = new Color(225, 106, 51);
     

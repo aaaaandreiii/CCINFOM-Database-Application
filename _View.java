@@ -9,13 +9,10 @@ public class _View implements ActionListener {
     private JPanel parentPanel;
     private CardLayout panelSwitcher;
 
-    private View_1_LogInPage MainMenu;
-    // private CreateHotelGUI CreateHotel;
-    // private ViewHotelGUI ViewHotel;
-    // private ManageHotelGUI ManageHotel;
-    // private SimulateBookingGUI SimulateBooking;
-    // private SimulateBookingGUIPage2 SimulateBookingP2;
-    // private SimulateBookingGUIPage3 SimulateBookingP3;
+    private View_1_LogInPage LogInPage;
+    private View_2_MainMenu MainMenu;
+    
+    private View_x_ResupplyShipped ResupplyShipped;
 
     private static Color blue1 = new Color(48, 93, 122);
     private static Color blue2 = new Color(48, 93, 122);
@@ -24,14 +21,10 @@ public class _View implements ActionListener {
     private static ImageIcon logo = new ImageIcon("./src/photos/Logo.png");
 
     public _View() {
-        this.MainMenu = new View_1_LogInPage();
-        // this.CreateHotel = new CreateHotelGUI();
-        // this.ViewHotel = new ViewHotelGUI();
-        // this.ManageHotel = new ManageHotelGUI();
-        // this.SimulateBooking = new SimulateBookingGUI();
-        // this.SimulateBookingP2 = new SimulateBookingGUIPage2();
-        // this.SimulateBookingP3 = new SimulateBookingGUIPage3();
-
+        this.LogInPage = new View_1_LogInPage();
+        // this.MainMenu = new View_2_MainMenu();
+        
+        this.ResupplyShipped = new View_x_ResupplyShipped(null);
         
         frame = new JFrame();
         parentPanel = new JPanel();
@@ -42,13 +35,9 @@ public class _View implements ActionListener {
         parentPanel.setLayout(panelSwitcher);
 
         
-        parentPanel.add(MainMenu.getParentPanel(), "1");
-        // parentPanel.add(SimulateBooking.getParentPanel(), "2");
-        // parentPanel.add(CreateHotel.getParentPanel(), "3");
-        // parentPanel.add(ViewHotel.getParentPanel(), "4");
-        // parentPanel.add(ManageHotel.getParentPanel(), "5");
-        // parentPanel.add(SimulateBookingP2.getParentPanel(), "1.2");
-        // parentPanel.add(SimulateBookingP3.getParentPanel(), "1.3");
+        // parentPanel.add(LogInPage.getParentPanel(), "1");
+        // parentPanel.add(MainMenu.getParentPanel(), "2");
+        
 
         panelSwitcher.show(parentPanel, "1");
 
@@ -80,8 +69,8 @@ public class _View implements ActionListener {
         // addMouseListenerToButton(this.ManageHotel.getRemoveHotel(), paleGreen1, paleGreen2, paleGreen3);
         // addMouseListenerToButton(this.ManageHotel.getMainMenuButton(), darkBlue1, darkBlue2, darkBlue3);
         
-        setPlaceholder(this.MainMenu.getUsernameInput(), "username/email", Color.WHITE, 17, "./fonts/WorkSans-Medium.ttf", "./fonts/WorkSans-Light.ttf");
-        setPlaceholder(this.MainMenu.getPasswordInput(), "password123", Color.WHITE, 17, "./fonts/WorkSans-Medium.ttf", "./fonts/WorkSans-Light.ttf");
+        setPlaceholder(this.LogInPage.getUsernameInput(), "username/email", Color.WHITE, 17, "./fonts/WorkSans-Medium.ttf", "./fonts/WorkSans-Light.ttf");
+        setPlaceholder(this.LogInPage.getPasswordInput(), "password123", Color.WHITE, 17, "./fonts/WorkSans-Medium.ttf", "./fonts/WorkSans-Light.ttf");
         
 
 
@@ -247,7 +236,7 @@ public class _View implements ActionListener {
 	}
 
     public View_1_LogInPage get_1_LogInPage(){
-        return MainMenu;
+        return LogInPage;
     }
     // public ViewHotelGUI getViewHotel(){
     //     return ViewHotel;

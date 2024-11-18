@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -14,20 +15,10 @@ import javax.swing.border.EmptyBorder;
 public class View_2_MainMenu extends JPanel {
     private JPanel parentPanel;
 
-    private Object_RoundedPanel panelLeft;
-    private JPanel panelLeftTop;
-    private JPanel panelLeftBottom;
-    private JPanel panelLeftBottom1;
-    private JPanel panelLeftBottom2;
-    private JPanel panelLeftBottom3;
-    private JLabel usernameText;
-    private Object_RoundedTextField usernameInput;
-    private JLabel passwordText;
-    private Object_RoundedTextField passwordInput;
-    private Object_RoundedButton loginButton;
+    private JPanel panelLeft;
 
     private JPanel panelRight;
-    private JLabel logoPhoto;
+    private ArrayList<Object_MainMenuItems> itemFeed;
 
     private static Color blue1 = new Color(48, 93, 122);
     private static Color blue2 = new Color(53, 87, 108);
