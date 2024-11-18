@@ -37,7 +37,7 @@ public class DatabaseConnection {
                 String email = rs.getString("email");
                 String phone_number = rs.getString("phone_number");
                 String delivery_address = rs.getString("delivery_address");
-                String customer_rating = rs.getString("delivery_address");          //does not work
+                Double customer_rating = rs.getDouble("customer_rating");          //does n
                 
                 System.out.println(customer_id + "\t" + 
                                    first_name + "\t" + 
@@ -93,8 +93,8 @@ public class DatabaseConnection {
                 String username = rs.getString("username");
                 String password_hash = rs.getString("password_hash");
 
-                if (usernameInput == username){
-                    if (passwordInput == password_hash)
+                if (usernameInput.equals(username)){
+                    if (passwordInput.equals(password_hash))
                         System.out.println("Password Validated");
                 }
             }
