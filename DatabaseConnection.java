@@ -1,4 +1,5 @@
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,6 +47,35 @@ public class DatabaseConnection {
                                    delivery_address  + "\t\t" + 
                                    customer_rating);
             }
+        } catch (SQLException e) {
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    public void insertValues() {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            // PreparedStatement stmt = c.prepareStatement("INSERT INTO OrderItem (order_id, item_id, quantity, price_at_order) VALUES (1,17,6,344.99);");
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO OrderItem (order_id, item_id, quantity, price_at_order) VALUES (?, ?, ?, ?);");
+
+            BigDecimal decimalNum = new BigDecimal(344.99);
+
+            stmt.setInt(1, 12);
+            stmt.setInt(2, 17);
+            stmt.setInt(3, 1);
+            stmt.setBigDecimal(4, decimalNum);
+            
+            int rowsInserted = stmt.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Data inserted successfully");
+            } else {
+                System.out.println("Error inserting data.");
+            }
+
+            stmt.close();
+            c.close();
+
         } catch (SQLException e) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
         }
