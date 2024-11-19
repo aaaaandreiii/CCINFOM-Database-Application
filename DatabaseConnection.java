@@ -36,7 +36,7 @@ public class DatabaseConnection {
                 String email = rs.getString("email");
                 String phone_number = rs.getString("phone_number");
                 String delivery_address = rs.getString("delivery_address");
-                String customer_rating = rs.getString("delivery_address");          //does not work
+                Double customer_rating = rs.getDouble("customer_rating");
                 
                 System.out.println(customer_id + "\t" + 
                                    first_name + "\t" + 
@@ -87,6 +87,73 @@ public class DatabaseConnection {
         }
     }
 
+    public void addUser() {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address, customer_rating) VALUES (?, ?, ?, ?, ?, ?);");
+
+            BigDecimal customerRating = new BigDecimal(4.99);
+
+            stmt.setString(1, "Andrei");
+            stmt.setString(2, "Balingit");
+            // stmt.setString(3, "andrei_balingit@dlsu.edu.ph");
+            
+            stmt.setString(3, "admin");
+            stmt.setString(4, "0912-345-6789");
+            stmt.setString(5, "Pasay City");
+            stmt.setBigDecimal(6, customerRating);
+
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Data inserted successfully!");
+            } else {
+                System.out.println("Error inserting data.");
+            }
+
+            stmt.close();
+            c.close();
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        
+        }
+    }
+
+    public void deleteUser(int idToDelete) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
+
+            stmt.setInt(1, idToDelete);
+
+            int rowsDeleted = stmt.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                System.out.println("Record deleted successfully.");
+            } else {
+                System.out.println("Record not found.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        
+        }
+    }
+
+
+
     public void validateLogIn(String usernameInput, String passwordInput) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -99,8 +166,8 @@ public class DatabaseConnection {
                 String username = rs.getString("username");
                 String password_hash = rs.getString("password_hash");
 
-                if (usernameInput == username){
-                    if (passwordInput == password_hash)
+                if (usernameInput.equals(username)){
+                    if (passwordInput.equals(password_hash))
                         System.out.println("Password Validated");
                 }
             }

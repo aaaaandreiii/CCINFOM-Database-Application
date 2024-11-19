@@ -12,22 +12,23 @@ public class _Driver {
         // establish connection with database here
         DatabaseConnection jdbc = new DatabaseConnection();
         jdbc.createConnection();
-        jdbc.insertValues();
+        // jdbc.addUser();
+        jdbc.deleteUser();
 
         // jdbc.selectAllFromTable("customer");
         // jdbc.executeQuery();
 
 
-        System.out.println("Opening GUI");
+        // System.out.println("Opening GUI");
 
-        view = new _View();
+        // view = new _View();
         // model = new Model();
 		// view = new View();
 		// controller = new Controller(model, view);
 
         //to put in controller/model
-        String username = view.get_1_LogInPage().getUsernameInput().getText();
-        String password = view.get_1_LogInPage().getPasswordInput().getText();
-        jdbc.validateLogIn(username, password);        
+        // String username = view.get_1_LogInPage().getUsernameInput().getText();
+        // String password = view.get_1_LogInPage().getPasswordInput().getText();
+        // jdbc.validateLogIn(username, password);        
     }
 }

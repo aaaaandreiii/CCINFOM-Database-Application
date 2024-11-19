@@ -83,7 +83,8 @@ public class _View implements ActionListener {
         frame.pack();
         frame.getContentPane().setBackground(blue1);
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        //TODO set visible true
+        frame.setVisible(false);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
