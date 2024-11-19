@@ -12,8 +12,11 @@ public class _Driver {
         // establish connection with database here
         DatabaseConnection jdbc = new DatabaseConnection();
         jdbc.createConnection();
-        jdbc.addUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
-        jdbc.deleteUser(109);
+        // jdbc.createUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
+        // jdbc.readUser();
+        // jdbc.updateUser();
+        jdbc.deleteUser(107);
+
 
         // jdbc.selectAllFromTable("customer");
         // jdbc.executeQuery();
