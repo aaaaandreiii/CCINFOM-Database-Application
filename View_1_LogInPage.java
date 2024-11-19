@@ -2,14 +2,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.*;
 import java.io.File;
-
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
 
 public class View_1_LogInPage extends JPanel {
     private JPanel parentPanel;
@@ -210,6 +211,9 @@ public class View_1_LogInPage extends JPanel {
     public Object_RoundedTextField getUsernameInput() {
         return usernameInput;
     }
+    public String getUsername() {
+        return usernameInput.getText();
+    }
 
     public JLabel getPasswordText() {
         return passwordText;
@@ -217,6 +221,10 @@ public class View_1_LogInPage extends JPanel {
 
     public Object_RoundedTextField getPasswordInput() {
         return passwordInput;
+    }
+
+    public String getPassword() {
+        return passwordInput.getText();
     }
 
     public Object_RoundedButton getLoginButton() {
@@ -230,5 +238,12 @@ public class View_1_LogInPage extends JPanel {
     public JLabel getLogoPhoto() {
         return logoPhoto;
     }
+    public void setListener (ActionListener listener)
+	{
+		loginButton.addActionListener (listener);
+	}
+
     
+
+
 }
