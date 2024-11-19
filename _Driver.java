@@ -13,7 +13,7 @@ public class _Driver {
         DatabaseConnection jdbc = new DatabaseConnection();
         jdbc.createConnection();
         // jdbc.addUser();
-        jdbc.deleteUser();
+        jdbc.deleteUser(103);
 
         // jdbc.selectAllFromTable("customer");
         // jdbc.executeQuery();
