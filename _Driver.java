@@ -13,8 +13,8 @@ public class _Driver {
         DatabaseConnection jdbc = new DatabaseConnection();
         jdbc.createConnection();
         // jdbc.createUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
-        // jdbc.readUser();
-        jdbc.updateUser("phone_number", "0912-345-6789", 108);
+        jdbc.readUser();
+        // jdbc.updateUser("phone_number", "0912-345-6789", 108);
         // jdbc.deleteUser(107);
 
 
