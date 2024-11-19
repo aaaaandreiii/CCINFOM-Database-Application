@@ -12,6 +12,7 @@ public class _Driver {
         // establish connection with database here
         DatabaseConnection jdbc = new DatabaseConnection();
         jdbc.createConnection();
+        jdbc.insertValues();
 
         // jdbc.selectAllFromTable("customer");
         // jdbc.executeQuery();

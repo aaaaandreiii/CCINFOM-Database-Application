@@ -24,7 +24,7 @@ public class _View implements ActionListener {
         this.LogInPage = new View_1_LogInPage();
         // this.MainMenu = new View_2_MainMenu();
         
-        this.ResupplyShipped = new View_x_ResupplyShipped(null);
+        // this.ResupplyShipped = new View_x_ResupplyShipped(null);
         
         frame = new JFrame();
         parentPanel = new JPanel();
@@ -38,8 +38,6 @@ public class _View implements ActionListener {
         // parentPanel.add(LogInPage.getParentPanel(), "1");
         // parentPanel.add(MainMenu.getParentPanel(), "2");
         
-
-        panelSwitcher.show(parentPanel, "1");
 
         // addMouseListenerToButton(this.SimulateBooking.getBtnAdminMode(), darkBlue1, darkBlue2, darkBlue3);
         // addMouseListenerToButton(this.SimulateBooking.getBtnSearchButton(), darkBlue1, darkBlue2, darkBlue3);

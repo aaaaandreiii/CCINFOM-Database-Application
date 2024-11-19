@@ -19,8 +19,7 @@ public class DatabaseConnection {
             e.printStackTrace();
         } catch (SQLException e) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-        }
-        
+        }   
     }
 
     public void executeQuery() {
@@ -64,11 +63,10 @@ public class DatabaseConnection {
             stmt.setInt(2, 17);
             stmt.setInt(3, 1);
             stmt.setBigDecimal(4, decimalNum);
-            
-            int rowsInserted = stmt.executeUpdate();
 
+            int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("Data inserted successfully");
+                System.out.println("Data inserted successfully!");
             } else {
                 System.out.println("Error inserting data.");
             }
@@ -77,7 +75,15 @@ public class DatabaseConnection {
             c.close();
 
         } catch (SQLException e) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            // Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+                // You can take specific actions, such as logging the error, retrying with different data, or notifying the user.
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        
         }
     }
 
