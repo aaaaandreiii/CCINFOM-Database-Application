@@ -125,6 +125,148 @@ CREATE TABLE IF NOT EXISTS ManufacturerPayment (
     FOREIGN KEY (manufacturer_id) REFERENCES Item(manufacturer_id)
 );
 
+
+-- New Set of Tables
+-- LOGIN CREDENTIALS
+CREATE TABLE IF NOT EXISTS LoginCredentials (
+	email VARCHAR(100) PRIMARY KEY,
+    password VARCHAR (256)
+);
+
+-- Table 1: Customer Information
+CREATE TABLE IF NOT EXISTS Customer (
+	customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100),
+    phone_number VARCHAR(20),
+    delivery_address TEXT,
+    FOREIGN KEY (email) REFERENCES LoginCredentials (email)
+);
+
+-- Table 2: Supplier Information
+CREATE TABLE IF NOT EXISTS Supplier (
+	supplier_id INT AUTO_INCREMENT PRIMARY KEY,
+    supplier_fname VARCHAR(50),
+    supplier_lname VARCHAR(50),
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(20),
+    address TEXT,
+    supplier_rating DECIMAL(2, 1) CHECK (supplier_rating BETWEEN 0 and 5),
+    FOREIGN KEY (email) REFERENCES LoginCredentials (email)
+);
+
+-- Table 3: Manufacturer Information
+CREATE TABLE IF NOT EXISTS Manufacturer (
+	manufacturer_id INT AUTO_INCREMENT PRIMARY KEY,
+    manufacturer_name VARCHAR(50),
+    address TEXT
+);
+
+-- Table 4: Item Entity
+CREATE TABLE IF NOT EXISTS Item (
+	item_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    manufacturer_id INT,
+    srp DECIMAL (10, 2),
+    description TEXT,
+    FOREIGN KEY (manufacturer_id) REFERENCES Manufacturer (manufacturer_id)
+);
+
+-- Table 5: Shopping Cart
+CREATE TABLE IF NOT EXISTS ShoppingCart (
+	shoppingcart_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    item_id INT,
+    quantity INT,
+    supplier_id INT,
+    FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
+    FOREIGN KEY (item_id) REFERENCES Item (item_id),
+    FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id)
+);
+
+-- Table 6: Whislist
+CREATE TABLE IF NOT EXISTS Whislist (
+	whislist_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    item_id INT,
+    supplier_id INT,
+    FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
+    FOREIGN KEY (item_id) REFERENCES Item (item_id),
+    FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id)
+);
+
+-- Table 7: Buyer Order Information
+CREATE TABLE IF NOT EXISTS BuyerOrderInfo (
+	buyer_order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    supplier_id INT,
+    total_amount DECIMAL (10, 2),
+    status ENUM ('Pending', 'Completed', 'Cancelled', 'Returned'),
+    FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
+    FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id)
+);
+
+-- Table 8: Buyer Order Item
+CREATE TABLE IF NOT EXISTS BuyerOrderItem (
+	buyer_order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
+	buyer_order_id INT,
+    item_id INT,
+    quantity INT,
+    price_at_order DECIMAL (10, 2),
+    FOREIGN KEY (buyer_order_id) REFERENCES BuyerOrderInfo(buyer_order_id),
+    FOREIGN KEY (item_id) REFERENCES Item(item_id)
+);
+
+-- Table 9: Supplier Order Information
+CREATE TABLE IF NOT EXISTS SupplierOrderInfo (
+	supplier_order_id INT AUTO_INCREMENT PRIMARY KEY,
+    supplier_id INT,
+    order_date DATE,
+    manufacturer_id INT,
+    total_amount DECIMAL (10, 2),
+    status ENUM ('Pendin', 'Completed', 'Cancelled', 'Returned'),
+    FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id),
+    FOREIGN KEY (manufacturer_id) REFERENCES Manufacturer (manufacturer_id)
+);
+
+-- Table 10: Supplier Order Item
+CREATE TABLE IF NOT EXISTS SupplierOrderItem (
+	supplier_order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
+    supplier_order_id INT,
+    item_id INT,
+    quantity INT,
+    price_at_order DECIMAL (10, 2),
+    FOREIGN KEY (supplier_order_id) REFERENCES SupplierOrderInfo (supplier_order_id),
+    FOREIGN KEY (item_id) REFERENCES Item(item_id)
+);
+
+-- Table 11: Buyer Order Payment
+CREATE TABLE IF NOT EXISTS BuyerOrderPayment (
+	payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    buyer_order_id INT,
+    payment_date DATE,
+    payment_mode ENUM ('Cash on Delivery', 'Online Payment', 'Credit Card', 'Debit Card'),
+    payment_status ENUM ('Unpaid', 'Paid', 'Refunded'),
+    FOREIGN KEY (buyer_order_id) REFERENCES BuyerOrderInfo (buyer_order_id)
+);
+
+-- Table 12: Supplier Order Payment
+CREATE TABLE IF NOT EXISTS SupplierOrderPayment (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    supplier_order_id INT,
+    payment_date DATE,
+    payment_mode ENUM ('Cash on Delivery', 'Online Payment', 'Credit Card', 'Debit Card'),
+    payment_status ENUM ('Unpaid', 'Paid', 'Refunded'),
+    FOREIGN KEY (supplier_order_id) REFERENCES SupplierOrderInfo (supplier_order_id)
+);
+    
+
+    
+
+
+
 INSERT INTO Manufacturer (manufacturer_id, manufacturer_name, address)
 VALUES
 (1,'Bandai','Brgy. San Lucas, LIMA Technology Center, Lipa, 4217 Batangas'),
