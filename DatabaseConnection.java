@@ -154,10 +154,10 @@ public class DatabaseConnection {
     //TODO read user CRUD
     public void readUser(String emailInput, String first_name, String last_name, String phone_number, String delivery_address) {        
         try {
-            //create logincredentials first THEN create user
-            //TODO create user sign up GUI
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = null;
+
+            
             
             stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address, customer_rating) VALUES (?, ?, ?, ?, ?, ?);");
             stmt.setString(1, first_name);
@@ -189,36 +189,33 @@ public class DatabaseConnection {
         }
     }
 
-    public void readUser(String emailInput, String passwordInput, String first_name, String last_name, String phone_number, String delivery_address) {        
+    public void updateUser(String specifiedAttribute, String valueToUpdate, int customer_id) {        
         try {
-            //create logincredentials first THEN create user
-            //TODO create user sign up GUI
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = null;
+
+            String sqlQueryStatement = "UPDATE customer SET " + specifiedAttribute + " = ?  WHERE customer_id = ?";
+
+            stmt = c.prepareStatement(sqlQueryStatement);
             
-            stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address, customer_rating) VALUES (?, ?, ?, ?, ?, ?);");
-            stmt.setString(1, first_name);
-            stmt.setString(2, last_name);
-            stmt.setString(3, emailInput);
-            stmt.setString(4, phone_number);
-            stmt.setString(5, delivery_address);
-            stmt.setInt(6, 1);
+            stmt.setString(1, valueToUpdate);
+            stmt.setInt(2, customer_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("Customer info inserted successfully!");
+                System.out.println("Customer info updated successfully!");
             } else {
-                System.out.println("Error inserting Customer info.");
+                System.out.println("Error updating Customer info.");
             }
 
             stmt.close();
             c.close();
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Customer info.");
+                System.out.println("Error updating Customer info.");
                 // TODO: Handle the specific exception
-                System.out.println("Foreign key constraint violation: " + e.getMessage());
+                System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -275,7 +272,6 @@ public class DatabaseConnection {
             }
         }
     }
-
 
 
     public void validateLogIn(String usernameInput, String passwordInput) {

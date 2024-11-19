@@ -14,8 +14,8 @@ public class _Driver {
         jdbc.createConnection();
         // jdbc.createUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
         // jdbc.readUser();
-        // jdbc.updateUser();
-        jdbc.deleteUser(107);
+        jdbc.updateUser("phone_number", "0912-345-6789", 108);
+        // jdbc.deleteUser(107);
 
 
         // jdbc.selectAllFromTable("customer");
