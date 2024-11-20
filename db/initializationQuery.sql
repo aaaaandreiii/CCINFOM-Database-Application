@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS ShoppingCart (
     quantity INT,
     supplier_id INT,
     FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
-    FOREIGN KEY (item_id) REFERENCES Item (item_id),
+    FOREIGN KEY (item_id) REFERENCES Inventory (item_id),
     FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id)
 );
 
@@ -65,18 +65,20 @@ CREATE TABLE IF NOT EXISTS Wishlist (
     item_id INT,
     supplier_id INT,
     FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
-    FOREIGN KEY (item_id) REFERENCES Item (item_id),
+    FOREIGN KEY (item_id) REFERENCES Inventory (item_id),
     FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id)
 );
 
 -- Table 7: Buyer Order Information
 CREATE TABLE IF NOT EXISTS BuyerOrderInfo (
 	buyer_order_id INT AUTO_INCREMENT PRIMARY KEY,
+    shoppingcart_id INT,
     customer_id INT,
     order_date DATE,
     supplier_id INT,
     total_amount DECIMAL (10, 2),
     status ENUM ('Pending', 'Completed', 'Cancelled', 'Returned'),
+    FOREIGN KEY (shoppingcart_id) REFERENCES ShoppingCart (shoppingcart_id),
     FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
     FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id)
 );
