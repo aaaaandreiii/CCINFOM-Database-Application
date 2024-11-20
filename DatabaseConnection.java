@@ -162,7 +162,6 @@ public class DatabaseConnection {
 
             PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
             stmt.setInt(1, idToDelete);
-            System.out.println("4");
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Customer data deleted successfully!");
@@ -324,37 +323,14 @@ public class DatabaseConnection {
 
     public void deleteItemEntity(int idToDelete) {
         try {
-            String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-            String sqlQueryStatement = "SELECT email FROM customer WHERE customer_id = " + idToDelete + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-            
-            while (rs.next()) {
-                email = rs.getString("email");
-            }            
-
-            PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM Item WHERE item_id = ?;");
             stmt.setInt(1, idToDelete);
-            System.out.println("4");
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("Customer data deleted successfully!");
+                System.out.println("Item data deleted successfully!");
             } else {
-                System.out.println("Error deleting Customer data.");
-            }
-            
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
+                System.out.println("Error deleting Item data.");
             }
 
             stmt.close();
@@ -517,7 +493,6 @@ public class DatabaseConnection {
 
     //         PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
     //         stmt.setInt(1, idToDelete);
-    //         System.out.println("4");
     //         int rowsDeleted = stmt.executeUpdate();
     //         if (rowsDeleted > 0) {
     //             System.out.println("Customer data deleted successfully!");
@@ -695,7 +670,6 @@ public class DatabaseConnection {
 
     //         PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
     //         stmt.setInt(1, idToDelete);
-    //         System.out.println("4");
     //         int rowsDeleted = stmt.executeUpdate();
     //         if (rowsDeleted > 0) {
     //             System.out.println("Customer data deleted successfully!");
@@ -873,7 +847,6 @@ public class DatabaseConnection {
 
     //         PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
     //         stmt.setInt(1, idToDelete);
-    //         System.out.println("4");
     //         int rowsDeleted = stmt.executeUpdate();
     //         if (rowsDeleted > 0) {
     //             System.out.println("Customer data deleted successfully!");

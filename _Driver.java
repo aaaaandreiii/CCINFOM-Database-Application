@@ -25,7 +25,7 @@ public class _Driver {
         // jdbc.createItemEntity("INFOM toy", 4, fuckYouInfom, "CCINFOM", "I fucking hate INFOM. Please just let the term end. I fucking hate databases.");
         // jdbc.readItemEntity();
         // jdbc.updateItemEntity("name", "CCINFOM MP", 68);
-        jdbc.readItemEntity();
+        jdbc.deleteItemEntity(69);
 
 
         // // CRUD on orders
