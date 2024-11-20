@@ -256,7 +256,7 @@ public class DatabaseConnection {
         } catch (SQLException e) {
                 System.out.println("Error displaying Customer info.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+        }
     }
 
     public void updateItemEntity(String specifiedAttribute, String valueToUpdate, int item_id) {    
@@ -329,12 +329,23 @@ public class DatabaseConnection {
 
     public void addToCart(int customer_id, int item_id, int quantity) {
         try {
+            int supplier_id = -1;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             // INSERT INTO Wishlist (customer_id, item_id, supplier_id) VALUES
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO ShoppingCart (customer_id, item_id, quantity) VALUES (?, ?, ?);");
+            java.sql.Statement queryStatement = c.createStatement();
+
+            String sqlQueryStatement = "SELECT supplier_id FROM Inventory WHERE item_id = " + item_id + ";";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            
+            while (rs.next()) {
+                supplier_id = rs.getInt("supplier_id");
+            }
+
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO ShoppingCart (customer_id, item_id, quantity, supplier_id) VALUES (?, ?, ?, ?);");
             stmt.setInt(1, customer_id);
             stmt.setInt(2, item_id);
             stmt.setInt(3, quantity);
+            stmt.setInt(4, supplier_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
