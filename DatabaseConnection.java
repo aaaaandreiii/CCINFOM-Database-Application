@@ -4,6 +4,9 @@ import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//result set for receiving queries
+//prepared statement for instruction queries to insert, delete
+
 public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/ccinfom";
     private static final String USER = "root";
@@ -23,6 +26,7 @@ public class DatabaseConnection {
     }
 
     public void createUser(String emailInput, String passwordInput, String first_name, String last_name, String phone_number, String delivery_address) {
+        
         try {
             //create logincredentials first THEN create user
             //TODO create user sign up GUI
@@ -82,7 +86,6 @@ public class DatabaseConnection {
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
-        
         }
     }
 
@@ -195,31 +198,6 @@ public class DatabaseConnection {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public void createItemEntity(String name, int manufacturer_id, BigDecimal srp, String manufacturer, String description) {      
         try {
@@ -349,16 +327,75 @@ public class DatabaseConnection {
     }
 
 
+    public void addToCart(int customer_id, int item_id, int quantity) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            // INSERT INTO Wishlist (customer_id, item_id, supplier_id) VALUES
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO ShoppingCart (customer_id, item_id, quantity) VALUES (?, ?, ?);");
+            stmt.setInt(1, customer_id);
+            stmt.setInt(2, item_id);
+            stmt.setInt(3, quantity);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Item added to cart successfully!");
+            } else {
+                System.out.println("Error adding item to cart.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error adding item to cart.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
     // public void createOrder(String emailInput, String passwordInput, String first_name, String last_name, String phone_number, String delivery_address) {
     //     try {
-    //         //create logincredentials first THEN create user
-    //         //TODO create user sign up GUI
     //         Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
     //         PreparedStatement stmt = c.prepareStatement("INSERT INTO LoginCredentials (email, password) VALUES (?, ?);");
+
+
+    //         get items from cart
+    //         double check with supplier inventory
+            
+
+    //         INSERT INTO OrderInfo (customer_id, order_date, supplier_id, total_amount, status) VALUES
+    //         INSERT INTO OrderItem (order_id, item_id, quantity, price_at_order) VALUES
+
+
+
+
+
+
     //         stmt.setString(1, emailInput);
     //         stmt.setString(2, passwordInput);
 

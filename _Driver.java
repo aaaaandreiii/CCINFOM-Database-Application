@@ -14,6 +14,8 @@ public class _Driver {
         DatabaseConnection jdbc = new DatabaseConnection();
         jdbc.createConnection();
 
+        //TODO store userID during runtime, getUserID probably after logIn or signUp
+
         // // CRUD on users
         // jdbc.createUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
         // jdbc.readUser();
@@ -21,14 +23,21 @@ public class _Driver {
         // jdbc.deleteUser(107);
 
         // // CRUD on item entities
-        BigDecimal fuckYouInfom = new BigDecimal(69.99);
-        // jdbc.createItemEntity("INFOM toy", 4, fuckYouInfom, "CCINFOM", "I fucking hate INFOM. Please just let the term end. I fucking hate databases.");
+        // BigDecimal srp = new BigDecimal(69.99);
+        // jdbc.createItemEntity("INFOM toy", 4, srp, "CCINFOM", "I fucking hate INFOM. Please just let the term end. I fucking hate databases.");
         // jdbc.readItemEntity();
         // jdbc.updateItemEntity("name", "CCINFOM MP", 68);
-        jdbc.deleteItemEntity(69);
-
+        // jdbc.deleteItemEntity(69);
 
         // // CRUD on orders
+        // jdbc.createOrder();
+
+        // // add to cart
+        jdbc.addToCart(108, 224, 3);
+        
+        // // remove from cart
+        // // turn cart items into order and remove from cart
+
         // // CRUD on shopping cart             ?? could be synonymous with order adding and item adding idk not so sure yet
         // // CRUD on wishlist                  ?? same here
         // // CRUD on Supplier
