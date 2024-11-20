@@ -22,7 +22,12 @@ public class _Driver {
 
         // // CRUD on item entities
         BigDecimal fuckYouInfom = new BigDecimal(69.99);
-        jdbc.createItemEntity("INFOM toy", 4, fuckYouInfom, "CCINFOM", "I fucking hate INFOM. Please just let the term end. I fucking hate databases.");
+        // jdbc.createItemEntity("INFOM toy", 4, fuckYouInfom, "CCINFOM", "I fucking hate INFOM. Please just let the term end. I fucking hate databases.");
+        // jdbc.readItemEntity();
+        // jdbc.updateItemEntity("name", "CCINFOM MP", 68);
+        jdbc.readItemEntity();
+
+
         // // CRUD on orders
         // // CRUD on shopping cart             ?? could be synonymous with order adding and item adding idk not so sure yet
         // // CRUD on wishlist                  ?? same here
