@@ -50,47 +50,39 @@ CREATE TABLE IF NOT EXISTS Item (
 CREATE TABLE IF NOT EXISTS ShoppingCart (
 	shoppingcart_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT,
-    item_id INT,
+    inventory_entry_id INT,
     quantity INT,
-    supplier_id INT,
     FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
-    FOREIGN KEY (item_id) REFERENCES Inventory (item_id),
-    FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id)
+    FOREIGN KEY (inventory_entry_id) REFERENCES Inventory (inventory_entry_id)
 );
 
 -- Table 6: Wishlist
 CREATE TABLE IF NOT EXISTS Wishlist (
 	wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT,
-    item_id INT,
-    supplier_id INT,
+    inventory_entry_id INT,
     FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
-    FOREIGN KEY (item_id) REFERENCES Inventory (item_id),
-    FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id)
+    FOREIGN KEY (inventory_entry_id) REFERENCES Inventory (inventory_entry_id)
 );
 
 -- Table 7: Buyer Order Information
+-- receipt 
 CREATE TABLE IF NOT EXISTS BuyerOrderInfo (
-	buyer_order_id INT AUTO_INCREMENT PRIMARY KEY,
+	buyer_order_information_id INT AUTO_INCREMENT PRIMARY KEY,
     shoppingcart_id INT,
-    customer_id INT,
     order_date DATE,
-    supplier_id INT,
     total_amount DECIMAL (10, 2),
     status ENUM ('Pending', 'Completed', 'Cancelled', 'Returned'),
     FOREIGN KEY (shoppingcart_id) REFERENCES ShoppingCart (shoppingcart_id),
-    FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
-    FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id)
 );
 
 -- Table 8: Buyer Order Item
+-- has a weak entity relationship with buyer order information
 CREATE TABLE IF NOT EXISTS BuyerOrderItem (
-	buyer_order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
-	buyer_order_id INT,
-    item_id INT,
-    quantity INT,
+	buyer_order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+	buyer_order_information_id INT,
     price_at_order DECIMAL (10, 2),
-    FOREIGN KEY (buyer_order_id) REFERENCES BuyerOrderInfo(buyer_order_id),
+    FOREIGN KEY (buyer_order_information_id) REFERENCES BuyerOrderInfo(buyer_order_information_id),
     FOREIGN KEY (item_id) REFERENCES Item(item_id)
 );
 
@@ -131,11 +123,11 @@ CREATE TABLE IF NOT EXISTS SupplierOrderItem (
 -- Table 12: Buyer Order Payment
 CREATE TABLE IF NOT EXISTS BuyerOrderPayment (
 	payment_id INT AUTO_INCREMENT PRIMARY KEY,
-    buyer_order_id INT,
+    buyer_order_information_id INT,
     payment_date DATE,
     payment_mode ENUM ('Cash on Delivery', 'Online Payment', 'Credit Card', 'Debit Card'),
     payment_status ENUM ('Unpaid', 'Paid', 'Refunded'),
-    FOREIGN KEY (buyer_order_id) REFERENCES BuyerOrderInfo (buyer_order_id)
+    FOREIGN KEY (buyer_order_information_id) REFERENCES BuyerOrderInfo (buyer_order_information_id)
 );
 
 -- Table 13: Supplier Order Payment
@@ -972,7 +964,7 @@ INSERT INTO BuyerOrderInfo (customer_id, order_date, supplier_id, total_amount, 
 (26,'2024-11-01',11,237.41,'Completed'),
 (29,'2024-12-01',32,388.58,'Pending');
 
-INSERT INTO BuyerOrderItem (buyer_order_id, item_id, quantity, price_at_order) VALUES
+INSERT INTO BuyerOrderItem (buyer_order_information_id, item_id, quantity, price_at_order) VALUES
 (1,17,6,344.99),
 (2,46,1,13.64),
 (2,48,1,8.04),

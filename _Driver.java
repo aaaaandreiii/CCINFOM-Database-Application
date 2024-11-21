@@ -32,13 +32,12 @@ public class _Driver {
         // // CRUD on orders
         // jdbc.createOrder();
 
-        // // add to cart
-        jdbc.addToCart(108, 224, 3);
-        
-        // // remove from cart
         // // turn cart items into order and remove from cart
 
         // // CRUD on shopping cart             ?? could be synonymous with order adding and item adding idk not so sure yet
+        jdbc.addToShoppingCart(108, 224, 3);
+        jdbc.readShoppingCart();
+
         // // CRUD on wishlist                  ?? same here
         // // CRUD on Supplier
         // // CRUD on Manufacturer

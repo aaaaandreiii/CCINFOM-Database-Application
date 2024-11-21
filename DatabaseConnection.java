@@ -327,7 +327,7 @@ public class DatabaseConnection {
     }
 
 
-    public void addToCart(int customer_id, int item_id, int quantity) {
+    public void addToShoppingCart(int customer_id, int item_id, int quantity) {
         try {
             int supplier_id = -1;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -367,6 +367,116 @@ public class DatabaseConnection {
             }
         }
     }
+
+    public void readShoppingCart(int customer_id) {        
+            try {
+                Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+                java.sql.Statement queryStatement = c.createStatement();
+                ResultSet rs = queryStatement.executeQuery("SELECT * FROM ShoppingCart WHERE customer_id = " + customer_id + ";");
+                while (rs.next()) {
+                    String first_name = rs.getString("first_name");
+                    String last_name = rs.getString("last_name");
+                    String email = rs.getString("email");
+                    String phone_number = rs.getString("phone_number");
+                    String delivery_address = rs.getString("delivery_address");
+                    
+                    System.out.println(customer_id + "\t" + 
+                                       first_name + "\t" + 
+                                       last_name  + "\t" + 
+                                       email + "\t\t" + 
+                                       phone_number  + "\t" + 
+                                       delivery_address);
+                }
+            } catch (SQLException e) {
+                    System.out.println("Error displaying Customer info.");
+                    Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+                }
+        }
+    
+        public void updateOrder(String specifiedAttribute, String valueToUpdate, int customer_id) {        
+            try {
+                Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+                PreparedStatement stmt = null;
+    
+                String sqlQueryStatement = "UPDATE customer SET " + specifiedAttribute + " = ?  WHERE customer_id = ?";
+    
+                stmt = c.prepareStatement(sqlQueryStatement);
+                
+                stmt.setString(1, valueToUpdate);
+                stmt.setInt(2, customer_id);
+    
+                int rowsInserted = 0;
+                rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Customer info updated successfully!");
+                } else {
+                    System.out.println("Error updating Customer info.");
+                }
+    
+                stmt.close();
+                c.close();
+            } catch (SQLException e) {
+                if (e instanceof SQLIntegrityConstraintViolationException) {
+                    System.out.println("Error updating Customer info.");
+                    // TODO: Handle the specific exception
+                    System.out.println(e.getMessage());
+                } else {
+                    Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+                }
+            
+            }
+        }
+    
+        public void deleteOrder(int idToDelete) {
+            try {
+                //delete user first THEN logincredentials 
+                String email = null;
+                Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+                java.sql.Statement queryStatement = c.createStatement();
+    
+                String sqlQueryStatement = "SELECT email FROM customer WHERE customer_id = " + idToDelete + ";";
+                ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+                
+                while (rs.next()) {
+                    email = rs.getString("email");
+                }            
+    
+                PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
+                stmt.setInt(1, idToDelete);
+                int rowsDeleted = stmt.executeUpdate();
+                if (rowsDeleted > 0) {
+                    System.out.println("Customer data deleted successfully!");
+                } else {
+                    System.out.println("Error deleting Customer data.");
+                }
+                
+                stmt = null;
+                stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
+                stmt.setString(1, email);
+    
+                rowsDeleted = 0;
+                rowsDeleted = stmt.executeUpdate();
+                if (rowsDeleted > 0) {
+                    System.out.println("Log In Credentials deleted successfully!");
+                } else {
+                    System.out.println("Error deleting Log In Credentials.");
+                }
+    
+                stmt.close();
+                c.close();
+    
+            } catch (SQLException e) {
+                if (e instanceof SQLIntegrityConstraintViolationException) {
+                    System.out.println("Error deleting Log In Credentials.");
+                    // TODO: Handle the specific exception
+                    System.out.println("Foreign key constraint violation: " + e.getMessage());
+                } else {
+                    System.out.println("Error deleting Log In Credentials.");
+                    Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+                }
+            }
+        }
+    
 
 
 
