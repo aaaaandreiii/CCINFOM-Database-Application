@@ -199,8 +199,38 @@ public class DatabaseConnection {
         }
     }
 
+    //TODO Create findObjectById for all objects
+    public void findSupplierById(int supplier_id) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM supplier WHERE supplier_id = " + supplier_id + ";");
+            while (rs.next()) {
+                // int supplier_id = rs.getInt("supplier_id");
+                String supplier_fname = rs.getString("supplier_fname");
+                String supplier_lname = rs.getString("supplier_lname");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                BigDecimal supplier_rating = rs.getBigDecimal("supplier_rating");
+                
+                System.out.println(supplier_id + "\t" + 
+                                    supplier_fname + "\t" + 
+                                    supplier_lname  + "\t" + 
+                                    email + "\t" + 
+                                    phone  + "\t" + 
+                                    address + "\t" +
+                                    supplier_rating);
+            }
+        } catch (SQLException e) {
+                System.out.println("Error displaying Supplier info.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
     public void createSupplier(int customer_id, BigDecimal supplier_rating) {        
         try {
+            int supplier_id = -1;
             String supplier_fname = null;
             String supplier_lname = null;
             String email = null;
@@ -236,6 +266,22 @@ public class DatabaseConnection {
             } else {
                 System.out.println("Error inserting Supplier info.");
             }
+
+            System.out.println("Newly created supplier: ");
+            queryStatement = null;
+            queryStatement = c.createStatement();
+
+            sqlQueryStatement = null;
+            sqlQueryStatement = "SELECT supplier_id FROM supplier WHERE email = " + email + ";";
+            
+            rs = null;
+            rs = queryStatement.executeQuery(sqlQueryStatement);
+            
+            while (rs.next()) {
+                supplier_id = rs.getInt("supplier_id");
+            }            
+
+            findSupplierById(supplier_id);
 
             stmt.close();
             c.close();
@@ -275,7 +321,7 @@ public class DatabaseConnection {
         } catch (SQLException e) {
                 System.out.println("Error displaying Supplier info.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+        }
     }
 
     public void updateSupplier(String specifiedAttribute, String valueToUpdate, int supplier_id) {        
@@ -283,7 +329,7 @@ public class DatabaseConnection {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = null;
 
-            String sqlQueryStatement = "UPDATE customer SET " + specifiedAttribute + " = ?  WHERE customer_id = ?";
+            String sqlQueryStatement = "UPDATE supplier SET " + specifiedAttribute + " = ?  WHERE supplier_id = ?";
 
             stmt = c.prepareStatement(sqlQueryStatement);
             
@@ -293,16 +339,19 @@ public class DatabaseConnection {
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("Customer info updated successfully!");
+                System.out.println("Supplier info updated successfully!");
             } else {
-                System.out.println("Error updating Customer info.");
+                System.out.println("Error updating Supplier info.");
             }
+
+            System.out.println("New updated information: ");
+            findSupplierById(supplier_id);
 
             stmt.close();
             c.close();
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error updating Customer info.");
+                System.out.println("Error updating Supplier info.");
                 // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {

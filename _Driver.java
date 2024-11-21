@@ -28,8 +28,8 @@ public class _Driver {
         // jdbc.createUser("ching_man_wong@ching.man", "ching", "Ching Man", "Wong", "0912-345-789", "Pasay City");
         // BigDecimal supplier_rating = new BigDecimal(5);
         // jdbc.createSupplier(3, supplier_rating);
-        jdbc.readSupplier();
-        // jdbc.updateSupplier();
+        // jdbc.readSupplier();
+        jdbc.updateSupplier("address", "Pasay City", 2);
         // jdbc.deleteSupplier();
         // // CRUD on Manufacturer
 
