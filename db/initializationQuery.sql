@@ -46,6 +46,17 @@ CREATE TABLE IF NOT EXISTS Item (
     FOREIGN KEY (manufacturer_id) REFERENCES Manufacturer (manufacturer_id)
 );
 
+-- Table 9: Supplier Inventory
+CREATE TABLE IF NOT EXISTS Inventory (
+    inventory_entry_id INT AUTO_INCREMENT PRIMARY KEY,
+    item_id INT,
+    supplier_id INT,
+    quantity INT,
+    price DECIMAL(10,2),
+    FOREIGN KEY (item_id) REFERENCES Item(item_id),
+    FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id)
+);
+
 -- Table 5: Shopping Cart
 CREATE TABLE IF NOT EXISTS ShoppingCart (
 	shoppingcart_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -73,7 +84,7 @@ CREATE TABLE IF NOT EXISTS BuyerOrderInfo (
     order_date DATE,
     total_amount DECIMAL (10, 2),
     status ENUM ('Pending', 'Completed', 'Cancelled', 'Returned'),
-    FOREIGN KEY (shoppingcart_id) REFERENCES ShoppingCart (shoppingcart_id),
+    FOREIGN KEY (shoppingcart_id) REFERENCES ShoppingCart (shoppingcart_id)
 );
 
 -- Table 8: Buyer Order Item
@@ -82,19 +93,7 @@ CREATE TABLE IF NOT EXISTS BuyerOrderItem (
 	buyer_order_item_id INT AUTO_INCREMENT PRIMARY KEY,
 	buyer_order_information_id INT,
     price_at_order DECIMAL (10, 2),
-    FOREIGN KEY (buyer_order_information_id) REFERENCES BuyerOrderInfo(buyer_order_information_id),
-    FOREIGN KEY (item_id) REFERENCES Item(item_id)
-);
-
--- Table 9: Supplier Inventory
-CREATE TABLE IF NOT EXISTS Inventory (
-    inventory_entry_id INT AUTO_INCREMENT PRIMARY KEY,
-    item_id INT,
-    supplier_id INT,
-    quantity INT,
-    price DECIMAL(10,2),
-    FOREIGN KEY (item_id) REFERENCES Item(item_id),
-    FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id)
+    FOREIGN KEY (buyer_order_information_id) REFERENCES BuyerOrderInfo(buyer_order_information_id)
 );
 
 -- Table 10: Supplier Order Information
