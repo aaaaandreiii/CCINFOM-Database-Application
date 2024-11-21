@@ -13,6 +13,6 @@ public class aaaaaaa {
         list.add(true);
 
 
-        System.out.println(e[0]);
+        // System.out.println(e[0]);
     }
 }
