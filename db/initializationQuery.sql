@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS SupplierOrderInfo (
     order_date DATE,
     manufacturer_id INT,
     total_amount DECIMAL (10, 2),
-    status ENUM ('Pendin', 'Completed', 'Cancelled', 'Returned'),
+    status ENUM ('Pending', 'Completed', 'Cancelled', 'Returned'),
     FOREIGN KEY (supplier_id) REFERENCES Supplier (supplier_id),
     FOREIGN KEY (manufacturer_id) REFERENCES Manufacturer (manufacturer_id)
 );
