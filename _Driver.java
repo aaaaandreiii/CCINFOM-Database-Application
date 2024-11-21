@@ -1,5 +1,6 @@
 import java.lang.ModuleLayer.Controller;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import javax.swing.text.View;
 
@@ -17,10 +18,20 @@ public class _Driver {
         //TODO store userID during runtime, getUserID probably after logIn or signUp
 
         // // CRUD on users
-        jdbc.createUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
+        // jdbc.createUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
         // jdbc.readUser();
-        // jdbc.updateUser("phone_number", "0912-345-6789", 108);
-        // jdbc.deleteUser(107);
+        // jdbc.updateUser("phone_number", "0912-345-6789", 1);
+        // jdbc.deleteUser(1);
+
+        // // CRUD on Supplier
+        // // need to create regular user account first before becoming a supplier
+        // jdbc.createUser("ching_man_wong@ching.man", "ching", "Ching Man", "Wong", "0912-345-789", "Pasay City");
+        // BigDecimal supplier_rating = new BigDecimal(5);
+        // jdbc.createSupplier(3, supplier_rating);
+        jdbc.readSupplier();
+        // jdbc.updateSupplier();
+        // jdbc.deleteSupplier();
+        // // CRUD on Manufacturer
 
         // // CRUD on item entities
         // BigDecimal srp = new BigDecimal(69.99);
@@ -39,8 +50,7 @@ public class _Driver {
         // jdbc.readShoppingCart();
 
         // // CRUD on wishlist                  ?? same here
-        // // CRUD on Supplier
-        // // CRUD on Manufacturer
+        
 
 
 
