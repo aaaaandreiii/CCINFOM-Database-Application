@@ -1,4 +1,3 @@
-
 -- New Set of Tables
 -- LOGIN CREDENTIALS
 CREATE TABLE IF NOT EXISTS LoginCredentials (
@@ -47,7 +46,7 @@ CREATE TABLE IF NOT EXISTS Item (
     FOREIGN KEY (manufacturer_id) REFERENCES Manufacturer (manufacturer_id)
 );
 
--- Table 9: Supplier Inventory
+-- Table 5: Supplier Inventory
 CREATE TABLE IF NOT EXISTS Inventory (
     inventory_entry_id INT AUTO_INCREMENT PRIMARY KEY,
     item_id INT,
@@ -58,7 +57,7 @@ CREATE TABLE IF NOT EXISTS Inventory (
     FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id)
 );
 
--- Table 5: Shopping Cart
+-- Table 6: Shopping Cart
 CREATE TABLE IF NOT EXISTS ShoppingCart (
 	shoppingcart_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT,
@@ -68,7 +67,7 @@ CREATE TABLE IF NOT EXISTS ShoppingCart (
     FOREIGN KEY (inventory_entry_id) REFERENCES Inventory (inventory_entry_id)
 );
 
--- Table 6: Wishlist
+-- Table 7: Wishlist
 CREATE TABLE IF NOT EXISTS Wishlist (
 	wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT,
@@ -77,7 +76,7 @@ CREATE TABLE IF NOT EXISTS Wishlist (
     FOREIGN KEY (inventory_entry_id) REFERENCES Inventory (inventory_entry_id)
 );
 
--- Table 7: Buyer Order Information
+-- Table 8: Buyer Order Information
 -- receipt 
 CREATE TABLE IF NOT EXISTS BuyerOrderInfo (
 	buyer_order_information_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,7 +87,7 @@ CREATE TABLE IF NOT EXISTS BuyerOrderInfo (
     FOREIGN KEY (shoppingcart_id) REFERENCES ShoppingCart (shoppingcart_id)
 );
 
--- Table 8: Buyer Order Item
+-- Table 9: Buyer Order Item
 -- has a weak entity relationship with buyer order information
 CREATE TABLE IF NOT EXISTS BuyerOrderItem (
 	buyer_order_item_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -99,7 +98,7 @@ CREATE TABLE IF NOT EXISTS BuyerOrderItem (
 
 -- Table 10: Supplier Order Information
 CREATE TABLE IF NOT EXISTS SupplierOrderInfo (
-	supplier_order_id INT AUTO_INCREMENT PRIMARY KEY,
+	supplier_order_information_id INT AUTO_INCREMENT PRIMARY KEY,
     supplier_id INT,
     order_date DATE,
     manufacturer_id INT,
@@ -111,7 +110,7 @@ CREATE TABLE IF NOT EXISTS SupplierOrderInfo (
 
 -- Table 11: Supplier Order Item
 CREATE TABLE IF NOT EXISTS SupplierOrderItem (
-	supplier_order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
+	supplier_order_item_id INT AUTO_INCREMENT PRIMARY KEY,
     supplier_order_id INT,
     item_id INT,
     quantity INT,
@@ -139,8 +138,6 @@ CREATE TABLE IF NOT EXISTS SupplierOrderPayment (
     payment_status ENUM ('Unpaid', 'Paid', 'Refunded'),
     FOREIGN KEY (supplier_order_id) REFERENCES SupplierOrderInfo (supplier_order_id)
 );
-    
-
     
 
 
