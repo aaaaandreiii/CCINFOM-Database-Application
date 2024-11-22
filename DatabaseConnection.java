@@ -796,6 +796,195 @@ public class DatabaseConnection {
     
 
 
+// MANUFACUTER CRUD FIXED?  
+public void createManufacturer(int manufacturer_id, String manufacturer_name, String address) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+
+            String sqlQueryStatement = "SELECT manufacturer_id FROM Manufacturer;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+                         
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO Manufacturer (manufacturer_id, manufacturer_name, address) VALUES (?, ?, ?);");
+                stmt.setInteger(2, manufacturer_name);
+                stmt.setString(3, address);
+
+
+
+
+                int rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Manufacturer Credentials inserted successfully!");
+                } else {
+                    System.out.println("Error inserting Manufacturer Credentials.");
+                }
+
+
+                stmt.close();
+                c.close();
+
+                // DIDNT CHANGE 
+                try {
+                    //create logincredentials first THEN create user
+                    stmt = null;
+                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
+                    stmt.setString(1, first_name);
+                    stmt.setString(2, last_name);
+                    stmt.setString(3, emailInput);
+                    stmt.setString(4, phone_number);
+                    stmt.setString(5, delivery_address);
+       
+                    rowsInserted = 0;
+                    rowsInserted = stmt.executeUpdate();
+                    if (rowsInserted > 0) {
+                        System.out.println("Customer info inserted successfully!");
+                    } else {
+                        System.out.println("Error inserting Customer info.");
+                    }
+       
+                    stmt.close();
+                    c.close();
+                } catch (SQLException e) {
+                    if (e instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("Error inserting Customer info.");
+                        // TODO: Handle the specific exception
+                        System.out.println("Foreign key constraint violation: " + e.getMessage());
+                    } else {
+                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+                    }
+                }
+
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error inserting Log In Credentials.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+
+    public void readManufacturer() {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM Manufacturer");
+            while (rs.next()) {
+                int manufacturer_id = rs.getInt("manufacturer_id");
+                String manufacturer_name = rs.getString("manufaturer_name");
+                String address = rs.getString("address");
+
+               
+                System.out.println(manufacturer_id + "\t" +
+                                   manufacturer_name + "\t" +
+                                   address  + "\t" +
+                                   );
+            }
+        } catch (SQLException e) {
+                System.out.println("Error displaying Manufacturer info.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+    }
+
+
+    public void updateManufacturer(int manufacturer_id, String manufacture_name, String address) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = null;
+
+
+            String sqlQueryStatement = "UPDATE manufacturer SET " + specifiedAttribute + " = ?  WHERE manufacturer_id = ?";
+
+
+            stmt = c.prepareStatement(sqlQueryStatement);
+           
+            stmt.setString(2, manufacturer_name);
+            stmt.setInt(3, address);
+
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Manufacturer info updated successfully!");
+            } else {
+                System.out.println("Error updating Manufacturer info.");
+            }
+
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Customer info.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+       
+        }
+    }
+
+
+    public void deleteManufacturer(int manufacturer_id) {
+        try {
+            //delete user first THEN logincredentials
+            String email = null;
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+
+            String sqlQueryStatement = "SELECT manufacturer_id FROM Manufacturer = " + idToDelete + ";";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+           
+            while (rs.next()) {
+                manufacturer_id = rs.getInteger("manufacturer_id");
+            }            
+
+
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM Manufacturer WHERE manufacturer_id = ?;");
+            stmt.setInt(1, manufacturer_id);
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Manufacturer data deleted successfully!");
+            } else {
+                System.out.println("Error deleting Manufacturer data.");
+            }
+           
+           /*
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
+            stmt.setString(1, email);
+
+
+            rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Log In Credentials deleted successfully!");
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+            }
+            */
+
+            stmt.close();
+            c.close();
+
+            //IDK WHAT DO WITH THIS
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error deleting Log In Credentials.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
 
 
 
