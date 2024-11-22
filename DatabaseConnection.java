@@ -2,6 +2,7 @@
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +32,8 @@ public class DatabaseConnection {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
-            ResultSet rs = queryStatement.executeQuery("SELECT * FROM customer WHERE customer_id = " + customer_id + ";");
+            String sqlQueryStatement = "SELECT * FROM customer WHERE customer_id = " + customer_id + ";";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
             while (rs.next()) {
                 userInfo.add(customer_id);                                  //int customer_id = rs.getInt("customer_id");
                 userInfo.add(rs.getString("first_name"));       //String first_name = rs.getString("first_name");
@@ -42,13 +44,12 @@ public class DatabaseConnection {
 
                 System.out.println("User found by ID!");
                 return userInfo;
-                
             }
         } catch (SQLException e) {
                 System.out.println("Error displaying customer info.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
         }
-        return null;
+        return userInfo;
     }
 
     public int findUserIdByEmail(String email) {
@@ -83,7 +84,7 @@ public class DatabaseConnection {
     }
 
     public ArrayList<Object> findUserByName(String first_name, String last_name) {
-        ArrayList<Object> userInfo = null;
+        ArrayList<Object> userInfo = new ArrayList<>();
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
@@ -116,7 +117,6 @@ public class DatabaseConnection {
     }
 
     public void createUser(String emailInput, String passwordInput, String first_name, String last_name, String phone_number, String delivery_address) {
-        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
 
@@ -174,30 +174,30 @@ public class DatabaseConnection {
         }
     }
 
-    public void readAllUsers() {        
+    public List<List<Object>> readAllUsers() {    
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM customer");
+            int i = 0;
             while (rs.next()) {
-                int customer_id = rs.getInt("customer_id");
-                String first_name = rs.getString("first_name");
-                String last_name = rs.getString("last_name");
-                String email = rs.getString("email");
-                String phone_number = rs.getString("phone_number");
-                String delivery_address = rs.getString("delivery_address");
-                
-                System.out.println(customer_id + "\t" + 
-                                   first_name + "\t" + 
-                                   last_name  + "\t" + 
-                                   email + "\t\t" + 
-                                   phone_number  + "\t" + 
-                                   delivery_address);
+                userInfo.get(i).add(rs.getInt("customer_id"));             // int customer_id = rs.getInt("customer_id");
+                userInfo.get(i).add(rs.getString("first_name"));           // String first_name = rs.getString("first_name");
+                userInfo.get(i).add(rs.getString("last_name"));            // String last_name = rs.getString("last_name");
+                userInfo.get(i).add(rs.getString("email"));                // String email = rs.getString("email");
+                userInfo.get(i).add(rs.getString("phone_number"));         // String phone_number = rs.getString("phone_number");
+                userInfo.get(i).add(rs.getString("delivery_address"));     // String delivery_address = rs.getString("delivery_address");
+                i++;
             }
+            return userInfo;
         } catch (SQLException e) {
-                System.out.println("Error displaying Customer info.");
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+            System.out.println("Error displaying Customer info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
     }
 
     public void updateUser(String specifiedAttribute, String valueToUpdate, int customer_id) {        
@@ -268,6 +268,12 @@ public class DatabaseConnection {
             } else {
                 System.out.println("Error deleting Log In Credentials.");
             }
+
+
+
+
+
+            
 
             stmt.close();
             c.close();
@@ -793,9 +799,6 @@ public class DatabaseConnection {
         }
     }
     
-
-
-    // MANUFACUTER CRUD FIXED?  
     public void createManufacturer(int manufacturer_id, String manufacturer_name, String address) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);

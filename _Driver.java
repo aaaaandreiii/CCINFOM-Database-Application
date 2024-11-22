@@ -2,6 +2,7 @@ import java.lang.ModuleLayer.Controller;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.text.View;
 
@@ -15,8 +16,18 @@ public class _Driver {
         }
     }
 
+    private static void printObject2DArray (List<List<Object>> array) {
+        for (int i = 0; i < array.size(); i++) {
+            for (int j = 0; j < array.get(i).size(); j++) {
+                System.out.print(array.get(i).get(j) + "\t");
+            }
+            System.out.println();
+        }
+    }
+
     public static void main (String[] args){
         ArrayList<Object> userInfo = null;
+        List<List<Object>> otherInfo = null;
         _View view;
         _Model model;
         _Controller controller;
@@ -30,16 +41,18 @@ public class _Driver {
         // // CRUD on users
         // jdbc.deleteLogInCredentials("andrei@balingit.com");
         // jdbc.createUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
-        // userID = jdbc.findUserIdByEmail("andrei@balingit.com");
-        
-        userInfo = jdbc.findUserById(userID);
-        printObjectArrayList(userInfo);
 
-        userInfo = null;
-        userInfo = jdbc.findUserByName("Andrei", "Balingit");
-        printObjectArrayList(userInfo);
+        // userID = jdbc.findUserIdByEmail("andrei@balingit.com");        
+        // userInfo = jdbc.findUserById(userID);
+        // printObjectArrayList(userInfo);
 
-        jdbc.readAllUsers();
+        // userInfo = null;
+        // userInfo = jdbc.findUserByName("Andrei", "Balingit");
+        // printObjectArrayList(userInfo);
+
+        otherInfo = null;
+        otherInfo = jdbc.readAllUsers();
+        printObject2DArray(otherInfo);
         // jdbc.updateUser("phone_number", "0912-345-6789", 1);
         // jdbc.deleteUser(1);
         // jdbc.deleteLogInCredentials("ching_man_wong@ching.man");
