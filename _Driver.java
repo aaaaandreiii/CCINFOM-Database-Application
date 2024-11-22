@@ -8,8 +8,15 @@ import javax.swing.text.View;
 public class _Driver {
     private static int userID = -1;
     private static int supplierID = -1;
-    public static void main (String[] args){
 
+    private static void printObjectArrayList (ArrayList<Object> array) {
+        for (Object information : array) {
+            System.out.printf(information + "\t");
+        }
+    }
+
+    public static void main (String[] args){
+        ArrayList<Object> userInfo = null;
         _View view;
         _Model model;
         _Controller controller;
@@ -25,16 +32,12 @@ public class _Driver {
         // jdbc.createUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
         // userID = jdbc.findUserIdByEmail("andrei@balingit.com");
         
-        ArrayList<Object> userInfo = jdbc.findUserById(userID);
-        for (Object information : userInfo) {
-            System.out.printf(information + "\t");
-        }
+        userInfo = jdbc.findUserById(userID);
+        printObjectArrayList(userInfo);
 
         userInfo = null;
         userInfo = jdbc.findUserByName("Andrei", "Balingit");
-        for (Object information : userInfo) {
-            System.out.printf(information + "\t");
-        }
+        printObjectArrayList(userInfo);
 
         jdbc.readAllUsers();
         // jdbc.updateUser("phone_number", "0912-345-6789", 1);

@@ -710,94 +710,93 @@ public class DatabaseConnection {
                 }
         }
     
-        public void updateOrder(String specifiedAttribute, String valueToUpdate, int customer_id) {        
-            try {
-                Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-                PreparedStatement stmt = null;
+    public void updateOrder(String specifiedAttribute, String valueToUpdate, int customer_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = null;
     
-                String sqlQueryStatement = "UPDATE customer SET " + specifiedAttribute + " = ?  WHERE customer_id = ?";
+            String sqlQueryStatement = "UPDATE customer SET " + specifiedAttribute + " = ?  WHERE customer_id = ?";
     
-                stmt = c.prepareStatement(sqlQueryStatement);
+            stmt = c.prepareStatement(sqlQueryStatement);
                 
-                stmt.setString(1, valueToUpdate);
-                stmt.setInt(2, customer_id);
+            stmt.setString(1, valueToUpdate);
+            stmt.setInt(2, customer_id);
     
-                int rowsInserted = 0;
-                rowsInserted = stmt.executeUpdate();
-                if (rowsInserted > 0) {
-                    System.out.println("Customer info updated successfully!");
-                } else {
-                    System.out.println("Error updating Customer info.");
-                }
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Customer info updated successfully!");
+            } else {
+                System.out.println("Error updating Customer info.");
+            }
     
-                stmt.close();
-                c.close();
-            } catch (SQLException e) {
-                if (e instanceof SQLIntegrityConstraintViolationException) {
-                    System.out.println("Error updating Customer info.");
-                    // TODO: Handle the specific exception
-                    System.out.println(e.getMessage());
-                } else {
-                    Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                }
-            
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Customer info.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
+    }
     
-        public void deleteOrder(int idToDelete) {
-            try {
-                //delete user first THEN logincredentials 
-                String email = null;
-                Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-                java.sql.Statement queryStatement = c.createStatement();
+    public void deleteOrder(int idToDelete) {
+        try {
+            //delete user first THEN logincredentials 
+            String email = null;
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
     
-                String sqlQueryStatement = "SELECT email FROM customer WHERE customer_id = " + idToDelete + ";";
-                ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            String sqlQueryStatement = "SELECT email FROM customer WHERE customer_id = " + idToDelete + ";";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
                 
-                while (rs.next()) {
-                    email = rs.getString("email");
-                }            
+            while (rs.next()) {
+                email = rs.getString("email");
+            }            
     
-                PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
-                stmt.setInt(1, idToDelete);
-                int rowsDeleted = stmt.executeUpdate();
-                if (rowsDeleted > 0) {
-                    System.out.println("Customer data deleted successfully!");
-                } else {
-                    System.out.println("Error deleting Customer data.");
-                }
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
+            stmt.setInt(1, idToDelete);
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Customer data deleted successfully!");
+            } else {
+                System.out.println("Error deleting Customer data.");
+            }
                 
-                stmt = null;
-                stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-                stmt.setString(1, email);
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
+            stmt.setString(1, email);
     
-                rowsDeleted = 0;
-                rowsDeleted = stmt.executeUpdate();
-                if (rowsDeleted > 0) {
-                    System.out.println("Log In Credentials deleted successfully!");
-                } else {
-                    System.out.println("Error deleting Log In Credentials.");
-                }
+            rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Log In Credentials deleted successfully!");
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+            }
     
-                stmt.close();
-                c.close();
+            stmt.close();
+            c.close();
     
-            } catch (SQLException e) {
-                if (e instanceof SQLIntegrityConstraintViolationException) {
-                    System.out.println("Error deleting Log In Credentials.");
-                    // TODO: Handle the specific exception
-                    System.out.println("Foreign key constraint violation: " + e.getMessage());
-                } else {
-                    System.out.println("Error deleting Log In Credentials.");
-                    Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                }
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error deleting Log In Credentials.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
+    }
     
 
 
-// MANUFACUTER CRUD FIXED?  
-public void createManufacturer(int manufacturer_id, String manufacturer_name, String address) {
+    // MANUFACUTER CRUD FIXED?  
+    public void createManufacturer(int manufacturer_id, String manufacturer_name, String address) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
@@ -806,55 +805,19 @@ public void createManufacturer(int manufacturer_id, String manufacturer_name, St
             String sqlQueryStatement = "SELECT manufacturer_id FROM Manufacturer;";
             ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
                          
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO Manufacturer (manufacturer_id, manufacturer_name, address) VALUES (?, ?, ?);");
-                stmt.setInteger(2, manufacturer_name);
-                stmt.setString(3, address);
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO Manufacturer (manufacturer_name, address) VALUES (?, ?);");
+            stmt.setString(1, manufacturer_name);
+            stmt.setString(2, address);
 
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Manufacturer Credentials inserted successfully!");
+            } else {
+                System.out.println("Error inserting Manufacturer Credentials.");
+            }
 
-
-
-                int rowsInserted = stmt.executeUpdate();
-                if (rowsInserted > 0) {
-                    System.out.println("Manufacturer Credentials inserted successfully!");
-                } else {
-                    System.out.println("Error inserting Manufacturer Credentials.");
-                }
-
-
-                stmt.close();
-                c.close();
-
-                // DIDNT CHANGE 
-                try {
-                    //create logincredentials first THEN create user
-                    stmt = null;
-                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-                    stmt.setString(1, first_name);
-                    stmt.setString(2, last_name);
-                    stmt.setString(3, emailInput);
-                    stmt.setString(4, phone_number);
-                    stmt.setString(5, delivery_address);
-       
-                    rowsInserted = 0;
-                    rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("Customer info inserted successfully!");
-                    } else {
-                        System.out.println("Error inserting Customer info.");
-                    }
-       
-                    stmt.close();
-                    c.close();
-                } catch (SQLException e) {
-                    if (e instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("Error inserting Customer info.");
-                        // TODO: Handle the specific exception
-                        System.out.println("Foreign key constraint violation: " + e.getMessage());
-                    } else {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-
+            stmt.close();
+            c.close();
 
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
@@ -867,8 +830,7 @@ public void createManufacturer(int manufacturer_id, String manufacturer_name, St
         }
     }
 
-
-    public void readManufacturer() {        
+    public void readAllManufacturers() {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
@@ -877,34 +839,28 @@ public void createManufacturer(int manufacturer_id, String manufacturer_name, St
                 int manufacturer_id = rs.getInt("manufacturer_id");
                 String manufacturer_name = rs.getString("manufaturer_name");
                 String address = rs.getString("address");
-
                
                 System.out.println(manufacturer_id + "\t" +
                                    manufacturer_name + "\t" +
-                                   address  + "\t" +
-                                   );
+                                   address);
             }
         } catch (SQLException e) {
                 System.out.println("Error displaying Manufacturer info.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+        }
     }
 
 
-    public void updateManufacturer(int manufacturer_id, String manufacture_name, String address) {        
+    public void updateManufacturer(String specifiedAttribute, String valueToUpdate, int manufacturer_id) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = null;
 
-
             String sqlQueryStatement = "UPDATE manufacturer SET " + specifiedAttribute + " = ?  WHERE manufacturer_id = ?";
-
-
             stmt = c.prepareStatement(sqlQueryStatement);
-           
-            stmt.setString(2, manufacturer_name);
-            stmt.setInt(3, address);
-
+            
+            stmt.setString(1, valueToUpdate);
+            stmt.setInt(2, manufacturer_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
@@ -914,9 +870,9 @@ public void createManufacturer(int manufacturer_id, String manufacturer_name, St
                 System.out.println("Error updating Manufacturer info.");
             }
 
-
             stmt.close();
             c.close();
+
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Customer info.");
@@ -929,51 +885,21 @@ public void createManufacturer(int manufacturer_id, String manufacturer_name, St
         }
     }
 
-
-    public void deleteManufacturer(int manufacturer_id) {
+    public void deleteManufacturer(int idToDelete) {
         try {
-            //delete user first THEN logincredentials
-            String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT manufacturer_id FROM Manufacturer = " + idToDelete + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-           
-            while (rs.next()) {
-                manufacturer_id = rs.getInteger("manufacturer_id");
-            }            
-
-
             PreparedStatement stmt = c.prepareStatement("DELETE FROM Manufacturer WHERE manufacturer_id = ?;");
-            stmt.setInt(1, manufacturer_id);
+            stmt.setInt(1, idToDelete);
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Manufacturer data deleted successfully!");
             } else {
                 System.out.println("Error deleting Manufacturer data.");
             }
-           
-           /*
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
-
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
-            }
-            */
 
             stmt.close();
             c.close();
 
-            //IDK WHAT DO WITH THIS
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error deleting Log In Credentials.");
