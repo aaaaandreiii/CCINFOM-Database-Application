@@ -1,6 +1,7 @@
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,79 +26,143 @@ public class DatabaseConnection {
         }   
     }
 
-    public void createUser(String emailInput, String passwordInput, String first_name, String last_name, String phone_number, String delivery_address) {
-        
+    public ArrayList<Object> findUserById(int customer_id) {
+        ArrayList<Object> userInfo = new ArrayList<>();
         try {
-            String duplicateEmail = null;
-            boolean userAlready = false;
-
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM customer WHERE customer_id = " + customer_id + ";");
+            while (rs.next()) {
+                userInfo.add(customer_id);                                  //int customer_id = rs.getInt("customer_id");
+                userInfo.add(rs.getString("first_name"));       //String first_name = rs.getString("first_name");
+                userInfo.add(rs.getString("last_name"));        //String last_name = rs.getString("last_name");
+                userInfo.add(rs.getString("email"));            //String email = rs.getString("email");
+                userInfo.add(rs.getString("phone_number"));     //String phone_number = rs.getString("phone_number");
+                userInfo.add(rs.getString("delivery_address")); //String delivery_address = rs.getString("delivery_address");
 
-            String sqlQueryStatement = "SELECT email FROM customer;";
+                System.out.println("User found by ID!");
+                return userInfo;
+                
+            }
+        } catch (SQLException e) {
+                System.out.println("Error displaying customer info.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
+    }
+
+    public int findUserIdByEmail(String email) {
+        int customer_id = -1;
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = "SELECT customer_id FROM customer WHERE email = '" + email + "';";
             ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
             
             while (rs.next()) {
-                emailInput = rs.getString("email");
-                
-                if (emailInput.equals(duplicateEmail)){
-                    userAlready = true;
+                customer_id = rs.getInt("customer_id");
+            }
+            rs.close();
+            c.close();
+
+            System.out.println("Account " + email + " has a user ID of: " + customer_id);
+            return customer_id;
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error finding user by email.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+
+        return customer_id;
+    }
+
+    public ArrayList<Object> findUserByName(String first_name, String last_name) {
+        ArrayList<Object> userInfo = null;
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM customer WHERE first_name = '" + first_name + "' AND last_name = '" + last_name + "';");
+            while (rs.next()) {
+                userInfo.add(rs.getInt("customer_id"));             // int customer_id = rs.getInt("customer_id");
+                userInfo.add(rs.getString("first_name"));           // String first_name = rs.getString("first_name");
+                userInfo.add(rs.getString("last_name"));            // String last_name = rs.getString("last_name");
+                userInfo.add(rs.getString("email"));                // String email = rs.getString("email");
+                userInfo.add(rs.getString("phone_number"));         // String phone_number = rs.getString("phone_number");
+                userInfo.add(rs.getString("delivery_address"));     // String delivery_address = rs.getString("delivery_address");
+            }
+
+            System.out.println("User found by name!");
+            return userInfo;
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error finding user by email.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+
+        return userInfo;
+    }
+
+    public void createUser(String emailInput, String passwordInput, String first_name, String last_name, String phone_number, String delivery_address) {
+        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO LoginCredentials (email, password) VALUES (?, ?);");
+            stmt.setString(1, emailInput);
+            stmt.setString(2, passwordInput);
+
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Log In Credentials inserted successfully!");
+            } else {
+                System.out.println("Error inserting Log In Credentials.");
+            }
+
+            try {
+                //create logincredentials first THEN create user
+                //TODO create user sign up GUI
+                stmt = null;
+        
+                stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
+                stmt.setString(1, first_name);
+                stmt.setString(2, last_name);
+                stmt.setString(3, emailInput);
+                stmt.setString(4, phone_number);
+                stmt.setString(5, delivery_address);
+        
+                rowsInserted = 0;
+                rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Customer info inserted successfully!");
+                } else {
+                    System.out.println("Error inserting Customer info.");
+                }
+        
+                stmt.close();
+                c.close();
+            } catch (SQLException e) {
+                if (e instanceof SQLIntegrityConstraintViolationException) {
+                    System.out.println("Error inserting Customer info.");
+                    // TODO: Handle the specific exception
+                    System.out.println("Foreign key constraint violation: " + e.getMessage());
+                } else {
+                    Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
             
-            if (!userAlready) {
-                //create logincredentials first THEN create user
-                //TODO create user sign up GUI
-                
-                PreparedStatement stmt = c.prepareStatement("INSERT INTO LoginCredentials (email, password) VALUES (?, ?);");
-                stmt.setString(1, emailInput);
-                stmt.setString(2, passwordInput);
-
-                int rowsInserted = stmt.executeUpdate();
-                if (rowsInserted > 0) {
-                    System.out.println("Log In Credentials inserted successfully!");
-                } else {
-                    System.out.println("Error inserting Log In Credentials.");
-                }
-
-                stmt.close();
-                c.close();
-
-                try {
-                    //create logincredentials first THEN create user
-                    //TODO create user sign up GUI
-                    stmt = null;
-        
-                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-                    stmt.setString(1, first_name);
-                    stmt.setString(2, last_name);
-                    stmt.setString(3, emailInput);
-                    stmt.setString(4, phone_number);
-                    stmt.setString(5, delivery_address);
-        
-                    rowsInserted = 0;
-                    rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("Customer info inserted successfully!");
-                    } else {
-                        System.out.println("Error inserting Customer info.");
-                    }
-        
-                    stmt.close();
-                    c.close();
-                } catch (SQLException e) {
-                    if (e instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("Error inserting Customer info.");
-                        // TODO: Handle the specific exception
-                        System.out.println("Foreign key constraint violation: " + e.getMessage());
-                    } else {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-            } else {
-                System .out.println("Your email is already registered as a user! Try logging in instead?");
-            }
-
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error inserting Log In Credentials.");
@@ -109,7 +174,7 @@ public class DatabaseConnection {
         }
     }
 
-    public void readUser() {        
+    public void readAllUsers() {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
@@ -219,7 +284,7 @@ public class DatabaseConnection {
         }
     }
 
-    public void deletLogInCredentials(String email) {
+    public void deleteLogInCredentials(String email) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
@@ -346,7 +411,7 @@ public class DatabaseConnection {
         }
     }
 
-    public void readSupplier() {        
+    public void readAllSuppliers() {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();

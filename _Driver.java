@@ -1,12 +1,13 @@
 import java.lang.ModuleLayer.Controller;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import javax.swing.text.View;
 
 public class _Driver {
-    int userID = -1;
-    int supplierID = -1;
+    private static int userID = -1;
+    private static int supplierID = -1;
     public static void main (String[] args){
 
         _View view;
@@ -20,18 +21,32 @@ public class _Driver {
         //TODO store userID during runtime, getUserID probably after logIn or signUp
 
         // // CRUD on users
+        // jdbc.deleteLogInCredentials("andrei@balingit.com");
         // jdbc.createUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
-        // jdbc.readUser();
+        // userID = jdbc.findUserIdByEmail("andrei@balingit.com");
+        
+        ArrayList<Object> userInfo = jdbc.findUserById(userID);
+        for (Object information : userInfo) {
+            System.out.printf(information + "\t");
+        }
+
+        userInfo = null;
+        userInfo = jdbc.findUserByName("Andrei", "Balingit");
+        for (Object information : userInfo) {
+            System.out.printf(information + "\t");
+        }
+
+        jdbc.readAllUsers();
         // jdbc.updateUser("phone_number", "0912-345-6789", 1);
-        jdbc.deleteUser(1);
-        jdbc.deletLogInCredentials("ching_man_wong@ching.man");
+        // jdbc.deleteUser(1);
+        // jdbc.deleteLogInCredentials("ching_man_wong@ching.man");
 
         // // CRUD on Supplier
         // // need to create regular user account first before becoming a supplier
         // jdbc.createUser("ching_man_wong@ching.man", "ching", "Ching Man", "Wong", "0912-345-789", "Pasay City");
         // BigDecimal supplier_rating = new BigDecimal(5);
         // jdbc.createSupplier(3, supplier_rating);
-        // jdbc.readSupplier();
+        // jdbc.readAllSuppliers();
         // jdbc.updateSupplier("address", "Pasay City   ", 2);
         // jdbc.deleteSupplier(3);
         // // CRUD on Manufacturer
