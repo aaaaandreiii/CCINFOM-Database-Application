@@ -915,6 +915,778 @@ public class DatabaseConnection {
         }
     }
 
+//Inventory CRUD
+public void createInventory(int inventory_id, int item_id, int supplier_id, int quantity, BigDecimal price) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+
+            String sqlQueryStatement = "SELECT inventory_id FROM Inventory;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+                         
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO Inventory (item_id, supplier_id, quantity, price) VALUES (?, ?, ?, ?);");
+                stmt.setString(1, item_id);
+                stmt.setString(2, supplier_id);
+                stmt.setInteger(3, quantity);
+                stmt.setBigDecimal(4, price);
+
+
+
+
+                int rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Item inserted into Inventory successfully!");
+                } else {
+                    System.out.println("Error inserting Item in the Inventory Credentials.");
+                }
+
+
+                stmt.close();
+                c.close();
+
+                //DIDNT CHANGE
+                try {
+                    //create logincredentials first THEN create user
+                    stmt = null;
+                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
+                    stmt.setString(1, first_name);
+                    stmt.setString(2, last_name);
+                    stmt.setString(3, emailInput);
+                    stmt.setString(4, phone_number);
+                    stmt.setString(5, delivery_address);
+       
+                    rowsInserted = 0;
+                    rowsInserted = stmt.executeUpdate();
+                    if (rowsInserted > 0) {
+                        System.out.println("Customer info inserted successfully!");
+                    } else {
+                        System.out.println("Error inserting Customer info.");
+                    }
+       
+                    stmt.close();
+                    c.close();
+                } catch (SQLException e) {
+                    if (e instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("Error inserting Customer info.");
+                        // TODO: Handle the specific exception
+                        System.out.println("Foreign key constraint violation: " + e.getMessage());
+                    } else {
+                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+                    }
+                }
+
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error inserting Log In Credentials.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+
+    public void readInventory() {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM Inventory");
+            while (rs.next()) {
+                int inventory_entry_id = rs.getInt("inventory_entry_id");
+                int item_id = rs.getString("item_id");
+                int supplier_id = rs.getString("lsupplier_id");
+                int quantity = rs.getString("quantity");
+                BigDecimal price = rs.getString("price");
+               
+                System.out.println(inventory_entry_id + "\t" +
+                                   item_id + "\t" +
+                                   supplier_id  + "\t" +
+                                   quantity + "\t" +
+                                   price);
+            }
+        } catch (SQLException e) {
+                System.out.println("Error displaying Customer info.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+    }
+
+
+    public void updateInventory(int inventory_entry_id, int item_id, int supplier_id, int quantity, BigDecimal price) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = null;
+
+
+            String sqlQueryStatement = "UPDATE Inventory SET " + specifiedAttribute + " = ?  WHERE inventory_entry_id = ?";
+            //Question will this statement make sure that a supplier cant update another supplier's inventory?
+
+            stmt = c.prepareStatement(sqlQueryStatement);
+
+            stmt.setInt(2, item_id);
+            stmt.setInt(4, quantity);
+            stmt.setBigDecimal(5, price);
+
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Inventory info updated successfully!");
+            } else {
+                System.out.println("Error updating Inventory info.");
+            }
+
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Inventory info.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+       
+        }
+    }
+
+
+    public void deleteInventory(int inventory_entry_id) {
+        try {
+            //delete user first THEN logincredentials
+            String email = null;
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+
+            String sqlQueryStatement = "SELECT inventory_entry_id FROM Inventory WHERE supplier_id = " + idToDelete + ";";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+           
+            while (rs.next()) {
+                inventory_entry_id = rs.getInt("inventory_entry_id");
+            }            
+
+
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM Inventory WHERE inventory_entry_id = ?;");
+            stmt.setInt(1, inventory_entry_id);
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Inventory data deleted successfully!");
+            } else {
+                System.out.println("Error deleting Inventory data.");
+            }
+           
+           /*
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
+            stmt.setString(1, email);
+
+
+            rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Log In Credentials deleted successfully!");
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+            }
+            */
+
+            stmt.close();
+            c.close();
+
+        // DIDNT CHANGE
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error deleting Log In Credentials.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+
+// Whislist
+public void createWhislist(int wishlist_id, int customer_id, int inventory_entry_id) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+
+            String sqlQueryStatement = "SELECT wishlist_id FROM Wishlist;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+                         
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO Wishlist (customer_id, inventory_entry_id) VALUES (?, ?);");
+                stmt.setInt(2, inventory_entry_id)
+
+
+
+
+
+                int rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Inventory inserted successfully!");
+                } else {
+                    System.out.println("Error inserting Inventory.");
+                }
+
+
+                stmt.close();
+                c.close();
+
+                //DIDNT CHANGE
+                try {
+                    //create logincredentials first THEN create user
+                    stmt = null;
+                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
+                    stmt.setString(1, first_name);
+                    stmt.setString(2, last_name);
+                    stmt.setString(3, emailInput);
+                    stmt.setString(4, phone_number);
+                    stmt.setString(5, delivery_address);
+       
+                    rowsInserted = 0;
+                    rowsInserted = stmt.executeUpdate();
+                    if (rowsInserted > 0) {
+                        System.out.println("Customer info inserted successfully!");
+                    } else {
+                        System.out.println("Error inserting Customer info.");
+                    }
+       
+                    stmt.close();
+                    c.close();
+                } catch (SQLException e) {
+                    if (e instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("Error inserting Customer info.");
+                        // TODO: Handle the specific exception
+                        System.out.println("Foreign key constraint violation: " + e.getMessage());
+                    } else {
+                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+                    }
+                }
+
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error inserting Log In Credentials.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+
+    public void readWishlist() {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM Wishlist");
+            while (rs.next()) {
+                int wishlist_id = rs.getInt("wishlist_id");
+                int customer_id = rs.getInt("customer_id");
+                int inventory_entry_id = rs.getInt("inventory_entry_id");
+               
+                System.out.println(wishlist_id + "\t" +
+                                   customer_id + "\t" +
+                                   inventory_entry_id);
+            }
+        } catch (SQLException e) {
+                System.out.println("Error displaying Inventory info.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+    }
+
+
+    public void updateWishlist(int wishlist_id, int customer_id, int inventory_entry_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = null;
+
+
+            String sqlQueryStatement = "UPDATE Wishlist SET " + specifiedAttribute + " = ?  WHERE wishlist_id = ?";
+
+
+            stmt = c.prepareStatement(sqlQueryStatement);
+           
+            //IDK IF NEED ISAMA CUSTOMER
+            stmt.setInt(2, customer_id);
+            stmt.setInt(3, inventory_entry_id);
+
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Wishlist updated successfully!");
+            } else {
+                System.out.println("Error updating Wishlist.");
+            }
+
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Wishlist info.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+       
+        }
+    }
+
+
+    public void deleteWishlist(int wishlist_id) {
+        try {
+            //delete user first THEN logincredentials
+            String email = null;
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+
+            String sqlQueryStatement = "SELECT wishlist_id FROM Wishlist WHERE customer_id = " + idToDelete + ";";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+           
+            while (rs.next()) {
+                wishlist_id = rs.getString("wishlist_id");
+            }            
+
+            
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM Wishlist WHERE wishlist_id = ?;");
+            stmt.setInt(1, wishlist_id);
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Wishlist deleted successfully!");
+            } else {
+                System.out.println("Error deleting Wishlist.");
+            }
+           
+            /*
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
+            stmt.setString(1, email);
+
+
+            rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Log In Credentials deleted successfully!");
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+            }
+            */
+
+            stmt.close();
+            c.close();
+
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error deleting Wishlist.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+
+//BuyerOrderInfo CRUD
+public void createBuyerOrderInfo(int buyer_order_information_id, int shoppingcart_id, LocalDate order_date, BigDecimal total_amount, String status ) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+
+            String sqlQueryStatement = "SELECT email FROM customer;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+                         
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO BuyerOrderInfo (shoppingcart_id, order_date, total_amount, status) VALUES (?, ?, ?, ?);");
+                stmt.setInt(1,shoppingcart_id);
+                stmt.setLocalDate(2, order_date);
+                stmt.setBigDecimal(3, total_amount);
+                stmt.setString(4, status);
+
+
+
+
+                int rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Buyer Order Information inserted successfully!");
+                } else {
+                    System.out.println("Error inserting Buyer Order Information.");
+                }
+
+
+                stmt.close();
+                c.close();
+
+                //DIDNT CHANGE
+                try {
+                    //create logincredentials first THEN create user
+                    stmt = null;
+                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
+                    stmt.setString(1, first_name);
+                    stmt.setString(2, last_name);
+                    stmt.setString(3, emailInput);
+                    stmt.setString(4, phone_number);
+                    stmt.setString(5, delivery_address);
+       
+                    rowsInserted = 0;
+                    rowsInserted = stmt.executeUpdate();
+                    if (rowsInserted > 0) {
+                        System.out.println("Customer info inserted successfully!");
+                    } else {
+                        System.out.println("Error inserting Customer info.");
+                    }
+       
+                    stmt.close();
+                    c.close();
+                } catch (SQLException e) {
+                    if (e instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("Error inserting Customer info.");
+                        // TODO: Handle the specific exception
+                        System.out.println("Foreign key constraint violation: " + e.getMessage());
+                    } else {
+                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+                    }
+                }
+
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error inserting Log In Credentials.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+
+    public void readBuyerOrderInfo() {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM BuyerOrderInfo");
+            while (rs.next()) {
+                int buyer_order_information_id = rs.getInt("buyer_order_information_id");
+                int shoppingcart_id = rs.getInt("shoppingcart_id");
+                LocalDate order_date = rs.getLocalDate("order_date");
+                BigDecimal total_amount = rs.getBigDecimal("total_amount");
+                String status = rs.getString("status");
+                
+               
+                System.out.println(buyer_order_information_id + "\t" +
+                                   shoppingcart_id + "\t" +
+                                   order_date  + "\t" +
+                                   total_amount + "\t" +
+                                   status);
+            }
+        } catch (SQLException e) {
+                System.out.println("Error displaying Buyer Order Information.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+    }
+
+
+    public void updateBuyerOrderInfo(int buyer_order_information_id, int shoppingcart_id, LocalDate order_date, BigDecimal total_amount, String status) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = null;
+
+
+            String sqlQueryStatement = "UPDATE BuyerOrderInfo SET " + specifiedAttribute + " = ?  WHERE buyer_order_information_id = ?";
+
+
+            stmt = c.prepareStatement(sqlQueryStatement);
+           
+            stmt.setInt(2, shoppingcart_id);
+            stmt.setLocalDate(3, order_date);
+            stmt.setBigDecmial(4, total_amount);
+            stmt.setString(5, status);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Buyer Order Information updated successfully!");
+            } else {
+                System.out.println("Error updating Buyer Order Information.");
+            }
+
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Buyer Order Information.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+       
+        }
+    }
+
+
+    public void deleteBuyerOrderInformation(int buyer_order_information_id) {
+        try {
+            //delete user first THEN logincredentials
+            String email = null;
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+
+            String sqlQueryStatement = "SELECT buyer_order_information_id FROM BuyerOrderInfo WHERE customer_id = " + idToDelete + ";";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+           
+            while (rs.next()) {
+                buyer_order_information_id = rs.getString("buyer_order_information_id");
+            }            
+
+
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM BuyerOrderInfo WHERE buyer_order_information_id = ?;");
+            stmt.setInt(1, buyer_order_information_id);
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Buyer Order Information deleted successfully!");
+            } else {
+                System.out.println("Error deleting Buyer Order Information.");
+            }
+           
+           /*
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
+            stmt.setString(1, email);
+
+
+            rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Log In Credentials deleted successfully!");
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+            }
+
+            */
+            stmt.close();
+            c.close();
+
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error deleting Log In Credentials.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+//BuyerOrderItem CRUD
+public void createBuyerOrderItem(int buyer_order_item_id, int buyer_order_information_id, BigDecimal price_at_order) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+
+            String sqlQueryStatement = "SELECT buyer_order_item_id FROM BuyerOrderItem;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+                         
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO BuyerOrderItem (buyer_order_information_id, price_at_order) VALUES (?, ?);");
+                stmt.setInt(1, buyer_order_information_id);
+                stmt.setBigDecimal(2, price_at_order);
+
+
+
+
+
+                int rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Buyer Order Item inserted successfully!");
+                } else {
+                    System.out.println("Error inserting Buyer Order Item.");
+                }
+
+
+                stmt.close();
+                c.close();
+
+                // DIDNT CHANGE
+                try {
+                    //create logincredentials first THEN create user
+                    stmt = null;
+                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
+                    stmt.setString(1, first_name);
+                    stmt.setString(2, last_name);
+                    stmt.setString(3, emailInput);
+                    stmt.setString(4, phone_number);
+                    stmt.setString(5, delivery_address);
+       
+                    rowsInserted = 0;
+                    rowsInserted = stmt.executeUpdate();
+                    if (rowsInserted > 0) {
+                        System.out.println("Customer info inserted successfully!");
+                    } else {
+                        System.out.println("Error inserting Customer info.");
+                    }
+       
+                    stmt.close();
+                    c.close();
+                } catch (SQLException e) {
+                    if (e instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("Error inserting Customer info.");
+                        // TODO: Handle the specific exception
+                        System.out.println("Foreign key constraint violation: " + e.getMessage());
+                    } else {
+                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+                    }
+                }
+
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error inserting Log In Credentials.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+
+    public void readBuyerOrderItem() {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM BuyerOrderItem");
+            while (rs.next()) {
+                int buyer_order_item_id = rs.getInt("buyer_order_item_id");
+                int buyer_order_information_id = rs.getInt("buyer_order_information_id");
+                BigDecimal price_at_order = rs.getBigDecimal("price_at_order");
+
+               
+                System.out.println(buyer_order_item_id + "\t" +
+                                   buyer_order_information_id + "\t" +
+                                   price_at_order);
+            }
+        } catch (SQLException e) {
+                System.out.println("Error displaying Buyer Order Item.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+    }
+
+
+    public void updateBuyerOrderItem(int buyer_order_item_id, int buyer_order_information_id, BigDecimal price_at_order) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = null;
+
+
+            String sqlQueryStatement = "UPDATE BuyerOrderItem SET " + specifiedAttribute + " = ?  WHERE buyer_order_item_id = ?";
+
+
+            stmt = c.prepareStatement(sqlQueryStatement);
+           
+            stmt.setInt(2, buyer_order_information_id);
+            stmt.setBigDecimal(3, price_at_order);
+
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Buyer Order Item updated successfully!");
+            } else {
+                System.out.println("Error updating Buyer Order Item.");
+            }
+
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Buyer Order Item.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+       
+        }
+    }
+
+
+    public void deleteBuyerOrderItem(int buyer_order_item_id) {
+        try {
+            //delete user first THEN logincredentials
+            String email = null;
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+
+            String sqlQueryStatement = "SELECT buyer_order_item_id FROM BuyerOrderItem = " + buyer_order_item_id + ";";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+           
+            while (rs.next()) {
+                buyer_order_item_id = rs.getString("buyer_order_item_id");
+            }            
+
+
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM BuyerOrderItem WHERE buyer_order_item_id = ?;");
+            stmt.setInt(1, buyer_order_item_id);
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Buyer Order Item deleted successfully!");
+            } else {
+                System.out.println("Error deleting Buyer Order Item.");
+            }
+            
+            /*
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
+            stmt.setString(1, email);
+
+
+            rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Log In Credentials deleted successfully!");
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+            }
+
+            */
+            stmt.close();
+            c.close();
+
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error deleting Log In Credentials.");
+                // TODO: Handle the specific exception
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
 
 
 
