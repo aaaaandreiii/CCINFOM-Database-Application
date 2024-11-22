@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import javax.swing.text.View;
 
 public class _Driver {
+    int userID = -1;
+    int supplierID = -1;
     public static void main (String[] args){
 
         _View view;
@@ -21,7 +23,8 @@ public class _Driver {
         // jdbc.createUser("andrei@balingit.com", "password", "Andrei", "Balingit", "0912-345-789", "Pasay City");
         // jdbc.readUser();
         // jdbc.updateUser("phone_number", "0912-345-6789", 1);
-        // jdbc.deleteUser(1);
+        jdbc.deleteUser(1);
+        jdbc.deletLogInCredentials("ching_man_wong@ching.man");
 
         // // CRUD on Supplier
         // // need to create regular user account first before becoming a supplier
@@ -29,8 +32,8 @@ public class _Driver {
         // BigDecimal supplier_rating = new BigDecimal(5);
         // jdbc.createSupplier(3, supplier_rating);
         // jdbc.readSupplier();
-        jdbc.updateSupplier("address", "Pasay City", 2);
-        // jdbc.deleteSupplier();
+        // jdbc.updateSupplier("address", "Pasay City   ", 2);
+        // jdbc.deleteSupplier(3);
         // // CRUD on Manufacturer
 
         // // CRUD on item entities

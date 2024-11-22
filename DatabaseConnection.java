@@ -28,59 +28,79 @@ public class DatabaseConnection {
     public void createUser(String emailInput, String passwordInput, String first_name, String last_name, String phone_number, String delivery_address) {
         
         try {
-            //create logincredentials first THEN create user
-            //TODO create user sign up GUI
+            String duplicateEmail = null;
+            boolean userAlready = false;
+
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO LoginCredentials (email, password) VALUES (?, ?);");
-            stmt.setString(1, emailInput);
-            stmt.setString(2, passwordInput);
+            java.sql.Statement queryStatement = c.createStatement();
 
-            int rowsInserted = stmt.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("Log In Credentials inserted successfully!");
-            } else {
-                System.out.println("Error inserting Log In Credentials.");
+            String sqlQueryStatement = "SELECT email FROM customer;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            
+            while (rs.next()) {
+                emailInput = rs.getString("email");
+                
+                if (emailInput.equals(duplicateEmail)){
+                    userAlready = true;
+                }
             }
+            
+            if (!userAlready) {
+                //create logincredentials first THEN create user
+                //TODO create user sign up GUI
+                
+                PreparedStatement stmt = c.prepareStatement("INSERT INTO LoginCredentials (email, password) VALUES (?, ?);");
+                stmt.setString(1, emailInput);
+                stmt.setString(2, passwordInput);
 
-            stmt.close();
-            c.close();
+                int rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Log In Credentials inserted successfully!");
+                } else {
+                    System.out.println("Error inserting Log In Credentials.");
+                }
 
-        } catch (SQLException e) {
-            if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Log In Credentials.");
-                // TODO: Handle the specific exception
-                System.out.println("Foreign key constraint violation: " + e.getMessage());
-            } else {
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
-        }
+                stmt.close();
+                c.close();
+
+                try {
+                    //create logincredentials first THEN create user
+                    //TODO create user sign up GUI
+                    stmt = null;
         
-        try {
-            //create logincredentials first THEN create user
-            //TODO create user sign up GUI
-            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = null;
-
-            stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-            stmt.setString(1, first_name);
-            stmt.setString(2, last_name);
-            stmt.setString(3, emailInput);
-            stmt.setString(4, phone_number);
-            stmt.setString(5, delivery_address);
-
-            int rowsInserted = 0;
-            rowsInserted = stmt.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("Customer info inserted successfully!");
+                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
+                    stmt.setString(1, first_name);
+                    stmt.setString(2, last_name);
+                    stmt.setString(3, emailInput);
+                    stmt.setString(4, phone_number);
+                    stmt.setString(5, delivery_address);
+        
+                    rowsInserted = 0;
+                    rowsInserted = stmt.executeUpdate();
+                    if (rowsInserted > 0) {
+                        System.out.println("Customer info inserted successfully!");
+                    } else {
+                        System.out.println("Error inserting Customer info.");
+                    }
+        
+                    stmt.close();
+                    c.close();
+                } catch (SQLException e) {
+                    if (e instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("Error inserting Customer info.");
+                        // TODO: Handle the specific exception
+                        System.out.println("Foreign key constraint violation: " + e.getMessage());
+                    } else {
+                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+                    }
+                }
             } else {
-                System.out.println("Error inserting Customer info.");
+                System .out.println("Your email is already registered as a user! Try logging in instead?");
             }
 
-            stmt.close();
-            c.close();
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Customer info.");
+                System.out.println("Error inserting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
@@ -199,6 +219,34 @@ public class DatabaseConnection {
         }
     }
 
+    public void deletLogInCredentials(String email) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
+            stmt.setString(1, email);
+
+            int rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Log In Credentials deleted successfully!");
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+            }
+
+            stmt.close();
+            c.close();
+
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error deleting Log In Credentials.");
+                System.out.println("Foreign key constraint violation: " + e.getMessage());
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
     //TODO Create findObjectById for all objects
     public void findSupplierById(int supplier_id) {
         try {
@@ -250,41 +298,43 @@ public class DatabaseConnection {
                 phone = rs.getString("phone_number");
                 address = rs.getString("delivery_address");
             }
+
             
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO Supplier (supplier_fname, supplier_lname, email, phone, address, supplier_rating) VALUES (?, ?, ?, ?, ?, ?);");
-            stmt.setString(1, supplier_fname);
-            stmt.setString(2, supplier_lname);
-            stmt.setString(3, email);
-            stmt.setString(4, phone);
-            stmt.setString(5, address);
-            stmt.setBigDecimal(6, supplier_rating);
+                PreparedStatement stmt = c.prepareStatement("INSERT INTO Supplier (supplier_fname, supplier_lname, email, phone, address, supplier_rating) VALUES (?, ?, ?, ?, ?, ?);");
+                stmt.setString(1, supplier_fname);
+                stmt.setString(2, supplier_lname);
+                stmt.setString(3, email);
+                stmt.setString(4, phone);
+                stmt.setString(5, address);
+                stmt.setBigDecimal(6, supplier_rating);
 
-            int rowsInserted = 0;
-            rowsInserted = stmt.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("Supplier info inserted successfully!");
-            } else {
-                System.out.println("Error inserting Supplier info.");
-            }
+                int rowsInserted = 0;
+                rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Supplier info inserted successfully!");
+                } else {
+                    System.out.println("Error inserting Supplier info.");
+                }
 
-            System.out.println("Newly created supplier: ");
-            queryStatement = null;
-            queryStatement = c.createStatement();
+                System.out.println("Newly created supplier: ");
+                queryStatement = null;
+                queryStatement = c.createStatement();
 
-            sqlQueryStatement = null;
-            sqlQueryStatement = "SELECT supplier_id FROM supplier WHERE email = " + email + ";";
-            
-            rs = null;
-            rs = queryStatement.executeQuery(sqlQueryStatement);
-            
-            while (rs.next()) {
-                supplier_id = rs.getInt("supplier_id");
-            }            
+                sqlQueryStatement = null;
+                sqlQueryStatement = "SELECT supplier_id FROM supplier WHERE email = " + email + ";";
+                
+                rs = null;
+                rs = queryStatement.executeQuery(sqlQueryStatement);
+                
+                while (rs.next()) {
+                    supplier_id = rs.getInt("supplier_id");
+                }            
 
-            findSupplierById(supplier_id);
+                findSupplierById(supplier_id);
 
-            stmt.close();
-            c.close();
+                stmt.close();
+                c.close();
+
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error inserting Supplier info.");
@@ -363,37 +413,14 @@ public class DatabaseConnection {
 
     public void deleteSupplier(int idToDelete) {
         try {
-            //delete user first THEN logincredentials 
-            String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-            String sqlQueryStatement = "SELECT email FROM customer WHERE customer_id = " + idToDelete + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-            
-            while (rs.next()) {
-                email = rs.getString("email");
-            }            
-
-            PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM supplier WHERE supplier_id = ?;");
             stmt.setInt(1, idToDelete);
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("Customer data deleted successfully!");
+                System.out.println("Supplier data deleted successfully!");
             } else {
-                System.out.println("Error deleting Customer data.");
-            }
-            
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
+                System.out.println("Error deleting Supplier data.");
             }
 
             stmt.close();
