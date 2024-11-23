@@ -639,7 +639,7 @@ public class DatabaseConnection {
         }
     }
 
-    public List<List<Object>> findSupplierByName(String name) {
+    public List<List<Object>> findItemByName(String name) {
         List<List<Object>> userInfo = new ArrayList<>();
         userInfo.add(new ArrayList<>());
         userInfo.add(new ArrayList<>());
@@ -1062,32 +1062,56 @@ public class DatabaseConnection {
         }
     }
 
-    public void findManufacturerById(int manufacturer_id) {
+    public ArrayList<Object> findManufacturerById(int manufacturer_id) {
+        ArrayList<Object> userInfo = new ArrayList<>();
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM Manufacturer WHERE manufacturer_id = " + manufacturer_id + ";");
             while (rs.next()) {
-                // int supplier_id = rs.getInt("supplier_id");
-                String supplier_fname = rs.getString("supplier_fname");
-                String supplier_lname = rs.getString("supplier_lname");
-                String email = rs.getString("email");
-                String phone = rs.getString("phone");
-                String address = rs.getString("address");
-                BigDecimal supplier_rating = rs.getBigDecimal("supplier_rating");
-                
-                System.out.println(supplier_id + "\t" + 
-                                    supplier_fname + "\t" + 
-                                    supplier_lname  + "\t" + 
-                                    email + "\t" + 
-                                    phone  + "\t" + 
-                                    address + "\t" +
-                                    supplier_rating);
+                userInfo.add(rs.getInt("manufacturer_id"));
+                userInfo.add(rs.getString("manufacturer_name"));
             }
+            System.out.println("Manufacturer found by ID!");
+            return userInfo;
+            
         } catch (SQLException e) {
-                System.out.println("Error displaying Supplier info.");
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println("Error displaying Manufacturer info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
         }
+    }
+
+    public List<List<Object>> findManufacturerByName(String manufacturer_name) {
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM Manufacturer WHERE manufacturer_name = '" + manufacturer_name + "';");
+            int i = 0;
+            while (rs.next()) {
+                userInfo.get(i).add(rs.getInt("manufacturer_id"));
+                userInfo.get(i).add(rs.getString("manufacturer_name"));
+                i++;
+            }
+
+            System.out.println("Manufacturer found by name!");
+            return userInfo;
+
+        } catch (SQLException e) {
+            System.out.println("Error finding Manufacturer by name.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+
+        return userInfo;
     }
     
     public void createManufacturer(int manufacturer_id, String manufacturer_name, String address) {
@@ -1986,7 +2010,7 @@ public void createSupplierOrderInfo(int supplier_order_information_id, int suppl
     }
 
 
-    public void updateSuplierOrderInfo(int supplier_order_information_id, int supplier_id, LocalDate order_date, int manufacturer_id, BigDecmimal total_amount) {        
+    public void updateSupplierOrderInfo(int supplier_order_information_id, int supplier_id, LocalDate order_date, int manufacturer_id, BigDecmimal total_amount) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = null;
@@ -2681,7 +2705,56 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
 
 
 
+    public List<List<Object>> supplierRecordManagement() {
+        List<List<Object>> supplierRecord = new ArrayList<>();
+        supplierRecord.add(new ArrayList<>());
+        supplierRecord.add(new ArrayList<>());
 
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+            String sqlQueryStatement = 
+                "SELECT " +
+                    "s.supplier_id, " +
+                    "CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS supplier_name, " +
+                    "s.email AS supplier_email, " + 
+                    "s.phone AS supplier_phone, " +
+                    "i.item_id, " +
+                    "i.name AS item_name, " +
+                    "i.description AS item_description, " +
+                    "inv.quantity AS inventory_quantity, " +
+                    "inv.price AS inventory_price" +
+                "FROM " +
+                    "Supplier s " +
+                "LEFT JOIN " +
+                    "Inventory inv ON s.supplier_id = inv.supplier_id " +
+                "LEFT JOIN " + 
+                    "Item i ON inv.item_id = i.item_id " + 
+                "ORDER BY " +
+                    "s.supplier_id, i.item_id;";
+
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                supplierRecord.get(i).add(rs.getInt("supplier_id"));
+                supplierRecord.get(i).add(rs.getString("supplier_name"));
+                supplierRecord.get(i).add(rs.getString("supplier_email"));
+                supplierRecord.get(i).add(rs.getString("supplier_phone"));
+                supplierRecord.get(i).add(rs.getInt("item_id"));
+                supplierRecord.get(i).add(rs.getString("item_name"));
+                supplierRecord.get(i).add(rs.getString("item_description"));
+                supplierRecord.get(i).add(rs.getInt("inventory_quantity"));
+                supplierRecord.get(i).add(rs.getBigDecimal("inventory_price"));
+                i++;
+            }
+            return supplierRecord;
+        } catch (SQLException e) {
+            System.out.println("Error getting Supplier Record Management.\n" + e.getMessage());
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }      
+    }
 
 
 
