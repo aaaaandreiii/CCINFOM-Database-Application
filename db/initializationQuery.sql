@@ -132,11 +132,11 @@ CREATE TABLE IF NOT EXISTS BuyerOrderPayment (
 -- Table 13: Supplier Order Payment
 CREATE TABLE IF NOT EXISTS SupplierOrderPayment (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
-    supplier_order_id INT,
+    supplier_order_information_id INT,
     payment_date DATE,
     payment_mode ENUM ('Cash on Delivery', 'Online Payment', 'Credit Card', 'Debit Card'),
     payment_status ENUM ('Unpaid', 'Paid', 'Refunded'),
-    FOREIGN KEY (supplier_order_id) REFERENCES SupplierOrderInfo (supplier_order_id)
+    FOREIGN KEY (supplier_order_information_id) REFERENCES SupplierOrderInfo (supplier_order_id)
 );
     
 
