@@ -1,6 +1,7 @@
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -83,20 +84,24 @@ public class DatabaseConnection {
         return customer_id;
     }
 
-    public ArrayList<Object> findUserByName(String first_name, String last_name) {
-        ArrayList<Object> userInfo = new ArrayList<>();
+    public List<List<Object>> findUserByName(String first_name, String last_name) {
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());
+
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
-
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM customer WHERE first_name = '" + first_name + "' AND last_name = '" + last_name + "';");
+            int i = 0;
             while (rs.next()) {
-                userInfo.add(rs.getInt("customer_id"));             // int customer_id = rs.getInt("customer_id");
-                userInfo.add(rs.getString("first_name"));           // String first_name = rs.getString("first_name");
-                userInfo.add(rs.getString("last_name"));            // String last_name = rs.getString("last_name");
-                userInfo.add(rs.getString("email"));                // String email = rs.getString("email");
-                userInfo.add(rs.getString("phone_number"));         // String phone_number = rs.getString("phone_number");
-                userInfo.add(rs.getString("delivery_address"));     // String delivery_address = rs.getString("delivery_address");
+                userInfo.get(i).add(rs.getInt("customer_id"));             // int customer_id = rs.getInt("customer_id");
+                userInfo.get(i).add(rs.getString("first_name"));           // String first_name = rs.getString("first_name");
+                userInfo.get(i).add(rs.getString("last_name"));            // String last_name = rs.getString("last_name");
+                userInfo.get(i).add(rs.getString("email"));                // String email = rs.getString("email");
+                userInfo.get(i).add(rs.getString("phone_number"));         // String phone_number = rs.getString("phone_number");
+                userInfo.get(i).add(rs.getString("delivery_address"));     // String delivery_address = rs.getString("delivery_address");
+                i++;
             }
 
             System.out.println("User found by name!");
@@ -234,7 +239,7 @@ public class DatabaseConnection {
         }
     }
 
-    public void deleteUser(int idToDelete) {
+    public void deleteUser(int userID_ToDelete) {
         try {
             //DELETE in this specific order
             //LogInCreds, Customer, ShoppingCart, Wishlist, BuyerOrderInfo, BuyerOrderItem
@@ -246,7 +251,7 @@ public class DatabaseConnection {
             java.sql.Statement queryStatement = c.createStatement();
 
             //shoppingcart_id for BuyerOrderInfo
-            String sqlQueryStatement = "SELECT shoppingcart_id FROM ShoppingCart WHERE customer_id = " + idToDelete + ";";
+            String sqlQueryStatement = "SELECT shoppingcart_id FROM ShoppingCart WHERE customer_id = " + userID_ToDelete + ";";
             ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
             while (rs.next()) {
                 shoppingcart_id = rs.getInt("shoppingcart_id");
@@ -263,7 +268,7 @@ public class DatabaseConnection {
 
             //email for LogInCredentials
             sqlQueryStatement = null;
-            sqlQueryStatement = "SELECT email FROM customer WHERE customer_id = " + idToDelete + ";";
+            sqlQueryStatement = "SELECT email FROM customer WHERE customer_id = " + userID_ToDelete + ";";
             rs = null;
             rs = queryStatement.executeQuery(sqlQueryStatement);
             while (rs.next()) {
@@ -283,7 +288,7 @@ public class DatabaseConnection {
             //DELETE Customer///////////////////////////////////////////////////////////
             stmt = null;
             stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
-            stmt.setInt(1, idToDelete);
+            stmt.setInt(1, userID_ToDelete);
             rowsDeleted = 0;
             rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
@@ -295,7 +300,7 @@ public class DatabaseConnection {
             //DELETE ShoppingCart///////////////////////////////////////////////////////////
             stmt = null;
             stmt = c.prepareStatement("DELETE FROM ShoppingCart WHERE customer_id = ?;");
-            stmt.setInt(1, idToDelete);
+            stmt.setInt(1, userID_ToDelete);
             rowsDeleted = 0;
             rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
@@ -307,7 +312,7 @@ public class DatabaseConnection {
             //DELETE Wishlist///////////////////////////////////////////////////////////
             stmt = null;
             stmt = c.prepareStatement("DELETE FROM Wishlist WHERE customer_id = ?;");
-            stmt.setInt(1, idToDelete);
+            stmt.setInt(1, userID_ToDelete);
             rowsDeleted = 0;
             rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
@@ -383,33 +388,66 @@ public class DatabaseConnection {
         }
     }
 
-    //TODO Create findObjectById for all objects
-    public void findSupplierById(int supplier_id) {
+    public ArrayList<Object> findSupplierById(int supplier_id) {
+        ArrayList<Object> userInfo = new ArrayList<>();
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM supplier WHERE supplier_id = " + supplier_id + ";");
             while (rs.next()) {
-                // int supplier_id = rs.getInt("supplier_id");
-                String supplier_fname = rs.getString("supplier_fname");
-                String supplier_lname = rs.getString("supplier_lname");
-                String email = rs.getString("email");
-                String phone = rs.getString("phone");
-                String address = rs.getString("address");
-                BigDecimal supplier_rating = rs.getBigDecimal("supplier_rating");
-                
-                System.out.println(supplier_id + "\t" + 
-                                    supplier_fname + "\t" + 
-                                    supplier_lname  + "\t" + 
-                                    email + "\t" + 
-                                    phone  + "\t" + 
-                                    address + "\t" +
-                                    supplier_rating);
+                userInfo.add(rs.getInt("supplier_id")); // int supplier_id = rs.getInt("supplier_id");
+                userInfo.add(rs.getString("supplier_fname")); //String supplier_fname = rs.getString("supplier_fname");
+                userInfo.add(rs.getString("supplier_lname")); //String supplier_lname = rs.getString("supplier_lname");
+                userInfo.add(rs.getString("supplier_id")); //String email = rs.getString("email");
+                userInfo.add(rs.getString("email")); //String phone = rs.getString("phone");
+                userInfo.add(rs.getString("address")); //String address = rs.getString("address");
+                userInfo.add(rs.getBigDecimal("supplier_rating")); //BigDecimal supplier_rating = rs.getBigDecimal("supplier_rating");
             }
+            System.out.println("Supplier found by ID!");
+            return userInfo;
+            
         } catch (SQLException e) {
-                System.out.println("Error displaying Supplier info.");
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println("Error displaying Supplier info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
         }
+    }
+
+    public List<List<Object>> findSupplierByName(String supplier_fname, String supplier_lname) {
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM Supplier WHERE supplier_fname = '" + supplier_fname + "' AND supplier_lname = '" + supplier_lname + "';");
+            int i = 0;
+            while (rs.next()) {
+                userInfo.get(i).add(rs.getInt("supplier_id")); // int supplier_id = rs.getInt("supplier_id");
+                userInfo.get(i).add(rs.getString("supplier_fname")); //String supplier_fname = rs.getString("supplier_fname");
+                userInfo.get(i).add(rs.getString("supplier_lname")); //String supplier_lname = rs.getString("supplier_lname");
+                userInfo.get(i).add(rs.getString("supplier_id")); //String email = rs.getString("email");
+                userInfo.get(i).add(rs.getString("email")); //String phone = rs.getString("phone");
+                userInfo.get(i).add(rs.getString("address")); //String address = rs.getString("address");
+                userInfo.get(i).add(rs.getBigDecimal("supplier_rating")); //BigDecimal supplier_rating = rs.getBigDecimal("supplier_rating");
+                i++;
+            }
+
+            System.out.println("Supplier found by name!");
+            return userInfo;
+
+        } catch (SQLException e) {
+            System.out.println("Error finding supplier by name.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+
+        return userInfo;
     }
 
     public void createSupplier(int customer_id, BigDecimal supplier_rating) {        
@@ -466,7 +504,9 @@ public class DatabaseConnection {
                     supplier_id = rs.getInt("supplier_id");
                 }            
 
+                //idk what this is for so im commenting it -andrei
                 findSupplierById(supplier_id);
+                //nvm this is such a cool qual of life method call
 
                 stmt.close();
                 c.close();
@@ -482,31 +522,32 @@ public class DatabaseConnection {
         }
     }
 
-    public void readAllSuppliers() {        
+    public List<List<Object>> readAllSuppliers() {
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());
+        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM supplier");
+            int i = 0;
             while (rs.next()) {
-                int supplier_id = rs.getInt("supplier_id");
-                String supplier_fname = rs.getString("supplier_fname");
-                String supplier_lname = rs.getString("supplier_lname");
-                String email = rs.getString("email");
-                String phone = rs.getString("phone");
-                String address = rs.getString("address");
-                BigDecimal supplier_rating = rs.getBigDecimal("supplier_rating");
-                
-                System.out.println(supplier_id + "\t" + 
-                                    supplier_fname + "\t" + 
-                                    supplier_lname  + "\t" + 
-                                    email + "\t" + 
-                                    phone  + "\t" + 
-                                    address + "\t" +
-                                    supplier_rating);
+                userInfo.get(i).add(rs.getInt("supplier_id"));   //int supplier_id = rs.getInt("supplier_id");
+                userInfo.get(i).add(rs.getString("supplier_fname"));   //String supplier_fname = rs.getString("supplier_fname");
+                userInfo.get(i).add(rs.getString("supplier_lname"));   //String supplier_lname = rs.getString("supplier_lname");
+                userInfo.get(i).add(rs.getString("email"));   //String email = rs.getString("email");
+                userInfo.get(i).add(rs.getString("phone"));   //String phone = rs.getString("phone");
+                userInfo.get(i).add(rs.getString("address"));   //String address = rs.getString("address");
+                userInfo.get(i).add(rs.getBigDecimal("supplier_id"));   //BigDecimal supplier_rating = rs.getBigDecimal("supplier_rating");
+                i++;
             }
+            return userInfo;
+
         } catch (SQLException e) {
-                System.out.println("Error displaying Supplier info.");
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println("Error displaying Supplier info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
         }
     }
 
@@ -547,11 +588,11 @@ public class DatabaseConnection {
         }
     }
 
-    public void deleteSupplier(int idToDelete) {
+    public void deleteSupplier(int supplierID_dToDelete) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = c.prepareStatement("DELETE FROM supplier WHERE supplier_id = ?;");
-            stmt.setInt(1, idToDelete);
+            stmt.setInt(1, supplierID_dToDelete);
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Supplier data deleted successfully!");
@@ -573,30 +614,75 @@ public class DatabaseConnection {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void createItemEntity(String name, int manufacturer_id, BigDecimal srp, String manufacturer, String description) {      
+    
+    public ArrayList<Object> findItemById(int item_id) {
+        ArrayList<Object> userInfo = new ArrayList<>();
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = null;
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM Item WHERE item_id = " + item_id + ";");
+            while (rs.next()) {
+                userInfo.add(rs.getInt("item_id"));
+                userInfo.add(rs.getString("name"));
+                userInfo.add(rs.getInt("manufacturer_id"));
+                userInfo.add(rs.getBigDecimal("srp"));
+                userInfo.add(rs.getBigDecimal("manu_price"));
+                userInfo.add(rs.getString("description"));
+            }
+            System.out.println("Item found by ID!");
+            return userInfo;
+            
+        } catch (SQLException e) {
+            System.out.println("Error displaying Item info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
+    }
 
-            stmt = c.prepareStatement("INSERT INTO Item (name, manufacturer_id, srp, manufacturer, description) VALUES (?, ?, ?, ?, ?);");
+    public List<List<Object>> findSupplierByName(String name) {
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM Item WHERE name = '" + name + "';");
+            int i = 0;
+            while (rs.next()) {
+                userInfo.get(i).add(rs.getInt("item_id"));
+                userInfo.get(i).add(rs.getString("name"));
+                userInfo.get(i).add(rs.getInt("manufacturer_id"));
+                userInfo.get(i).add(rs.getBigDecimal("srp"));
+                userInfo.get(i).add(rs.getBigDecimal("manu_price"));
+                userInfo.get(i).add(rs.getString("description"));
+                i++;
+            }
+
+            System.out.println("Item found by name!");
+            return userInfo;
+
+        } catch (SQLException e) {
+            System.out.println("Error finding item by name.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+
+        return userInfo;
+    }
+
+    public void createItemEntity(String name, int manufacturer_id, BigDecimal srp, BigDecimal manu_price, String description) {      
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO Item (name, manufacturer_id, srp, manu_price, description) VALUES (?, ?, ?, ?, ?);");
             stmt.setString(1, name);
             stmt.setInt(2, manufacturer_id);
             stmt.setBigDecimal(3, srp);
-            stmt.setString(4, manufacturer);
+            stmt.setBigDecimal(4, manu_price);
             stmt.setString(5, description);
 
             int rowsInserted = 0;
@@ -610,8 +696,8 @@ public class DatabaseConnection {
             stmt.close();
             c.close();
         } catch (SQLException e) {
+            System.out.println("Error inserting Item info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Item info.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
@@ -621,46 +707,39 @@ public class DatabaseConnection {
         }
     }
 
-    public void readItemEntity() {        
+    public List<List<Object>> readItemEntity() {  
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());
+      
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM item");
+            int i = 0;
             while (rs.next()) {
-                int item_id = rs.getInt("item_id");
-                String name = rs.getString("name");
-                int manufactturer_id = rs.getInt("manufacturer_id");
-                BigDecimal srp = rs.getBigDecimal("srp");
-                String manufacturer = rs.getString("manufacturer");
-                String description = rs.getString("description");
-                
-                System.out.println(item_id + "\t" + 
-                                    name + "\t" + 
-                                    manufactturer_id  + "\t" + 
-                                    srp + "\t\t" + 
-                                    manufacturer  + "\t" + 
-                                    description);
+                userInfo.get(i).add(rs.getInt("item_id"));   //int item_id = rs.getInt("item_id");
+                userInfo.get(i).add(rs.getInt("name"));   //String name = rs.getString("name");
+                userInfo.get(i).add(rs.getInt("manufacturer_id"));   //int manufactturer_id = rs.getInt("manufacturer_id");
+                userInfo.get(i).add(rs.getInt("srp"));   //BigDecimal srp = rs.getBigDecimal("srp");
+                userInfo.get(i).add(rs.getInt("manu_price"));   //String manu_price = rs.getString("manu_price");
+                userInfo.get(i).add(rs.getInt("description"));   //String description = rs.getString("description");
+                i++;
             }
+            return userInfo;
+
         } catch (SQLException e) {
-                System.out.println("Error displaying Customer info.");
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println("Error displaying Customer info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
         }
     }
 
     public void updateItemEntity(String specifiedAttribute, String valueToUpdate, int item_id) {    
-        //TODO if trying to edit id, DONT ALLOW
-        // if (!specifiedAttribute.equals(specifiedAttribute)){
-
-        // } else {
-        //     System.out.println("Please select another attribute to update");
-        // }
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = null;
-
-            String sqlQueryStatement = "UPDATE item SET " + specifiedAttribute + " = ?  WHERE item_id = ?";
-
-            stmt = c.prepareStatement(sqlQueryStatement);
+            String sqlQueryStatement = "UPDATE item SET " + specifiedAttribute + " = ?  WHERE item_id = " + item_id +";";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
             
             stmt.setString(1, valueToUpdate);
             stmt.setInt(2, item_id);
@@ -687,11 +766,73 @@ public class DatabaseConnection {
         }
     }
 
-    public void deleteItemEntity(int idToDelete) {
+    public void updateItemEntity(String specifiedAttribute, int valueToUpdate, int item_id) {    
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE item SET " + specifiedAttribute + " = ?  WHERE item_id = " + item_id +";";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setInt(1, valueToUpdate);
+            stmt.setInt(2, item_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Item info updated successfully!");
+            } else {
+                System.out.println("Error updating Item info.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Item info.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        
+        }
+    }
+
+    public void updateItemEntity(String specifiedAttribute, BigDecimal valueToUpdate, int item_id) {    
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE item SET " + specifiedAttribute + " = ?  WHERE item_id = " + item_id +";";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setBigDecimal(1, valueToUpdate);
+            stmt.setInt(2, item_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Item info updated successfully!");
+            } else {
+                System.out.println("Error updating Item info.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Item info.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        
+        }
+    }
+
+    public void deleteItemEntity(int itemID_ToDelete) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = c.prepareStatement("DELETE FROM Item WHERE item_id = ?;");
-            stmt.setInt(1, idToDelete);
+            stmt.setInt(1, itemID_ToDelete);
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Item data deleted successfully!");
@@ -714,26 +855,15 @@ public class DatabaseConnection {
         }
     }
 
-
     public void addToShoppingCart(int customer_id, int item_id, int quantity) {
         try {
             int supplier_id = -1;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            // INSERT INTO Wishlist (customer_id, item_id, supplier_id) VALUES
-            java.sql.Statement queryStatement = c.createStatement();
-
-            String sqlQueryStatement = "SELECT supplier_id FROM Inventory WHERE item_id = " + item_id + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
             
-            while (rs.next()) {
-                supplier_id = rs.getInt("supplier_id");
-            }
-
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO ShoppingCart (customer_id, item_id, quantity, supplier_id) VALUES (?, ?, ?, ?);");
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO ShoppingCart (customer_id, item_id, quantity) VALUES (?, ?, ?);");
             stmt.setInt(1, customer_id);
             stmt.setInt(2, item_id);
             stmt.setInt(3, quantity);
-            stmt.setInt(4, supplier_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
@@ -745,9 +875,10 @@ public class DatabaseConnection {
 
             stmt.close();
             c.close();
+
         } catch (SQLException e) {
+            System.out.println("Error adding item to cart.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error adding item to cart.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
@@ -756,32 +887,57 @@ public class DatabaseConnection {
         }
     }
 
-    public void readShoppingCart(int customer_id) {        
-            try {
-                Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-                java.sql.Statement queryStatement = c.createStatement();
-                ResultSet rs = queryStatement.executeQuery("SELECT * FROM ShoppingCart WHERE customer_id = " + customer_id + ";");
-                while (rs.next()) {
-                    String first_name = rs.getString("first_name");
-                    String last_name = rs.getString("last_name");
-                    String email = rs.getString("email");
-                    String phone_number = rs.getString("phone_number");
-                    String delivery_address = rs.getString("delivery_address");
-                    
-                    System.out.println(customer_id + "\t" + 
-                                       first_name + "\t" + 
-                                       last_name  + "\t" + 
-                                       email + "\t\t" + 
-                                       phone_number  + "\t" + 
-                                       delivery_address);
-                }
-            } catch (SQLException e) {
-                    System.out.println("Error displaying Customer info.");
-                    Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                }
+    public List<List<Object>> readShoppingCart(int shoppingcart_id) {
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());   
+        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM ShoppingCart WHERE shoppingcart_id = " + shoppingcart_id + ";");
+            int i = 0;
+            while (rs.next()) {
+                userInfo.get(i).add(rs.getInt("shoppingcart_id"));
+                userInfo.get(i).add(rs.getInt("customer_id")); 
+                userInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                userInfo.get(i).add(rs.getInt("quantity"));
+                i++;
+            }
+            return userInfo;
+        } catch (SQLException e) {
+            System.out.println("Error displaying Customer info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
         }
+    }
+
+    public List<List<Object>> readAllShoppingCarts() {
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());   
+        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM ShoppingCart;");
+            int i = 0;
+            while (rs.next()) {
+                userInfo.get(i).add(rs.getInt("shoppingcart_id"));
+                userInfo.get(i).add(rs.getInt("customer_id")); 
+                userInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                userInfo.get(i).add(rs.getInt("quantity"));
+                i++;
+            }
+            return userInfo;
+        } catch (SQLException e) {
+            System.out.println("Error displaying Customer info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
+    }
     
-    public void updateOrder(String specifiedAttribute, String valueToUpdate, int customer_id) {        
+    public void updateShoppingCart(String specifiedAttribute, String valueToUpdate, int customer_id) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = null;
@@ -813,54 +969,124 @@ public class DatabaseConnection {
             }
         }
     }
-    
-    public void deleteOrder(int idToDelete) {
+
+    public void updateShoppingCart(String specifiedAttribute, int valueToUpdate, int customer_id) {        
         try {
-            //delete user first THEN logincredentials 
-            String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
+            PreparedStatement stmt = null;
     
-            String sqlQueryStatement = "SELECT email FROM customer WHERE customer_id = " + idToDelete + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            String sqlQueryStatement = "UPDATE customer SET " + specifiedAttribute + " = ?  WHERE customer_id = ?";
+    
+            stmt = c.prepareStatement(sqlQueryStatement);
                 
-            while (rs.next()) {
-                email = rs.getString("email");
-            }            
+            stmt.setInt(1, valueToUpdate);
+            stmt.setInt(2, customer_id);
     
-            PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
-            stmt.setInt(1, idToDelete);
-            int rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Customer data deleted successfully!");
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Customer info updated successfully!");
             } else {
-                System.out.println("Error deleting Customer data.");
-            }
-                
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-    
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
+                System.out.println("Error updating Customer info.");
             }
     
             stmt.close();
             c.close();
-    
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error deleting Log In Credentials.");
+                System.out.println("Error updating Customer info.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+    public void updateShoppingCart(String specifiedAttribute, BigDecimal valueToUpdate, int customer_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = null;
+    
+            String sqlQueryStatement = "UPDATE customer SET " + specifiedAttribute + " = ?  WHERE customer_id = ?";
+    
+            stmt = c.prepareStatement(sqlQueryStatement);
+                
+            stmt.setBigDecimal(1, valueToUpdate);
+            stmt.setInt(2, customer_id);
+    
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Customer info updated successfully!");
+            } else {
+                System.out.println("Error updating Customer info.");
+            }
+    
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Customer info.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+    
+    public void deleteShoppingCartEntry(int shoppingCartID_ToDelete) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM ShoppingCart WHERE shoppingcart_id = ?;");
+            stmt.setInt(1, shoppingCartID_ToDelete);
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Item removed from Shopping Cart successfully!");
+            } else {
+                System.out.println("Error removing Item from Shopping Cart.");
+            }
+
+            stmt.close();
+            c.close();
+
+        } catch (SQLException e) {
+            System.out.println("Error removing Item from Shopping Cart.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
-                System.out.println("Error deleting Log In Credentials.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
+        }
+    }
+
+    public void findManufacturerById(int manufacturer_id) {
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM Manufacturer WHERE manufacturer_id = " + manufacturer_id + ";");
+            while (rs.next()) {
+                // int supplier_id = rs.getInt("supplier_id");
+                String supplier_fname = rs.getString("supplier_fname");
+                String supplier_lname = rs.getString("supplier_lname");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                BigDecimal supplier_rating = rs.getBigDecimal("supplier_rating");
+                
+                System.out.println(supplier_id + "\t" + 
+                                    supplier_fname + "\t" + 
+                                    supplier_lname  + "\t" + 
+                                    email + "\t" + 
+                                    phone  + "\t" + 
+                                    address + "\t" +
+                                    supplier_rating);
+            }
+        } catch (SQLException e) {
+                System.out.println("Error displaying Supplier info.");
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
         }
     }
     
@@ -888,8 +1114,8 @@ public class DatabaseConnection {
             c.close();
 
         } catch (SQLException e) {
+            System.out.println("Error inserting Manufacturer Credentials.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
@@ -898,23 +1124,28 @@ public class DatabaseConnection {
         }
     }
 
-    public void readAllManufacturers() {        
+    public List<List<Object>> readAllManufacturers() {  
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());
+      
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM Manufacturer");
+            int i = 0;
             while (rs.next()) {
-                int manufacturer_id = rs.getInt("manufacturer_id");
-                String manufacturer_name = rs.getString("manufaturer_name");
-                String address = rs.getString("address");
-               
-                System.out.println(manufacturer_id + "\t" +
-                                   manufacturer_name + "\t" +
-                                   address);
+                userInfo.get(i).add(rs.getInt("manufacturer_id"));   //int manufacturer_id = rs.getInt("manufacturer_id");
+                userInfo.get(i).add(rs.getInt("manufaturer_name"));   //String manufacturer_name = rs.getString("manufaturer_name");
+                userInfo.get(i).add(rs.getInt("address"));   //String address = rs.getString("address");
+                i++;
             }
+            return userInfo;
+
         } catch (SQLException e) {
-                System.out.println("Error displaying Manufacturer info.");
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println("Error displaying Manufacturer info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
         }
     }
 
@@ -942,8 +1173,8 @@ public class DatabaseConnection {
             c.close();
 
         } catch (SQLException e) {
+            System.out.println("Error updating Manufacturer info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error updating Customer info.");
                 // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
@@ -953,11 +1184,11 @@ public class DatabaseConnection {
         }
     }
 
-    public void deleteManufacturer(int idToDelete) {
+    public void deleteManufacturer(int manufactturer_id_ToDelete) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = c.prepareStatement("DELETE FROM Manufacturer WHERE manufacturer_id = ?;");
-            stmt.setInt(1, idToDelete);
+            stmt.setInt(1, manufactturer_id_ToDelete);
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Manufacturer data deleted successfully!");
@@ -969,82 +1200,38 @@ public class DatabaseConnection {
             c.close();
 
         } catch (SQLException e) {
+            System.out.println("Error deleting Manufacturer data.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error deleting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
-                System.out.println("Error deleting Log In Credentials.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
     }
 
-//Inventory CRUD
-public void createInventory(int inventory_id, int item_id, int supplier_id, int quantity, BigDecimal price) {
+    public void createInventory(int item_id, int supplier_id, int quantity, BigDecimal price) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT inventory_id FROM Inventory;";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-                         
             PreparedStatement stmt = c.prepareStatement("INSERT INTO Inventory (item_id, supplier_id, quantity, price) VALUES (?, ?, ?, ?);");
-                stmt.setString(1, item_id);
-                stmt.setString(2, supplier_id);
-                stmt.setInteger(3, quantity);
-                stmt.setBigDecimal(4, price);
+            stmt.setInt(1, item_id);
+            stmt.setInt(2, supplier_id);
+            stmt.setInt(3, quantity);
+            stmt.setBigDecimal(4, price);
 
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Item inserted into Inventory successfully!");
+            } else {
+                System.out.println("Error inserting into Inventory.");
+            }
 
-
-
-                int rowsInserted = stmt.executeUpdate();
-                if (rowsInserted > 0) {
-                    System.out.println("Item inserted into Inventory successfully!");
-                } else {
-                    System.out.println("Error inserting Item in the Inventory Credentials.");
-                }
-
-
-                stmt.close();
-                c.close();
-
-                //DIDNT CHANGE
-                try {
-                    //create logincredentials first THEN create user
-                    stmt = null;
-                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-                    stmt.setString(1, first_name);
-                    stmt.setString(2, last_name);
-                    stmt.setString(3, emailInput);
-                    stmt.setString(4, phone_number);
-                    stmt.setString(5, delivery_address);
-       
-                    rowsInserted = 0;
-                    rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("Customer info inserted successfully!");
-                    } else {
-                        System.out.println("Error inserting Customer info.");
-                    }
-       
-                    stmt.close();
-                    c.close();
-                } catch (SQLException e) {
-                    if (e instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("Error inserting Customer info.");
-                        // TODO: Handle the specific exception
-                        System.out.println("Foreign key constraint violation: " + e.getMessage());
-                    } else {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-
+            stmt.close();
+            c.close();
 
         } catch (SQLException e) {
+            System.out.println("Error inserting into Inventory.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
@@ -1053,47 +1240,38 @@ public void createInventory(int inventory_id, int item_id, int supplier_id, int 
         }
     }
 
-
-    public void readInventory() {        
+    public List<List<Object>> readInventory() {  
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());      
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM Inventory");
+            int i = 0;
             while (rs.next()) {
-                int inventory_entry_id = rs.getInt("inventory_entry_id");
-                int item_id = rs.getString("item_id");
-                int supplier_id = rs.getString("lsupplier_id");
-                int quantity = rs.getString("quantity");
-                BigDecimal price = rs.getString("price");
-               
-                System.out.println(inventory_entry_id + "\t" +
-                                   item_id + "\t" +
-                                   supplier_id  + "\t" +
-                                   quantity + "\t" +
-                                   price);
+                userInfo.get(i).add(rs.getInt("inventory_entry_id"));   //int inventory_entry_id = rs.getInt("inventory_entry_id");
+                userInfo.get(i).add(rs.getInt("item_id"));              //int item_id = rs.getInt("item_id");
+                userInfo.get(i).add(rs.getInt("lsupplier_id"));         //int supplier_id = rs.getInt("lsupplier_id");
+                userInfo.get(i).add(rs.getInt("quantity"));             //int quantity = rs.getInt("quantity");
+                userInfo.get(i).add(rs.getInt("price"));                //BigDecimal price = rs.getBigDecimal("price");
+                i++;
             }
+            return userInfo;
         } catch (SQLException e) {
                 System.out.println("Error displaying Customer info.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+                return null;
+        }
     }
 
-
-    public void updateInventory(int inventory_entry_id, int item_id, int supplier_id, int quantity, BigDecimal price) {        
+    public void updateInventory(String specifiedAttribute, BigDecimal valueToUpdate, int inventory_entry_id) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = null;
+            String sqlQueryStatement = "UPDATE Inventory SET " + specifiedAttribute + " = ?  WHERE inventory_entry_id = " + inventory_entry_id + ";";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
 
-
-            String sqlQueryStatement = "UPDATE Inventory SET " + specifiedAttribute + " = ?  WHERE inventory_entry_id = ?";
-            //Question will this statement make sure that a supplier cant update another supplier's inventory?
-
-            stmt = c.prepareStatement(sqlQueryStatement);
-
-            stmt.setInt(2, item_id);
-            stmt.setInt(4, quantity);
-            stmt.setBigDecimal(5, price);
-
+            stmt.setBigDecimal(1, valueToUpdate);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
@@ -1103,12 +1281,11 @@ public void createInventory(int inventory_id, int item_id, int supplier_id, int 
                 System.out.println("Error updating Inventory info.");
             }
 
-
             stmt.close();
             c.close();
         } catch (SQLException e) {
+            System.out.println("Error updating Inventory info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error updating Inventory info.");
                 // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
@@ -1118,22 +1295,41 @@ public void createInventory(int inventory_id, int item_id, int supplier_id, int 
         }
     }
 
-
-    public void deleteInventory(int inventory_entry_id) {
+    public void updateInventory(String specifiedAttribute, int valueToUpdate, int inventory_entry_id) {        
         try {
-            //delete user first THEN logincredentials
-            String email = null;
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE Inventory SET " + specifiedAttribute + " = ?  WHERE inventory_entry_id = " + inventory_entry_id + ";";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+
+            stmt.setInt(1, valueToUpdate);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Inventory info updated successfully!");
+            } else {
+                System.out.println("Error updating Inventory info.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating Inventory info.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+       
+        }
+    }
+
+    public void deleteInventory(int inventory_entry_id_ToDelete) {
+        try {
+            int inventory_entry_id = -1;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT inventory_entry_id FROM Inventory WHERE supplier_id = " + idToDelete + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-           
-            while (rs.next()) {
-                inventory_entry_id = rs.getInt("inventory_entry_id");
-            }            
-
 
             PreparedStatement stmt = c.prepareStatement("DELETE FROM Inventory WHERE inventory_entry_id = ?;");
             stmt.setInt(1, inventory_entry_id);
@@ -1143,102 +1339,41 @@ public void createInventory(int inventory_id, int item_id, int supplier_id, int 
             } else {
                 System.out.println("Error deleting Inventory data.");
             }
-           
-           /*
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
-
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
-            }
-            */
 
             stmt.close();
             c.close();
 
-        // DIDNT CHANGE
         } catch (SQLException e) {
+            System.out.println("Error deleting Inventory data.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error deleting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
-                System.out.println("Error deleting Log In Credentials.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
     }
 
-
-// Whislist
-public void createWhislist(int wishlist_id, int customer_id, int inventory_entry_id) {
+    public void createWishlist(int customer_id, int inventory_entry_id) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT wishlist_id FROM Wishlist;";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-                         
             PreparedStatement stmt = c.prepareStatement("INSERT INTO Wishlist (customer_id, inventory_entry_id) VALUES (?, ?);");
-                stmt.setInt(2, inventory_entry_id)
+            stmt.setInt(1, customer_id);
+            stmt.setInt(2, inventory_entry_id);
+            
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Wishlist inserted successfully!");
+            } else {
+                System.out.println("Error inserting into Wishlist.");
+            }
 
-
-
-
-
-                int rowsInserted = stmt.executeUpdate();
-                if (rowsInserted > 0) {
-                    System.out.println("Inventory inserted successfully!");
-                } else {
-                    System.out.println("Error inserting Inventory.");
-                }
-
-
-                stmt.close();
-                c.close();
-
-                //DIDNT CHANGE
-                try {
-                    //create logincredentials first THEN create user
-                    stmt = null;
-                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-                    stmt.setString(1, first_name);
-                    stmt.setString(2, last_name);
-                    stmt.setString(3, emailInput);
-                    stmt.setString(4, phone_number);
-                    stmt.setString(5, delivery_address);
-       
-                    rowsInserted = 0;
-                    rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("Customer info inserted successfully!");
-                    } else {
-                        System.out.println("Error inserting Customer info.");
-                    }
-       
-                    stmt.close();
-                    c.close();
-                } catch (SQLException e) {
-                    if (e instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("Error inserting Customer info.");
-                        // TODO: Handle the specific exception
-                        System.out.println("Foreign key constraint violation: " + e.getMessage());
-                    } else {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-
+            stmt.close();
+            c.close();
 
         } catch (SQLException e) {
+            System.out.println("Error inserting into Wishlist.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
