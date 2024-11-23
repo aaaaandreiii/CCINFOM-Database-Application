@@ -2890,12 +2890,15 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement()
-            String sqlQueryStatement = "SELECT c.customer_id, concat(c.first_name,' ',c.last_name) AS name, i.name AS item_name, sc.quantity FROM customer c LEFT JOIN shoppingcart sc ON c.customer_id = sc.customer_id LEFT JOIN inventory inv ON inv.inventory_entry_id = sc.inventory_entry_id LEFT JOIN item i ON i.item_id = inv.item_id;";
+            String sqlQueryStatement = "SELECT c.customer_id, concat(c.first_name,' ',c.last_name) AS name, c.email, c.phone_number, c.delivery_address, i.name AS item_name, sc.quantity FROM customer c LEFT JOIN shoppingcart sc ON c.customer_id = sc.customer_id LEFT JOIN inventory inv ON inv.inventory_entry_id = sc.inventory_entry_id LEFT JOIN item i ON i.item_id = inv.item_id;";
             ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
             int i = 0;
             while (rs.next()) {
                 customerRecord.get(i).add(rs.getInt("customer_id"));
                 customerRecord.get(i).add(rs.getString("name"));
+                customerRecord.get(i).add(rs.getString("email"));
+                customerRecord.get(i).add(rs.getString("phone_number"));
+                customerRecord.get(i).add(rs.getString("delivery_address"));
                 customerRecord.get(i).add(rs.getString("item_name"));
                 customerRecord.get(i).add(rs.getInt("quantity"));
                 i++;
