@@ -1243,8 +1243,94 @@ INSERT INTO Wishlist (customer_id, inventory_entry_id) VALUES
 (69, 145),
 (100, 94);
 
-
+INSERT INTO BuyerOrderInfo (shoppingcart_id, order_date, total_amount, status) VALUES
+(6, '2024-07-11', 128.32, 'Completed'),
+(131, '2024-09-23', 81.84, 'Completed'),
+(96, '2024-11-20', 239.88, 'Pending'),
+(182, '2024-10-31', 427.92, 'Completed'),
+(165, '2024-10-25', 341.20, 'Completed'),
+(87, '2024-11-17', 389.20, 'Pending'),
+(78, '2024-11-10', 124.25, 'Returned'),
+(64, '2024-09-19', 398.80, 'Completed'),
+(25, '2024-10-04', 1199.6, 'Completed'),
+(38, '2024-11-01', 45.72, 'Completed'),
+(46, '2024-10-13', 413.10, 'Completed'),
+(113, '2024-11-22', 23.70, 'Pending'),
+(151, '2024-11-18', 87.18, 'Pending'),
+(145, '2024-09-27', 214.13, 'Completed'),
+(95, '2024-10-04', 79.92, 'Completed'),
+(15, '2024-11-19', 128.37, 'Pending'),
+(51, '2024-10-03', 61.16, 'Returned'),
+(118, '2024-11-23', 248.31, 'Pending'),	
+(147, '2024-11-22', 121.99, 'Pending'),
+(101, '2024-09-18', 684.64, 'Completed');
     
+INSERT INTO BuyerOrderItem (buyer_order_information_id, price_at_order) VALUES
+(1, 16.04),
+(2, 13.64),
+(3, 19.99), 
+(4, 53.49),
+(5, 68.24),
+(6, 13.90),
+(7, 17.75),
+(8, 19.94),
+(9, 29.99),
+(10, 7.62),
+(11, 13.77),
+(12, 7.90),
+(13, 43.59),
+(14, 30.59),
+(15, 9.99),
+(16, 42.79),
+(17, 15.29),
+(18, 27.59),
+(19, 11.09),
+(20, 42.79);
+
+
+INSERT INTO BuyerOrderPayment(buyer_order_information_id, payment_date, payment_mode, payment_status) VALUES
+(1, '2024-07-20', 'Cash On Delivery', 'Paid'),
+(2, '2024-09-30', 'Cash On Delivery', 'Paid'),
+(3, '2024-11-24', 'Online Payment', 'Unpaid'),
+(4, '2024-10-31', 'Credit Card', 'Paid'),
+(5, '2024-10-25', 'Credit Card', 'Paid'),
+(6, '2024-11-25','Cash On Delivery','Unpaid'),
+(7, '2024-11-10', 'Debit Card', 'Refunded'),
+(8, '2024-09-19', 'Credit Card', 'Paid'),
+(9, '2024-10-12', 'Cash On Delivery', 'Paid'),
+(10, '2024-11-01', 'Online Payment', 'Paid'),
+(11, '2024-10-13', 'Credit Card', 'Paid'),
+(12, '2024-11-27', 'Cash On Delivery', 'Unpaid'),
+(13, '2024-11-18', 'Cash On Delivery', 'Paid'),
+(14, '2024-09-27', 'Debit Card', 'Paid'),
+(15, '2024-10-04', 'Cash On Delivery', 'Paid'),
+(16, '2024-11-26', 'Credit Card', 'Unpaid'),
+(17, '2024-10-10', 'Cash On Delivery', 'Refunded'),
+(18, '2024-11-23', 'Credit Card', 'Paid'),
+(19, '2024-11-22', 'Debit Card', 'Paid'),
+(20, '2024-09-18', 'Online Payment', 'Paid');
+
+INSERT INTO SupplierOrderPayment(supplier_order_information_id, payment_date, payment_mode, payment_status) VALUES
+(1, '2024-10-01', 'Cash On Delivery', 'Paid'),
+(2, '2024-10-02', 'Online Payment', 'Unpaid'),
+(3, '2024-09-30', 'Credit Card', 'Paid'),
+(4, '2024-09-29', 'Cash On Delivery', 'Unpaid'),
+(5, '2024-10-04', 'Cash On Delivery', 'Paid'),
+(6, '2024-09-27', 'Online Payment', 'Paid'),
+(7, '2024-09-26', 'Debit Card', 'Refunded'),
+(8, '2024-09-30', 'Cash On Delivery', 'Unpaid'),
+(9, '2024-09-24', 'Online Payment', 'Paid'),
+(10, '2024-09-29', 'Cash On Delivery', 'Paid'),
+(11, '2024-09-22', 'Online Payment', 'Paid'),
+(12, '2024-09-30', 'Cash On Delivery', 'Unpaid'),
+(13, '2024-10-15', 'Cash On Delivery', 'Unpaid'),
+(14, '2024-09-19', 'Credit Card', 'Refunded'),
+(15, '2024-09-25', 'Cash On Delivery', 'Paid'),
+(16, '2024-09-17', 'Debit Card', 'Paid'),
+(17, '2024-09-16', 'Credit Card', 'Paid'),
+(18, '2024-09-15', 'Online Payment', 'Paid'),
+(19, '2024-09-14', 'Credit Card', 'Unpaid'),
+(20, '2024-09-19', 'Cash On Delivery', 'Paid');
 
 
 SELECT * FROM logincredentials;
