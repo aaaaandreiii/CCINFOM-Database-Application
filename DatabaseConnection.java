@@ -855,6 +855,115 @@ public class DatabaseConnection {
         }
     }
 
+    public ArrayList<Object> findShoppingCartItemByID (int shoppingcart_id) {
+        ArrayList<Object> shoppingCartItemInfo = new ArrayList<>();
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = "SELECT inv.inventory_entry_id AS `Inventory Entry ID`, i.item_id AS `Item ID`, i.name AS `Item Name`, i.description AS `Description`, i.srp AS `Suggested Retail Price`, i.manu_price AS `Manufacturer Price`,inv.quantity AS `Quantity`, inv.price AS `Supplier Price`, s.supplier_id AS `Supplier ID`, CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS `Supplier Name`, s.email AS `Supplier Email`, s.phone AS `Supplier Phone` FROM Inventory inv JOIN Item i ON inv.item_id = i.item_id JOIN Supplier s ON inv.supplier_id = s.supplier_id WHERE shoppingcart_id = " + shoppingcart_id + ";";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            while (rs.next()) {
+                shoppingCartItemInfo.add(rs.getInt("Inventory Entry ID"));
+                shoppingCartItemInfo.add(rs.getInt("Item ID"));
+                shoppingCartItemInfo.add(rs.getString("Item Name"));
+                shoppingCartItemInfo.add(rs.getString("Description"));
+                shoppingCartItemInfo.add(rs.getBigDecimal("Suggested Retail Price"));
+                shoppingCartItemInfo.add(rs.getBigDecimal("Manufacturer Price"));
+                shoppingCartItemInfo.add(rs.getInt("Quantity"));
+                shoppingCartItemInfo.add(rs.getBigDecimal("Supplier Price"));
+                shoppingCartItemInfo.add(rs.getInt("Supplier ID"));
+                shoppingCartItemInfo.add(rs.getString("Supplier Name"));
+                shoppingCartItemInfo.add(rs.getString("Supplier Email"));
+                shoppingCartItemInfo.add(rs.getString("Supplier Phone"));
+            }
+            System.out.println("Item found by ID!");
+            return shoppingCartItemInfo;
+            
+        } catch (SQLException e) {
+            System.out.println("Error displaying Item info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
+    }
+
+    public List<List<Object>> findShoppingCartItemsByUserID(int customer_id) {
+        List<List<Object>> shoppingCartItemInfo = new ArrayList<>();
+        shoppingCartItemInfo.add(new ArrayList<>());
+        shoppingCartItemInfo.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = "SELECT inv.inventory_entry_id AS `Inventory Entry ID`, i.item_id AS `Item ID`, i.name AS `Item Name`, i.description AS `Description`, i.srp AS `Suggested Retail Price`, i.manu_price AS `Manufacturer Price`,inv.quantity AS `Quantity`, inv.price AS `Supplier Price`, s.supplier_id AS `Supplier ID`, CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS `Supplier Name`, s.email AS `Supplier Email`, s.phone AS `Supplier Phone` FROM Inventory inv JOIN Item i ON inv.item_id = i.item_id JOIN Supplier s ON inv.supplier_id = s.supplier_id;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                shoppingCartItemInfo.get(i).add(rs.getInt("Inventory Entry ID"));
+                shoppingCartItemInfo.get(i).add(rs.getInt("Item ID"));
+                shoppingCartItemInfo.get(i).add(rs.getString("Item Name"));
+                shoppingCartItemInfo.get(i).add(rs.getString("Description"));
+                shoppingCartItemInfo.get(i).add(rs.getBigDecimal("Suggested Retail Price"));
+                shoppingCartItemInfo.get(i).add(rs.getBigDecimal("Manufacturer Price"));
+                shoppingCartItemInfo.get(i).add(rs.getInt("Quantity"));
+                shoppingCartItemInfo.get(i).add(rs.getBigDecimal("Supplier Price"));
+                shoppingCartItemInfo.get(i).add(rs.getInt("Supplier ID"));
+                shoppingCartItemInfo.get(i).add(rs.getString("Supplier Name"));
+                shoppingCartItemInfo.get(i).add(rs.getString("Supplier Email"));
+                shoppingCartItemInfo.get(i).add(rs.getString("Supplier Phone"));
+                i++;
+            }
+            System.out.println("Shopping Cart item found by ID!");
+            return shoppingCartItemInfo;
+            
+        } catch (SQLException e) {
+            System.out.println("Error displaying Manufacturer info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
+    }
+    
+    public List<List<Object>> findCartItemsByUserIDAndName (int supplier_id, String name) {
+        List<List<Object>> shoppingCartItemInfo = new ArrayList<>();
+        shoppingCartItemInfo.add(new ArrayList<>());
+        shoppingCartItemInfo.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = "SELECT inv.inventory_entry_id AS `Inventory Entry ID`, i.item_id AS `Item ID`, i.name AS `Item Name`, i.description AS `Description`, i.srp AS `Suggested Retail Price`, i.manu_price AS `Manufacturer Price`,inv.quantity AS `Quantity`, inv.price AS `Supplier Price`, s.supplier_id AS `Supplier ID`, CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS `Supplier Name`, s.email AS `Supplier Email`, s.phone AS `Supplier Phone` FROM Inventory inv JOIN Item i ON inv.item_id = i.item_id JOIN Supplier s ON inv.supplier_id = s.supplier_id WHERE s.supplier_id = " + supplier_id + " AND i.name = '" + name + "';";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                shoppingCartItemInfo.get(i).add(rs.getInt("Inventory Entry ID"));
+                shoppingCartItemInfo.get(i).add(rs.getInt("Item ID"));
+                shoppingCartItemInfo.get(i).add(rs.getString("Item Name"));
+                shoppingCartItemInfo.get(i).add(rs.getString("Description"));
+                shoppingCartItemInfo.get(i).add(rs.getBigDecimal("Suggested Retail Price"));
+                shoppingCartItemInfo.get(i).add(rs.getBigDecimal("Manufacturer Price"));
+                shoppingCartItemInfo.get(i).add(rs.getInt("Quantity"));
+                shoppingCartItemInfo.get(i).add(rs.getBigDecimal("Supplier Price"));
+                shoppingCartItemInfo.get(i).add(rs.getInt("Supplier ID"));
+                shoppingCartItemInfo.get(i).add(rs.getString("Supplier Name"));
+                shoppingCartItemInfo.get(i).add(rs.getString("Supplier Email"));
+                shoppingCartItemInfo.get(i).add(rs.getString("Supplier Phone"));
+                i++;
+            }
+
+            System.out.println("Inventory item/s found by supplier_id and item name!");
+            return shoppingCartItemInfo;
+
+        } catch (SQLException e) {
+            System.out.println("Error finding inventory item/s by supplier_id and item name.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+            return null;
+        }
+    }
+
     public void addToShoppingCart(int customer_id, int item_id, int quantity) {
         try {
             int supplier_id = -1;
@@ -1472,42 +1581,50 @@ public class DatabaseConnection {
     }
 
 
-    public void readWishlist() {        
+    public List<List<Object>> readWishlist() {    
+        List<List<Object>> wishlistInfo = new ArrayList<>();
+        wishlistInfo.add(new ArrayList<>());
+        wishlistInfo.add(new ArrayList<>());
+    
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
-            ResultSet rs = queryStatement.executeQuery("SELECT * FROM Wishlist");
+            String sqlQueryStatement = "SELECT wl.wishlist_id AS `Wishlist ID`, c.customer_id AS `Customer ID`, CONCAT(c.first_name, ' ', c.last_name) AS `Customer Name`, i.item_id AS `Item ID`, i.name AS `Item Name`, i.description AS `Description`, i.srp AS `Suggested Retail Price`, i.manu_price AS `Manufacturer Price`, inv.quantity AS `Supplier Quantity`, s.supplier_id AS `Supplier ID`, CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS `Supplier Name` FROM Wishlist wl JOIN Inventory inv ON wl.inventory_entry_id = inv.inventory_entry_id JOIN Item i ON inv.item_id = i.item_id JOIN Customer c ON wl.customer_id = c.customer_id JOIN Supplier s ON inv.supplier_id = s.supplier_id;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
             while (rs.next()) {
-                int wishlist_id = rs.getInt("wishlist_id");
-                int customer_id = rs.getInt("customer_id");
-                int inventory_entry_id = rs.getInt("inventory_entry_id");
-               
-                System.out.println(wishlist_id + "\t" +
-                                   customer_id + "\t" +
-                                   inventory_entry_id);
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                wishlistInfo.get(i).add(rs.getInt("inventory_entry_id"));
+                i++;
             }
+            return wishlistInfo;
         } catch (SQLException e) {
-                System.out.println("Error displaying Inventory info.");
-                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+            System.out.println("Error displaying Wishlist info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
     }
 
 
-    public void updateWishlist(int wishlist_id, int customer_id, int inventory_entry_id) {        
+    public void updateWishlist(String specifiedAttribute, int valueToUpdate, int wishlist_id) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = null;
-
-
             String sqlQueryStatement = "UPDATE Wishlist SET " + specifiedAttribute + " = ?  WHERE wishlist_id = ?";
 
-
             stmt = c.prepareStatement(sqlQueryStatement);
-           
-            //IDK IF NEED ISAMA CUSTOMER
-            stmt.setInt(2, customer_id);
-            stmt.setInt(3, inventory_entry_id);
-
+            
+            stmt.setInt(2, valueToUpdate);
+            stmt.setInt(3, wishlist_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
@@ -1516,7 +1633,6 @@ public class DatabaseConnection {
             } else {
                 System.out.println("Error updating Wishlist.");
             }
-
 
             stmt.close();
             c.close();
@@ -1535,20 +1651,8 @@ public class DatabaseConnection {
 
     public void deleteWishlist(int wishlist_id) {
         try {
-            //delete user first THEN logincredentials
             String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT wishlist_id FROM Wishlist WHERE customer_id = " + idToDelete + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-           
-            while (rs.next()) {
-                wishlist_id = rs.getString("wishlist_id");
-            }            
-
-            
             PreparedStatement stmt = c.prepareStatement("DELETE FROM Wishlist WHERE wishlist_id = ?;");
             stmt.setInt(1, wishlist_id);
             int rowsDeleted = stmt.executeUpdate();
@@ -1557,25 +1661,9 @@ public class DatabaseConnection {
             } else {
                 System.out.println("Error deleting Wishlist.");
             }
-           
-            /*
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
-
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
-            }
-            */
 
             stmt.close();
             c.close();
-
 
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
@@ -1591,7 +1679,7 @@ public class DatabaseConnection {
 
 
 //BuyerOrderInfo CRUD
-public void createBuyerOrderInfo(int buyer_order_information_id, int shoppingcart_id, LocalDate order_date, BigDecimal total_amount, String status ) {
+    public void createBuyerOrderInfo(int buyer_order_information_id, int shoppingcart_id, LocalDate order_date, BigDecimal total_amount, String status ) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
