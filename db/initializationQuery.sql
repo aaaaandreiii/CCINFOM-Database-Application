@@ -1,3 +1,6 @@
+-- CREATE SCHEMA `ccinfom` ;
+-- DROP SCHEMA ccinfom;
+
 -- New Set of Tables
 -- LOGIN CREDENTIALS
 CREATE TABLE IF NOT EXISTS LoginCredentials (

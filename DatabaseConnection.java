@@ -1097,7 +1097,6 @@ public class DatabaseConnection {
                 userInfo.get(i).add(rs.getString("manufacturer_name"));
                 i++;
             }
-
             System.out.println("Manufacturer found by name!");
             return userInfo;
 
@@ -1232,6 +1231,72 @@ public class DatabaseConnection {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
+    }
+
+    public ArrayList<Object> findInventoryItemById(int inventory_entry_id) {
+        ArrayList<Object> inventoryInfo = new ArrayList<>();
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM Inventory WHERE inventory_entry_id = " + inventory_entry_id + ";");
+            while (rs.next()) {
+                inventoryInfo.add(rs.getInt("inventory_entry_id"));
+                inventoryInfo.add(rs.getInt("item_id"));
+                inventoryInfo.add(rs.getInt("supplier_id"));
+                inventoryInfo.add(rs.getInt("quantity"));
+                inventoryInfo.add(rs.getBigDecimal("price"));
+            }
+            System.out.println("Inventory item found by ID!");
+            return inventoryInfo;
+            
+        } catch (SQLException e) {
+            System.out.println("Error displaying Manufacturer info.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
+    }
+    
+    public List<List<Object>> findInventoryBySupplierIDAndName(int supplier_id, String name) {
+        List<List<Object>> userInfo = new ArrayList<>();
+        userInfo.add(new ArrayList<>());
+        userInfo.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = "SELECT inv.inventory_entry_id AS `Inventory Entry ID`, i.item_id AS `Item ID`, i.name AS `Item Name`, i.description AS `Description`, i.srp AS `Suggested Retail Price`, i.manu_price AS `Manufacturer Price`,inv.quantity AS `Quantity`, inv.price AS `Supplier Price`, s.supplier_id AS `Supplier ID`, CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS `Supplier Name`, s.email AS `Supplier Email`, s.phone AS `Supplier Phone` FROM Inventory inv JOIN Item i ON inv.item_id = i.item_id JOIN Supplier s ON inv.supplier_id = s.supplier_id WHERE s.supplier_id = " + supplier_id + " AND i.name = '" + name + "';";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                userInfo.get(i).add(rs.getInt("Inventory Entry ID"));
+                userInfo.get(i).add(rs.getInt("Item ID"));
+                userInfo.get(i).add(rs.getString("Item Name"));
+                userInfo.get(i).add(rs.getString("Description"));
+                userInfo.get(i).add(rs.getBigDecimal("Suggested Retail Price"));
+                userInfo.get(i).add(rs.getBigDecimal("Manufacturer Price"));
+                userInfo.get(i).add(rs.getInt("Quantity"));
+                userInfo.get(i).add(rs.getBigDecimal("Supplier Price"));
+                userInfo.get(i).add(rs.getInt("Supplier ID"));
+                userInfo.get(i).add(rs.getString("Supplier Name"));
+                userInfo.get(i).add(rs.getString("Supplier Email"));
+                userInfo.get(i).add(rs.getString("Supplier Phone"));
+                i++;
+            }
+
+            System.out.println("Inventory item/s found by supplier_id and item name!");
+            return userInfo;
+
+        } catch (SQLException e) {
+            System.out.println("Error finding inventory item/s by supplier_id and item name.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+
+        return userInfo;
     }
 
     public void createInventory(int item_id, int supplier_id, int quantity, BigDecimal price) {
@@ -2698,7 +2763,112 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
 
 
 
+    public List<List<Object>> productRecordManagement() {
+        List<List<Object>> productRecord = new ArrayList<>();
+        productRecord.add(new ArrayList<>());
+        productRecord.add(new ArrayList<>());
 
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+
+            String sqlQueryStatement = 
+            "SELECT " +
+                "CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS supplier_name, " +
+                "s.email AS supplier_email," +
+                "s.phone AS supplier_phone, " +
+                s.address AS supplier_address,
+                s.supplier_rating,
+                i.name AS item_name,
+                i.description AS item_description
+            FROM 
+                Supplier s
+            LEFT JOIN 
+                Inventory inv ON s.supplier_id = inv.supplier_id
+            LEFT JOIN 
+                Item i ON inv.item_id = i.item_id
+            ORDER BY 
+                s.supplier_id, i.item_id;
+                
+            -- Product Record Management
+            SELECT 
+                CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS supplier_name,
+                i.name AS item_name,
+                i.description AS item_description,
+                m.manufacturer_name AS manufacturer_name,
+                m.address AS manufacturer_address,
+                inv.quantity AS inventory_quantity,
+                i.manu_price AS manufacturer_price,
+                inv.price AS supplier_price,
+                IFNULL(w.wishlist_count, 0) AS wishlist_count,
+                IFNULL(sc.cart_count, 0) AS cart_count,
+                IFNULL(o.order_count, 0) AS order_count
+            FROM 
+                Supplier s
+            LEFT JOIN 
+                Inventory inv ON s.supplier_id = inv.supplier_id
+            LEFT JOIN 
+                Item i ON inv.item_id = i.item_id
+            LEFT JOIN 
+                Manufacturer m ON i.manufacturer_id = m.manufacturer_id
+            LEFT JOIN 
+                (
+                    SELECT 
+                        inventory_entry_id,
+                        COUNT(DISTINCT customer_id) AS wishlist_count
+                    FROM 
+                        Wishlist
+                    GROUP BY 
+                        inventory_entry_id
+                ) w ON inv.inventory_entry_id = w.inventory_entry_id
+            LEFT JOIN 
+                (
+                    SELECT 
+                        inventory_entry_id,
+                        COUNT(DISTINCT customer_id) AS cart_count
+                    FROM 
+                        ShoppingCart
+                    GROUP BY 
+                        inventory_entry_id
+                ) sc ON inv.inventory_entry_id = sc.inventory_entry_id
+            LEFT JOIN 
+                (
+                    SELECT 
+                        inv.inventory_entry_id,
+                        COUNT(DISTINCT boi.buyer_order_information_id) AS order_count
+                    FROM 
+                        BuyerOrderInfo boi
+                    INNER JOIN 
+                        ShoppingCart sc ON boi.shoppingcart_id = sc.shoppingcart_id
+                    INNER JOIN 
+                        Inventory inv ON sc.inventory_entry_id = inv.inventory_entry_id
+                    GROUP BY 
+                        inv.inventory_entry_id
+                ) o ON inv.inventory_entry_id = o.inventory_entry_id
+            ORDER BY 
+                "s.supplier_id, i.item_id;";
+
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                supplierRecord.get(i).add(rs.getInt("supplier_id"));
+                supplierRecord.get(i).add(rs.getString("supplier_name"));
+                supplierRecord.get(i).add(rs.getString("supplier_email"));
+                supplierRecord.get(i).add(rs.getString("supplier_phone"));
+                supplierRecord.get(i).add(rs.getInt("item_id"));
+                supplierRecord.get(i).add(rs.getString("item_name"));
+                supplierRecord.get(i).add(rs.getString("item_description"));
+                supplierRecord.get(i).add(rs.getInt("inventory_quantity"));
+                supplierRecord.get(i).add(rs.getBigDecimal("inventory_price"));
+                i++;
+            }
+            return productRecord;
+        } catch (SQLException e) {
+            System.out.println("Error getting Supplier Record Management.\n" + e.getMessage());
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }      
+    }
 
 
 
