@@ -4,6 +4,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -2205,7 +2206,7 @@ public void createSupplierOrderInfo(int supplier_order_information_id, int suppl
     }
 
 
-    public void deleteUser(int supplier_order_information_id) {
+    public void deleteSupplierOrderInfo(int supplier_order_information_id) {
         try {
             //delete user first THEN logincredentials
             String email = null;
@@ -2401,7 +2402,7 @@ public void createSupplierOrderItem(int supplier_order_item_id, int supplier_ord
     }
 
 
-    public void deleteUser(int supplier_order_item_id) {
+    public void deleteSuplierOrderItem(int supplier_order_item_id) {
         try {
             //delete user first THEN logincredentials
             String email = null;
@@ -2987,6 +2988,390 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             return null;
         }      
+    }
+
+
+    #a
+SELECT 
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    c.email,
+    c.phone_number,
+    c.delivery_address,
+    sc.shoppingcart_id,
+    sc.quantity,
+    i.name AS product_name
+FROM 
+    Customer c
+JOIN 
+    ShoppingCart sc ON c.customer_id = sc.customer_id
+JOIN 
+    Inventory inv ON sc.inventory_entry_id = inv.inventory_entry_id
+JOIN 
+    Item i ON inv.item_id = i.item_id
+WHERE 
+    sc.quantity > 0;
+#b
+SELECT 
+    s.supplier_id,
+    s.supplier_fname,
+    s.supplier_lname,
+    s.email,
+    s.phone,
+    s.address,
+    s.supplier_rating,
+    i.name AS product_name
+FROM 
+    Supplier s
+JOIN 
+    Inventory inv ON s.supplier_id = inv.supplier_id
+JOIN 
+    Item i ON inv.item_id = i.item_id
+WHERE 
+    s.supplier_rating IS NOT NULL 
+    AND inv.quantity > 0;
+#c
+INSERT INTO BuyerOrderInfo (shoppingcart_id, order_date, status)
+VALUES 
+    (?, ?, ?);
+
+#d
+UPDATE ShoppingCart
+SET quantity = 0
+WHERE customer_id = ? AND inventory_entry_id = ?;
+
+#e
+UPDATE Item i
+SET i.purchase_count = i.purchase_count + 1
+WHERE i.item_id = ?;
+
+#f
+UPDATE Inventory inv
+SET inv.quantity = inv.quantity - ?
+WHERE inv.supplier_id = ? AND inv.item_id = ?;
+
+#g
+    UPDATE SupplierOrderInfo soi
+SET soi.total_amount = soi.total_amount + ?, soi.order_date = NOW(), soi.status = 'Pending'
+WHERE soi.supplier_id = ?;
+
+    public void transactionsVillanuevaA() {
+
+    }
+
+    -- a
+SELECT * FROM BuyerOrderPayment;
+
+-- b
+UPDATE BuyerOrderPayment bop
+SET bop.payment_status = 'Refunded'
+WHERE bop.buyer_order_information_id = ?;
+    public void transactionsYoungA() {
+
+    }
+
+    public List<List<Object>> reportsVillanueva() {
+        //Product Sales for the Week, Month, and Year per Supplier
+        List<List<Object>> quarterTrends = new ArrayList<>();
+        quarterTrends.add(new ArrayList<>());
+        quarterTrends.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = """
+                    SELECT 
+                        s.supplier_id,
+                        s.supplier_fname,
+                        s.supplier_lname,
+                        i.name AS product_name,
+                        
+                        -- Sales for the Week
+                        SUM(CASE WHEN boi.order_date >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY 
+                                AND boi.order_date < CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 7 DAY THEN boi.total_amount ELSE 0 END) AS weekly_sales,
+
+                        -- Sales for the Month
+                        SUM(CASE WHEN YEAR(boi.order_date) = YEAR(CURDATE()) 
+                                AND MONTH(boi.order_date) = MONTH(CURDATE()) THEN boi.total_amount ELSE 0 END) AS monthly_sales,
+
+                        -- Sales for the Year
+                        SUM(CASE WHEN YEAR(boi.order_date) = YEAR(CURDATE()) THEN boi.total_amount ELSE 0 END) AS yearly_sales
+                    FROM 
+                        Supplier s
+                    JOIN 
+                        Inventory inv ON s.supplier_id = inv.supplier_id
+                    JOIN 
+                        Item i ON inv.item_id = i.item_id
+                    JOIN 
+                        BuyerOrderItem boi_item ON boi_item.buyer_order_item_id = inv.inventory_entry_id
+                    JOIN 
+                        BuyerOrderInfo boi ON boi.buyer_order_information_id = boi_item.buyer_order_information_id
+
+                    GROUP BY 
+                        s.supplier_id, i.item_id
+                    ORDER BY 
+                        s.supplier_id, i.item_id;
+                    """;
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                quarterTrends.get(i).add(rs.getInt("inventory_entry_id"));
+                quarterTrends.get(i).add(rs.getString("name"));
+                quarterTrends.get(i).add(rs.getInt("wishlist_count"));
+                quarterTrends.get(i).add(rs.getInt("cart_count"));
+                i++;
+            }
+            System.out.println("Success: Wishlist-to-Shopping Cart Trends of the Quarter");
+            return quarterTrends;
+        } catch (SQLException e) {
+            System.out.println("Error getting Supplier Record Management.\n" + e.getMessage());
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
+    }
+
+    public List<List<Object>> reportsAbjelina() {
+        //Product Category Trends for the Quarter
+        List<List<Object>> quarterTrends = new ArrayList<>();
+        quarterTrends.add(new ArrayList<>());
+        quarterTrends.add(new ArrayList<>());
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT @@sql_mode");
+            if (rs.next()) {
+                String sqlMode = rs.getString(1);
+                System.out.println("Current sql_mode: " + sqlMode);
+            }
+
+            stmt.execute("SET sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
+
+            String query = """
+                    SELECT
+                        m.manufacturer_name AS manufacturer,
+                        CONCAT('Q', QUARTER(boi.order_date)) AS quarter,
+                        YEAR(boi.order_date) AS year,
+                        SUM(sc.quantity) AS total_quantity_sold,
+                        SUM(boi.total_amount) AS total_sales
+                    FROM
+                        BuyerOrderInfo boi
+                    INNER JOIN
+                        ShoppingCart sc ON boi.shoppingcart_id = sc.shoppingcart_id
+                    INNER JOIN
+                        Inventory inv ON sc.inventory_entry_id = inv.inventory_entry_id
+                    INNER JOIN
+                        Item i ON inv.item_id = i.item_id
+                    INNER JOIN
+                        Manufacturer m ON i.manufacturer_id = m.manufacturer_id
+                    GROUP BY
+                        m.manufacturer_name, YEAR(boi.order_date), QUARTER(boi.order_date)
+                    ORDER BY
+                       total_quantity_sold DESC;
+                    """;
+
+            ResultSet resultSet = stmt.executeQuery(query);
+
+            while (resultSet.next()) {
+                quarterTrends.get(i).add(resultSet.getString("manufacturer"));
+                quarterTrends.get(i).add(resultSet.getString("quarter"));
+                quarterTrends.get(i).add(resultSet.getInt("year"));
+                quarterTrends.get(i).add(resultSet.getInt("total_quantity_sold"));
+                quarterTrends.get(i).add(resultSet.getDouble("total_sales"));
+
+                System.out.printf(
+                        "Manufacturer: %s, Quarter: %s, Year: %d, Total Quantity Sold: %d, Total Sales: %.2f%n",
+                        manufacturer, quarter, year, totalQuantitySold, totalSales);
+            }
+            System.out.println("Success: Product Category Trends for the Quarter");
+            return quarterTrends;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public List<List<Object>> reportsBalingitWeek() {
+        //Top Selling Unique Items for the Week
+        List<List<Object>> quarterTrends = new ArrayList<>();
+        quarterTrends.add(new ArrayList<>());
+        quarterTrends.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = """
+                    SELECT 
+                        i.name AS item_name,
+                        i.description,
+                        COUNT(boi.buyer_order_item_id) AS total_sold,
+                        SUM(boi.price_at_order) AS total_revenue
+                    FROM 
+                        BuyerOrderItem boi
+                    JOIN 
+                        BuyerOrderInfo boi_info ON boi.buyer_order_information_id = boi_info.buyer_order_information_id
+                    JOIN 
+                        ShoppingCart sc ON boi_info.shoppingcart_id = sc.shoppingcart_id
+                    JOIN 
+                        Inventory inv ON sc.inventory_entry_id = inv.inventory_entry_id
+                    JOIN 
+                        Item i ON inv.item_id = i.item_id
+                    WHERE 
+                        YEARWEEK(boi_info.order_date, 1) = YEARWEEK(CURDATE(), 1)
+                        AND boi_info.status = 'Completed'
+                    GROUP BY 
+                        i.item_id
+                    ORDER BY 
+                        total_sold DESC;
+                    """;
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                quarterTrends.get(i).add(rs.getString("item_name"));
+                quarterTrends.get(i).add(rs.getString("description"));
+                quarterTrends.get(i).add(rs.getInt("total_sold"));
+                quarterTrends.get(i).add(rs.getBigDecimal("total_revenue"));
+                i++;
+            }
+            System.out.println("Success: Top Selling Unique Items for the Week");
+            return quarterTrends;
+        } catch (SQLException e) {
+            System.out.println("Error getting Top Selling Unique Items for the Week.\n" + e.getMessage());
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
+    }
+
+    public List<List<Object>> reportsBalingitMonth() {
+        //Top Selling Unique Items for the Month
+        List<List<Object>> quarterTrends = new ArrayList<>();
+        quarterTrends.add(new ArrayList<>());
+        quarterTrends.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = """
+                    SELECT 
+                        i.name AS item_name,
+                        i.description,
+                        COUNT(boi.buyer_order_item_id) AS total_sold,
+                        SUM(boi.price_at_order) AS total_revenue
+                    FROM 
+                        BuyerOrderItem boi
+                    JOIN 
+                        BuyerOrderInfo boi_info ON boi.buyer_order_information_id = boi_info.buyer_order_information_id
+                    JOIN 
+                        ShoppingCart sc ON boi_info.shoppingcart_id = sc.shoppingcart_id
+                    JOIN 
+                        Inventory inv ON sc.inventory_entry_id = inv.inventory_entry_id
+                    JOIN 
+                        Item i ON inv.item_id = i.item_id
+                    WHERE 
+                        MONTH(boi_info.order_date) = MONTH(CURDATE()) 
+                        AND YEAR(boi_info.order_date) = YEAR(CURDATE())
+                        AND boi_info.status = 'Completed'
+                    GROUP BY 
+                        i.item_id
+                    ORDER BY 
+                        total_sold DESC;
+                    """;
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                quarterTrends.get(i).add(rs.getString("item_name"));
+                quarterTrends.get(i).add(rs.getString("description"));
+                quarterTrends.get(i).add(rs.getInt("total_sold"));
+                quarterTrends.get(i).add(rs.getBigDecimal("total_revenue"));
+                i++;
+            }
+            System.out.println("Success: Top Selling Unique Items for the Month");
+            return quarterTrends;
+        } catch (SQLException e) {
+            System.out.println("Error getting Top Selling Unique Items for the Month.\n" + e.getMessage());
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
+    }
+
+    public List<List<Object>> reportsBalingitYear() {
+        //Top Selling Unique Items for the Year
+        List<List<Object>> quarterTrends = new ArrayList<>();
+        quarterTrends.add(new ArrayList<>());
+        quarterTrends.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = """
+                    SELECT 
+                        i.name AS item_name,
+                        i.description,
+                        COUNT(boi.buyer_order_item_id) AS total_sold,
+                        SUM(boi.price_at_order) AS total_revenue
+                    FROM 
+                        BuyerOrderItem boi
+                    JOIN 
+                        BuyerOrderInfo boi_info ON boi.buyer_order_information_id = boi_info.buyer_order_information_id
+                    JOIN 
+                        ShoppingCart sc ON boi_info.shoppingcart_id = sc.shoppingcart_id
+                    JOIN 
+                        Inventory inv ON sc.inventory_entry_id = inv.inventory_entry_id
+                    JOIN 
+                        Item i ON inv.item_id = i.item_id
+                    WHERE 
+                        YEAR(boi_info.order_date) = YEAR(CURDATE()) -- Current year
+                        AND boi_info.status = 'Completed'
+                    GROUP BY 
+                        i.item_id
+                    ORDER BY 
+                        total_sold DESC;
+                    """;
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                quarterTrends.get(i).add(rs.getString("item_name"));
+                quarterTrends.get(i).add(rs.getString("description"));
+                quarterTrends.get(i).add(rs.getInt("total_sold"));
+                quarterTrends.get(i).add(rs.getBigDecimal("total_revenue"));
+                i++;
+            }
+            System.out.println("Success: Top Selling Unique Items for the Year");
+            return quarterTrends;
+        } catch (SQLException e) {
+            System.out.println("Error getting Top Selling Unique Items for the Year.\n" + e.getMessage());
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
+    }
+
+    public List<List<Object>> reportsYoung() {
+        //Wishlist-to-Shopping Cart Trends of the Quarter
+        List<List<Object>> quarterTrends = new ArrayList<>();
+        quarterTrends.add(new ArrayList<>());
+        quarterTrends.add(new ArrayList<>());
+
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = "SELECT w.inventory_entry_id, i.name, COUNT(DISTINCT w.customer_id) AS wishlist_count, COUNT(DISTINCT s.customer_id) AS cart_count FROM Wishlist w INNER JOIN ShoppingCart s ON w.inventory_entry_id = s.inventory_entry_id LEFT JOIN inventory inv ON inv.inventory_entry_id = w.inventory_entry_id LEFT JOIN item i ON i.item_id = inv.item_id GROUP BY w.inventory_entry_id ORDER BY w.inventory_entry_id;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                quarterTrends.get(i).add(rs.getInt("inventory_entry_id"));
+                quarterTrends.get(i).add(rs.getString("name"));
+                quarterTrends.get(i).add(rs.getInt("wishlist_count"));
+                quarterTrends.get(i).add(rs.getInt("cart_count"));
+                i++;
+            }
+            System.out.println("Success: Wishlist-to-Shopping Cart Trends of the Quarter");
+            return quarterTrends;
+        } catch (SQLException e) {
+            System.out.println("Error getting Supplier Record Management.\n" + e.getMessage());
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
     }
 
     public void validateLogIn(String usernameInput, String passwordInput) {
