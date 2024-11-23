@@ -236,44 +236,109 @@ public class DatabaseConnection {
 
     public void deleteUser(int idToDelete) {
         try {
-            //delete user first THEN logincredentials 
+            //DELETE in this specific order
+            //LogInCreds, Customer, ShoppingCart, Wishlist, BuyerOrderInfo, BuyerOrderItem
             String email = null;
+            int shoppingcart_id = -1;
+            int buyer_order_information_id = -1;
+
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
 
-            String sqlQueryStatement = "SELECT email FROM customer WHERE customer_id = " + idToDelete + ";";
+            //shoppingcart_id for BuyerOrderInfo
+            String sqlQueryStatement = "SELECT shoppingcart_id FROM ShoppingCart WHERE customer_id = " + idToDelete + ";";
             ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-            
+            while (rs.next()) {
+                shoppingcart_id = rs.getInt("shoppingcart_id");
+            }
+
+            //buyer_order_information_id for BuyerOrderItem
+            sqlQueryStatement = null;
+            sqlQueryStatement = "SELECT buyer_order_information_id FROM BuyerOrderInfo WHERE shoppingcart_id = " + shoppingcart_id + ";";
+            rs = null;
+            rs = queryStatement.executeQuery(sqlQueryStatement);
+            while (rs.next()) {
+                buyer_order_information_id = rs.getInt("buyer_order_information_id");
+            }
+
+            //email for LogInCredentials
+            sqlQueryStatement = null;
+            sqlQueryStatement = "SELECT email FROM customer WHERE customer_id = " + idToDelete + ";";
+            rs = null;
+            rs = queryStatement.executeQuery(sqlQueryStatement);
             while (rs.next()) {
                 email = rs.getString("email");
-            }            
+            }
 
-            PreparedStatement stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
-            stmt.setInt(1, idToDelete);
+            //DELETE Log In Credentials///////////////////////////////////////////////////////////
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
+            stmt.setString(1, email);
             int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {                                                                                                                                           
+                System.out.println("Log In Credentials deleted successfully!");              
+            } else {
+                System.out.println("Error deleting Log In Credentials.");
+            }
+
+            //DELETE Customer///////////////////////////////////////////////////////////
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM Customer WHERE customer_id = ?;");
+            stmt.setInt(1, idToDelete);
+            rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Customer data deleted successfully!");
             } else {
                 System.out.println("Error deleting Customer data.");
             }
-            
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
 
+            //DELETE ShoppingCart///////////////////////////////////////////////////////////
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM ShoppingCart WHERE customer_id = ?;");
+            stmt.setInt(1, idToDelete);
             rowsDeleted = 0;
             rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
+                System.out.println("ShoppingCart data deleted successfully!");
             } else {
-                System.out.println("Error deleting Log In Credentials.");
+                System.out.println("Error deleting ShoppingCart data.");
             }
 
+            //DELETE Wishlist///////////////////////////////////////////////////////////
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM Wishlist WHERE customer_id = ?;");
+            stmt.setInt(1, idToDelete);
+            rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Wishlist data deleted successfully!");
+            } else {
+                System.out.println("Error deleting Wishlist data.");
+            }
 
+            //DELETE BuyerOrderInfo///////////////////////////////////////////////////////////
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM BuyerOrderInfo WHERE shoppingcart_id = ?;");
+            stmt.setInt(1, shoppingcart_id);
+            rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Buyer Order Information data deleted successfully!");
+            } else {
+                System.out.println("Error deleting Buyer Order Information data.");
+            }
 
-
-
-            
+            //DELETE BuyerOrderItem///////////////////////////////////////////////////////////
+            stmt = null;
+            stmt = c.prepareStatement("DELETE FROM BuyerOrderItem WHERE buyer_order_information_id = ?;");
+            stmt.setInt(1, buyer_order_information_id);
+            rowsDeleted = 0;
+            rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Buyer Order Item data deleted successfully!");
+            } else {
+                System.out.println("Error deleting Buyer Order Item data.");
+            }
 
             stmt.close();
             c.close();
