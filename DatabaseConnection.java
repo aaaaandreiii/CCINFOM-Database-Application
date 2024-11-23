@@ -2847,12 +2847,6 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
         }
     }
 
-
-
-
-
-
-
     public List<List<Object>> productRecordManagement() {
         List<List<Object>> productRecord = new ArrayList<>();
         productRecord.add(new ArrayList<>());
@@ -2862,94 +2856,22 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
 
-            String sqlQueryStatement = 
-            "SELECT " +
-                "CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS supplier_name, " +
-                "s.email AS supplier_email," +
-                "s.phone AS supplier_phone, " +
-                s.address AS supplier_address,
-                s.supplier_rating,
-                i.name AS item_name,
-                i.description AS item_description
-            FROM 
-                Supplier s
-            LEFT JOIN 
-                Inventory inv ON s.supplier_id = inv.supplier_id
-            LEFT JOIN 
-                Item i ON inv.item_id = i.item_id
-            ORDER BY 
-                s.supplier_id, i.item_id;
-                
-            -- Product Record Management
-            SELECT 
-                CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS supplier_name,
-                i.name AS item_name,
-                i.description AS item_description,
-                m.manufacturer_name AS manufacturer_name,
-                m.address AS manufacturer_address,
-                inv.quantity AS inventory_quantity,
-                i.manu_price AS manufacturer_price,
-                inv.price AS supplier_price,
-                IFNULL(w.wishlist_count, 0) AS wishlist_count,
-                IFNULL(sc.cart_count, 0) AS cart_count,
-                IFNULL(o.order_count, 0) AS order_count
-            FROM 
-                Supplier s
-            LEFT JOIN 
-                Inventory inv ON s.supplier_id = inv.supplier_id
-            LEFT JOIN 
-                Item i ON inv.item_id = i.item_id
-            LEFT JOIN 
-                Manufacturer m ON i.manufacturer_id = m.manufacturer_id
-            LEFT JOIN 
-                (
-                    SELECT 
-                        inventory_entry_id,
-                        COUNT(DISTINCT customer_id) AS wishlist_count
-                    FROM 
-                        Wishlist
-                    GROUP BY 
-                        inventory_entry_id
-                ) w ON inv.inventory_entry_id = w.inventory_entry_id
-            LEFT JOIN 
-                (
-                    SELECT 
-                        inventory_entry_id,
-                        COUNT(DISTINCT customer_id) AS cart_count
-                    FROM 
-                        ShoppingCart
-                    GROUP BY 
-                        inventory_entry_id
-                ) sc ON inv.inventory_entry_id = sc.inventory_entry_id
-            LEFT JOIN 
-                (
-                    SELECT 
-                        inv.inventory_entry_id,
-                        COUNT(DISTINCT boi.buyer_order_information_id) AS order_count
-                    FROM 
-                        BuyerOrderInfo boi
-                    INNER JOIN 
-                        ShoppingCart sc ON boi.shoppingcart_id = sc.shoppingcart_id
-                    INNER JOIN 
-                        Inventory inv ON sc.inventory_entry_id = inv.inventory_entry_id
-                    GROUP BY 
-                        inv.inventory_entry_id
-                ) o ON inv.inventory_entry_id = o.inventory_entry_id
-            ORDER BY 
-                "s.supplier_id, i.item_id;";
+            String sqlQueryStatement = "SELECT CONCAT(s.supplier_fname, ' ', s.supplier_lname) AS supplier_name, i.name AS item_name, i.description AS item_description, m.manufacturer_name AS manufacturer_name, m.address AS manufacturer_address, inv.quantity AS inventory_quantity, i.manu_price AS manufacturer_price, inv.price AS supplier_price, IFNULL(w.wishlist_count, 0) AS wishlist_count, IFNULL(sc.cart_count, 0) AS cart_count, IFNULL(o.order_count, 0) AS order_count FROM Supplier s LEFT JOIN Inventory inv ON s.supplier_id = inv.supplier_id LEFT JOIN Item i ON inv.item_id = i.item_id LEFT JOIN Manufacturer m ON i.manufacturer_id = m.manufacturer_id LEFT JOIN (SELECT inventory_entry_id, COUNT(DISTINCT customer_id) AS wishlist_count FROM Wishlist GROUP BY inventory_entry_id) w ON inv.inventory_entry_id = w.inventory_entry_id LEFT JOIN (SELECT inventory_entry_id, COUNT(DISTINCT customer_id) AS cart_count FROM ShoppingCart GROUP BY inventory_entry_id) sc ON inv.inventory_entry_id = sc.inventory_entry_id LEFT JOIN (SELECT inv.inventory_entry_id, COUNT(DISTINCT boi.buyer_order_information_id) AS order_count FROM BuyerOrderInfo boi INNER JOIN ShoppingCart sc ON boi.shoppingcart_id = sc.shoppingcart_id INNER JOIN Inventory inv ON sc.inventory_entry_id = inv.inventory_entry_id GROUP BY inv.inventory_entry_id) o ON inv.inventory_entry_id = o.inventory_entry_id ORDER BY s.supplier_id, i.item_id;";
 
             ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
             int i = 0;
             while (rs.next()) {
-                supplierRecord.get(i).add(rs.getInt("supplier_id"));
-                supplierRecord.get(i).add(rs.getString("supplier_name"));
-                supplierRecord.get(i).add(rs.getString("supplier_email"));
-                supplierRecord.get(i).add(rs.getString("supplier_phone"));
-                supplierRecord.get(i).add(rs.getInt("item_id"));
-                supplierRecord.get(i).add(rs.getString("item_name"));
-                supplierRecord.get(i).add(rs.getString("item_description"));
-                supplierRecord.get(i).add(rs.getInt("inventory_quantity"));
-                supplierRecord.get(i).add(rs.getBigDecimal("inventory_price"));
+                productRecord.get(i).add(rs.getString("supplier_name"));
+                productRecord.get(i).add(rs.getInt("item_name"));
+                productRecord.get(i).add(rs.getString("item_description"));
+                productRecord.get(i).add(rs.getString("manufacturer_name"));
+                productRecord.get(i).add(rs.getString("manufacturer_address"));
+                productRecord.get(i).add(rs.getInt("inventory_quantity"));
+                productRecord.get(i).add(rs.getBigDecimal("manufacturer_price"));
+                productRecord.get(i).add(rs.getBigDecimal("supplier_price"));
+                productRecord.get(i).add(rs.getInt("wishlist_count"));
+                productRecord.get(i).add(rs.getInt("cart_count"));
+                productRecord.get(i).add(rs.getInt("order_count"));
                 i++;
             }
             return productRecord;
