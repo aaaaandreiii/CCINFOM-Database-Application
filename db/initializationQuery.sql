@@ -111,11 +111,11 @@ CREATE TABLE IF NOT EXISTS SupplierOrderInfo (
 -- Table 11: Supplier Order Item
 CREATE TABLE IF NOT EXISTS SupplierOrderItem (
 	supplier_order_item_id INT AUTO_INCREMENT PRIMARY KEY,
-    supplier_order_id INT,
+    supplier_order_information_id INT,
     item_id INT,
     quantity INT,
     price_at_order DECIMAL (10, 2),
-    FOREIGN KEY (supplier_order_id) REFERENCES SupplierOrderInfo (supplier_order_id),
+    FOREIGN KEY (supplier_order_information_id) REFERENCES SupplierOrderInfo (supplier_order_information_id),
     FOREIGN KEY (item_id) REFERENCES Item(item_id)
 );
 
