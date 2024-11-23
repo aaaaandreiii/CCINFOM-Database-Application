@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
+
 //result set for receiving queries
 //prepared statement for instruction queries to insert, delete
 
@@ -2958,10 +2960,31 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
         }      
     }
 
+    public List<List<Object>> customerRecordManagement() {
+        List<List<Object>> customerRecord = new ArrayList<>();
+        customerRecord.add(new ArrayList<>());
+        customerRecord.add(new ArrayList<>());
 
-
-
-
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement()
+            String sqlQueryStatement = "SELECT c.customer_id, concat(c.first_name,' ',c.last_name) AS name, i.name AS item_name, sc.quantity FROM customer c LEFT JOIN shoppingcart sc ON c.customer_id = sc.customer_id LEFT JOIN inventory inv ON inv.inventory_entry_id = sc.inventory_entry_id LEFT JOIN item i ON i.item_id = inv.item_id;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                customerRecord.get(i).add(rs.getInt("customer_id"));
+                customerRecord.get(i).add(rs.getString("name"));
+                customerRecord.get(i).add(rs.getString("item_name"));
+                customerRecord.get(i).add(rs.getInt("quantity"));
+                i++;
+            }
+            return customerRecord;
+        } catch (SQLException e) {
+            System.out.println("Error getting Supplier Record Management.\n" + e.getMessage());
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }      
+    }
 
     public List<List<Object>> supplierRecordManagement() {
         List<List<Object>> supplierRecord = new ArrayList<>();
@@ -3014,8 +3037,32 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
         }      
     }
 
+    public List<List<Object>> orderRecordManagement () {
+        List<List<Object>> orderRecord = new ArrayList<>();
+        orderRecord.add(new ArrayList<>());
+        orderRecord.add(new ArrayList<>());
 
-
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            String sqlQueryStatement = "SELECT boi.buyer_order_information_id AS order_id, boi_item.buyer_order_item_id AS order_detail_id, boi.status AS order_status, boi.order_date, i.name AS item_name FROM BuyerOrderInfo boi JOIN BuyerOrderItem boi_item ON boi.buyer_order_information_id = boi_item.buyer_order_information_id JOIN Inventory inv ON boi_item.buyer_order_item_id = inv.inventory_entry_id JOIN Item i ON inv.item_id = i.item_id;";
+            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
+            int i = 0;
+            while (rs.next()) {
+                orderRecord.get(i).add(rs.getInt("order_id"));
+                orderRecord.get(i).add(rs.getInt("order_detail_id"));
+                orderRecord.get(i).add(rs.getString("order_status"));
+                orderRecord.get(i).add(rs.getString("order_date"));
+                orderRecord.get(i).add(rs.getString("item_name"));
+                i++;
+            }
+            return orderRecord;
+        } catch (SQLException e) {
+            System.out.println("Error getting Supplier Record Management.\n" + e.getMessage());
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }      
+    }
 
     public void validateLogIn(String usernameInput, String passwordInput) {
         try {
