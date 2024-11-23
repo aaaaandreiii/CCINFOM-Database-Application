@@ -1283,7 +1283,51 @@ INSERT INTO BuyerOrderItem (buyer_order_information_id, price_at_order) VALUES
 (18, 27.59),
 (19, 11.09),
 (20, 42.79);
-    
+
+
+INSERT INTO BuyerOrderPayment(buyer_order_information_id, payment_date, payment_mode, payment_status) VALUES
+(1, '2024-07-20', 'Cash On Delivery', 'Paid'),
+(2, '2024-09-30', 'Cash On Delivery', 'Paid'),
+(3, '2024-11-24', 'Online Payment', 'Unpaid'),
+(4, '2024-10-31', 'Credit Card', 'Paid'),
+(5, '2024-10-25', 'Credit Card', 'Paid'),
+(6, '2024-11-25','Cash On Delivery','Unpaid'),
+(7, '2024-11-10', 'Debit Card', 'Refunded'),
+(8, '2024-09-19', 'Credit Card', 'Paid'),
+(9, '2024-10-12', 'Cash On Delivery', 'Paid'),
+(10, '2024-11-01', 'Online Payment', 'Paid'),
+(11, '2024-10-13', 'Credit Card', 'Paid'),
+(12, '2024-11-27', 'Cash On Delivery', 'Unpaid'),
+(13, '2024-11-18', 'Cash On Delivery', 'Paid'),
+(14, '2024-09-27', 'Debit Card', 'Paid'),
+(15, '2024-10-04', 'Cash On Delivery', 'Paid'),
+(16, '2024-11-26', 'Credit Card', 'Unpaid'),
+(17, '2024-10-10', 'Cash On Delivery', 'Refunded'),
+(18, '2024-11-23', 'Credit Card', 'Paid'),
+(19, '2024-11-22', 'Debit Card', 'Paid'),
+(20, '2024-09-18', 'Online Payment', 'Paid');
+
+INSERT INTO SupplierOrderPayment(supplier_order_information_id, payment_date, payment_mode, payment_status) VALUES
+(1, '2024-10-01', 'Cash On Delivery', 'Paid'),
+(2, '2024-10-02', 'Online Payment', 'Unpaid'),
+(3, '2024-09-30', 'Credit Card', 'Paid'),
+(4, '2024-09-29', 'Cash On Delivery', 'Unpaid'),
+(5, '2024-10-04', 'Cash On Delivery', 'Paid'),
+(6, '2024-09-27', 'Online Payment', 'Paid'),
+(7, '2024-09-26', 'Debit Card', 'Refunded'),
+(8, '2024-09-30', 'Cash On Delivery', 'Unpaid'),
+(9, '2024-09-24', 'Online Payment', 'Paid'),
+(10, '2024-09-29', 'Cash On Delivery', 'Paid'),
+(11, '2024-09-22', 'Online Payment', 'Paid'),
+(12, '2024-09-30', 'Cash On Delivery', 'Unpaid'),
+(13, '2024-10-15', 'Cash On Delivery', 'Unpaid'),
+(14, '2024-09-19', 'Credit Card', 'Refunded'),
+(15, '2024-09-25', 'Cash On Delivery', 'Paid'),
+(16, '2024-09-17', 'Debit Card', 'Paid'),
+(17, '2024-09-16', 'Credit Card', 'Paid'),
+(18, '2024-09-15', 'Online Payment', 'Paid'),
+(19, '2024-09-14', 'Credit Card', 'Unpaid'),
+(20, '2024-09-19', 'Cash On Delivery', 'Paid');
 
 
 SELECT * FROM logincredentials;
