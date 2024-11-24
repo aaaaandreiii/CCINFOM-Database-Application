@@ -1894,12 +1894,11 @@ public class DatabaseConnection {
             c.close();
 
         } catch (SQLException e) {
+            System.out.println("Error deleting Buyer Order Information.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error deleting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
-                System.out.println("Error deleting Log In Credentials.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
@@ -1999,21 +1998,14 @@ public void createBuyerOrderItem(int buyer_order_item_id, int buyer_order_inform
             }
     }
 
-
-    public void updateBuyerOrderItem(int buyer_order_item_id, int buyer_order_information_id, BigDecimal price_at_order) {        
+    public void updateBuyerOrderItem(String specifiedAttribute, int valueToUpdate, int buyer_order_item_id) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = null;
-
-
             String sqlQueryStatement = "UPDATE BuyerOrderItem SET " + specifiedAttribute + " = ?  WHERE buyer_order_item_id = ?";
-
-
-            stmt = c.prepareStatement(sqlQueryStatement);
-           
-            stmt.setInt(2, buyer_order_information_id);
-            stmt.setBigDecimal(3, price_at_order);
-
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setInt(1, valueToUpdate);
+            stmt.setInt(2, buyer_order_item_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
@@ -2023,21 +2015,48 @@ public void createBuyerOrderItem(int buyer_order_item_id, int buyer_order_inform
                 System.out.println("Error updating Buyer Order Item.");
             }
 
-
             stmt.close();
             c.close();
         } catch (SQLException e) {
+            System.out.println("Error updating Buyer Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error updating Buyer Order Item.");
                 // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
-       
         }
     }
 
+    public void updateBuyerOrderItem(String specifiedAttribute, BigDecimal valueToUpdate, int buyer_order_item_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE BuyerOrderItem SET " + specifiedAttribute + " = ?  WHERE buyer_order_item_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setBigDecimal(1, valueToUpdate);
+            stmt.setInt(2, buyer_order_item_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Buyer Order Item updated successfully!");
+            } else {
+                System.out.println("Error updating Buyer Order Item.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating Buyer Order Item.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
 
     public void deleteBuyerOrderItem(int buyer_order_item_id) {
         try {
@@ -2050,7 +2069,7 @@ public void createBuyerOrderItem(int buyer_order_item_id, int buyer_order_inform
             if (rowsDeleted > 0) {
                 System.out.println("Buyer Order Item deleted successfully!");
             } else {
-                
+                System.out.println("Error deleting Buyer Order Item.");
             }
             
             stmt.close();
@@ -2068,7 +2087,7 @@ public void createBuyerOrderItem(int buyer_order_item_id, int buyer_order_inform
     }
 
 //SupplierOrderInfo
-public void createSupplierOrderInfo(int supplier_order_information_id, int supplier_id, LocalDate order_date, int manufacturer_id, BigDecmimal total_amount) {
+    public void createSupplierOrderInfo(int supplier_order_information_id, int supplier_id, LocalDate order_date, int manufacturer_id, BigDecmimal total_amount) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
@@ -2077,7 +2096,7 @@ public void createSupplierOrderInfo(int supplier_order_information_id, int suppl
             String sqlQueryStatement = "SELECT supplier_order_information_id FROM SupplierOrderInfo;";
             ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
                          
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO SuplierOrderInfo (supplier_id, order_date, manufacturer_id, total_amount) VALUES (?, ?, ?, ?);");
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO SupplierOrderInfo (supplier_id, order_date, manufacturer_id, total_amount) VALUES (?, ?, ?, ?);");
                 stmt.setInt(1, emailInput);
                 stmt.setLocalDate(2, passwordInput);
                 stmt.setInt(3, manufacturer_id);
@@ -2145,7 +2164,7 @@ public void createSupplierOrderInfo(int supplier_order_information_id, int suppl
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
-            ResultSet rs = queryStatement.executeQuery("SELECT * FROM SuplierOrderInfo");
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM SupplierOrderInfo");
             while (rs.next()) {
                 int supplier_order_information_id = rs.getInt("supplier_order_information_id");
                 int supplier_id = rs.getInt("supplier_id");
@@ -2165,43 +2184,123 @@ public void createSupplierOrderInfo(int supplier_order_information_id, int suppl
             }
     }
 
-
-    public void updateSupplierOrderInfo(int supplier_order_information_id, int supplier_id, LocalDate order_date, int manufacturer_id, BigDecmimal total_amount) {        
+    public void updateSupplierOrderInfo(String specifiedAttribute, int valueToUpdate, int supplier_order_information_id) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = null;
-
-
-            String sqlQueryStatement = "UPDATE SupplierOrderInfo SET " + specifiedAttribute + " = ?  WHERE supplier_order_information = ?";
-
-
-            stmt = c.prepareStatement(sqlQueryStatement);
-           
-            stmt.setInt(2, supplier_id);
-            stmt.setDate(3, order_date);
-            stmt.setInt(4, manufacturer_id);
-            stmt.setBigDecimal(5, total_amount);
+            String sqlQueryStatement = "UPDATE SupplierOrderInfo SET " + specifiedAttribute + " = ?  WHERE supplier_order_information_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setInt(1, valueToUpdate);
+            stmt.setInt(2, supplier_order_information_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("Supplier Order Information updated successfully!");
+                System.out.println("Supplier Order Info updated successfully!");
             } else {
-                System.out.println("Error updating Supplier Order Information.");
+                System.out.println("Error updating Supplier Order Info.");
             }
-
 
             stmt.close();
             c.close();
         } catch (SQLException e) {
+            System.out.println("Error updating Supplier Order Info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error updating Supplier Order Information.");
                 // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
-       
+        }
+    }
+
+    public void updateSupplierOrderInfo(String specifiedAttribute, Date valueToUpdate, int supplier_order_information_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE SupplierOrderInfo SET " + specifiedAttribute + " = ?  WHERE supplier_order_information_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setDate(1, valueToUpdate);
+            stmt.setInt(2, supplier_order_information_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Supplier Order Info updated successfully!");
+            } else {
+                System.out.println("Error updating Supplier Order Info.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating Supplier Order Info.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+    public void updateSupplierOrderInfo(String specifiedAttribute, BigDecimal valueToUpdate, int supplier_order_information_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE SupplierOrderInfo SET " + specifiedAttribute + " = ?  WHERE supplier_order_information_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setBigDecimal(1, valueToUpdate);
+            stmt.setInt(2, supplier_order_information_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Supplier Order Info updated successfully!");
+            } else {
+                System.out.println("Error updating Supplier Order Info.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating Supplier Order Info.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+    public void updateSupplierOrderInfo(String specifiedAttribute, String valueToUpdate, int supplier_order_information_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE SupplierOrderInfo SET " + specifiedAttribute + " = ?  WHERE supplier_order_information_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setString(1, valueToUpdate);
+            stmt.setInt(2, supplier_order_information_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Supplier Order Info updated successfully!");
+            } else {
+                System.out.println("Error updating Supplier Order Info.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating Supplier Order Info.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
     }
 
@@ -2212,16 +2311,16 @@ public void createSupplierOrderInfo(int supplier_order_information_id, int suppl
             stmt.setInt(1, supplier_order_id);
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("Supplier Order Information deleted successfully!");
+                System.out.println("Supplier Order Info deleted successfully!");
             } else {
-                System.out.println("Error deleting Supplier Order Information.");
+                System.out.println("Error deleting Supplier Order Info.");
             }
-
+            
             stmt.close();
             c.close();
 
         } catch (SQLException e) {
-            System.out.println("Error deleting Supplier Order Information.");
+            System.out.println("Error deleting Supplier Order Info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
@@ -2241,7 +2340,7 @@ public void createSupplierOrderItem(int supplier_order_item_id, int supplier_ord
             String sqlQueryStatement = "SELECT supplier_order_item_id FROM SupplierOrderItem;";
             ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
                          
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO SuplierOrderItem (supplier_order_information_id, item_id, quantity, price_at_order) VALUES (?, ?, ?, ?);");
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO SupplierOrderItem (supplier_order_information_id, item_id, quantity, price_at_order) VALUES (?, ?, ?, ?);");
                 stmt.setInt(1, supplier_order_information_id);
                 stmt.setInt(2, item_id);
                 stmt.setInt(3, quantity);
@@ -2309,7 +2408,7 @@ public void createSupplierOrderItem(int supplier_order_item_id, int supplier_ord
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
-            ResultSet rs = queryStatement.executeQuery("SELECT * FROM SuplierOrderItem");
+            ResultSet rs = queryStatement.executeQuery("SELECT * FROM SupplierOrderItem");
             while (rs.next()) {
                 int supplier_order_item_id = rs.getInt("supplier_order_item_id");
                 int supplier_order_information_id = rs.getInt("supplier_order_information_id");
@@ -2330,21 +2429,14 @@ public void createSupplierOrderItem(int supplier_order_item_id, int supplier_ord
     }
 
 
-    public void updateSuplierOrderItem(int supplier_order_item_id, int supplier_order_information_id, int item_id, int quantity, BigDecimal price_at_order) {        
+    public void updateSupplierOrderItem(String specifiedAttribute, int valueToUpdate, int supplier_order_detail_id) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = null;
-
-
-            String sqlQueryStatement = "UPDATE SupplierOrderItem SET " + specifiedAttribute + " = ?  WHERE supplier_order_item_id = ?";
-
-
-            stmt = c.prepareStatement(sqlQueryStatement);
-           
-            stmt.setInt(2, supplier_order_information_id);
-            stmt.setInt(3, item_id);
-            stmt.setInt(4, quantity);
-            stmt.setBigDecimal(5, price_at_order);
+            String sqlQueryStatement = "UPDATE SupplierOrderItem SET " + specifiedAttribute + " = ?  WHERE supplier_order_detail_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setInt(1, valueToUpdate);
+            stmt.setInt(2, supplier_order_detail_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
@@ -2354,22 +2446,50 @@ public void createSupplierOrderItem(int supplier_order_item_id, int supplier_ord
                 System.out.println("Error updating Supplier Order Item.");
             }
 
-
             stmt.close();
             c.close();
         } catch (SQLException e) {
+            System.out.println("Error updating Supplier Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error updating Supplier Order Item.");
                 // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
-       
         }
     }
 
-    public void deleteSuplierOrderItem(int supplier_order_detail_id) {
+    public void updateSupplierOrderItem(String specifiedAttribute, BigDecimal valueToUpdate, int supplier_order_detail_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE SupplierOrderItem SET " + specifiedAttribute + " = ?  WHERE supplier_order_detail_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setBigDecimal(1, valueToUpdate);
+            stmt.setInt(2, supplier_order_detail_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Supplier Order Item updated successfully!");
+            } else {
+                System.out.println("Error updating Supplier Order Item.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating Buyer Order Payment.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+    public void deleteSupplierOrderItem(int supplier_order_detail_id) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = c.prepareStatement("DELETE FROM SupplierOrderItem WHERE supplier_order_detail_id = ?;");
@@ -2493,22 +2613,14 @@ public void createBuyerOrderPayment(int payment_id, int buyer_order_information_
     }
 
 
-    public void updateBuyerOrderPayment(int payment_id, int buyer_order_information_id, LocalDate payment_date, String payment_mode, String payment_status) {        
+    public void updateBuyerOrderPayment(String specifiedAttribute, int valueToUpdate, int payment_id) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = null;
-
-
             String sqlQueryStatement = "UPDATE BuyerOrderPayment SET " + specifiedAttribute + " = ?  WHERE payment_id = ?";
-
-
-            stmt = c.prepareStatement(sqlQueryStatement);
-           
-            stmt.setInt(2, buyer_order_information_id);
-            stmt.setDate(3, payment_date);
-            stmt.setString(4, payment_mode);
-            stmt.setString(5, payment_status)
-
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setInt(1, valueToUpdate);
+            stmt.setInt(2, payment_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
@@ -2518,18 +2630,76 @@ public void createBuyerOrderPayment(int payment_id, int buyer_order_information_
                 System.out.println("Error updating Buyer Order Payment.");
             }
 
-
             stmt.close();
             c.close();
         } catch (SQLException e) {
+            System.out.println("Error updating Buyer Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error updating Customer info.");
                 // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
-       
+        }
+    }
+
+    public void updateBuyerOrderPayment(String specifiedAttribute, Date valueToUpdate, int payment_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE BuyerOrderPayment SET " + specifiedAttribute + " = ?  WHERE payment_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setDate(1, valueToUpdate);
+            stmt.setInt(2, payment_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Buyer Order Payment updated successfully!");
+            } else {
+                System.out.println("Error updating Buyer Order Payment.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating Buyer Order Payment.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+    public void updateBuyerOrderPayment(String specifiedAttribute, String valueToUpdate, int payment_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE BuyerOrderPayment SET " + specifiedAttribute + " = ?  WHERE payment_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            
+            stmt.setString(1, valueToUpdate);
+            stmt.setInt(2, payment_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Buyer Order Payment updated successfully!");
+            } else {
+                System.out.println("Error updating Buyer Order Payment.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating Buyer Order Payment.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
     }
 
@@ -2655,22 +2825,14 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
     }
 
 
-    public void updateSupplierOrderPayment(int payment_id, int supplier_order_information_id, LocalDate payment_date, String payment_mode, String payment_status) {        
+    public void updateSupplierOrderPayment(String specifiedAttribute, int valueToUpdate, int payment_id) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = null;
-
-
             String sqlQueryStatement = "UPDATE SupplierOrderPayment SET " + specifiedAttribute + " = ?  WHERE payment_id = ?";
-
-
-            stmt = c.prepareStatement(sqlQueryStatement);
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
            
-            stmt.setInt(2, supplier_order_information_id);
-            stmt.setDate(3, payment_date);
-            stmt.setString(4, payment_mode);
-            stmt.setString(5, payment_status)
-
+            stmt.setInt(1, valueToUpdate);
+            stmt.setInt(2, payment_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
@@ -2680,18 +2842,76 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
                 System.out.println("Error updating Supplier Order Payment.");
             }
 
-
             stmt.close();
             c.close();
         } catch (SQLException e) {
+            System.out.println("Error updating Supplier Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error updating Customer info.");
                 // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
-       
+        }
+    }
+
+    public void updateSupplierOrderPayment(String specifiedAttribute, Date valueToUpdate, int payment_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE SupplierOrderPayment SET " + specifiedAttribute + " = ?  WHERE payment_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+           
+            stmt.setDate(1, valueToUpdate);
+            stmt.setInt(2, payment_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Supplier Order Payment updated successfully!");
+            } else {
+                System.out.println("Error updating Supplier Order Payment.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating Supplier Order Payment.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+    public void updateSupplierOrderPayment(String specifiedAttribute, String valueToUpdate, int payment_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE SupplierOrderPayment SET " + specifiedAttribute + " = ?  WHERE payment_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+           
+            stmt.setString(1, valueToUpdate);
+            stmt.setInt(2, payment_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Supplier Order Payment updated successfully!");
+            } else {
+                System.out.println("Error updating Supplier Order Payment.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println("Error updating Supplier Order Payment.");
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
     }
 
