@@ -1904,70 +1904,26 @@ public class DatabaseConnection {
         }
     }
 
-//BuyerOrderItem CRUD
-public void createBuyerOrderItem(int buyer_order_item_id, int buyer_order_information_id, BigDecimal price_at_order) {
+    public void createBuyerOrderItem(int buyer_order_information_id, BigDecimal price_at_order) {
         try {
-            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT buyer_order_item_id FROM BuyerOrderItem;";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-                         
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);           
             PreparedStatement stmt = c.prepareStatement("INSERT INTO BuyerOrderItem (buyer_order_information_id, price_at_order) VALUES (?, ?);");
-                stmt.setInt(1, buyer_order_information_id);
-                stmt.setBigDecimal(2, price_at_order);
+            stmt.setInt(1, buyer_order_information_id);
+            stmt.setBigDecimal(2, price_at_order);
 
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+            System.out.println("Buyer Order Item inserted successfully!");
+            } else {
+                System.out.println("Error inserting Buyer Order Item.");
+            }
 
-
-
-
-                int rowsInserted = stmt.executeUpdate();
-                if (rowsInserted > 0) {
-                    System.out.println("Buyer Order Item inserted successfully!");
-                } else {
-                    System.out.println("Error inserting Buyer Order Item.");
-                }
-
-
-                stmt.close();
-                c.close();
-
-                // DIDNT CHANGE
-                try {
-                    //create logincredentials first THEN create user
-                    stmt = null;
-                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-                    stmt.setString(1, first_name);
-                    stmt.setString(2, last_name);
-                    stmt.setString(3, emailInput);
-                    stmt.setString(4, phone_number);
-                    stmt.setString(5, delivery_address);
-       
-                    rowsInserted = 0;
-                    rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("Customer info inserted successfully!");
-                    } else {
-                        System.out.println("Error inserting Customer info.");
-                    }
-       
-                    stmt.close();
-                    c.close();
-                } catch (SQLException e) {
-                    if (e instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("Error inserting Customer info.");
-                        // TODO: Handle the specific exception
-                        System.out.println("Foreign key constraint violation: " + e.getMessage());
-                    } else {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-
+            stmt.close();
+            c.close();
 
         } catch (SQLException e) {
+            System.out.println("Error inserting Buyer Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
@@ -2086,24 +2042,15 @@ public void createBuyerOrderItem(int buyer_order_item_id, int buyer_order_inform
         }
     }
 
-//SupplierOrderInfo
-    public void createSupplierOrderInfo(int supplier_order_information_id, int supplier_id, LocalDate order_date, int manufacturer_id, BigDecmimal total_amount) {
+    public void createSupplierOrderInfo(int supplier_id, Date order_date, int manufacturer_id, BigDecimal total_amount, String status) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT supplier_order_information_id FROM SupplierOrderInfo;";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-                         
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO SupplierOrderInfo (supplier_id, order_date, manufacturer_id, total_amount) VALUES (?, ?, ?, ?);");
-                stmt.setInt(1, emailInput);
-                stmt.setLocalDate(2, passwordInput);
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO SupplierOrderInfo (supplier_id, order_date, manufacturer_id, total_amount, status) VALUES (?, ?, ?, ?, ?);");
+                stmt.setInt(1, supplier_id);
+                stmt.setDate(2, order_date);
                 stmt.setInt(3, manufacturer_id);
-                stmt.setBigDecimal (4, total_amount);
-
-
-
+                stmt.setBigDecimal(4, total_amount);
+                stmt.setString(5, status);
 
                 int rowsInserted = stmt.executeUpdate();
                 if (rowsInserted > 0) {
@@ -2112,45 +2059,12 @@ public void createBuyerOrderItem(int buyer_order_item_id, int buyer_order_inform
                     System.out.println("Error inserting Supplier Order Information.");
                 }
 
-
                 stmt.close();
                 c.close();
 
-
-                try {
-                    //create logincredentials first THEN create user
-                    stmt = null;
-                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-                    stmt.setString(1, first_name);
-                    stmt.setString(2, last_name);
-                    stmt.setString(3, emailInput);
-                    stmt.setString(4, phone_number);
-                    stmt.setString(5, delivery_address);
-       
-                    rowsInserted = 0;
-                    rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("Customer info inserted successfully!");
-                    } else {
-                        System.out.println("Error inserting Customer info.");
-                    }
-       
-                    stmt.close();
-                    c.close();
-                } catch (SQLException e) {
-                    if (e instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("Error inserting Customer info.");
-                        // TODO: Handle the specific exception
-                        System.out.println("Foreign key constraint violation: " + e.getMessage());
-                    } else {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-
-
         } catch (SQLException e) {
+            System.out.println("Error inserting Supplier Order Information.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
@@ -2330,24 +2244,15 @@ public void createBuyerOrderItem(int buyer_order_item_id, int buyer_order_inform
         }
     }
 
-//SupplierOrderItem CRUD
-public void createSupplierOrderItem(int supplier_order_item_id, int supplier_order_information_id, int item_id, int quantity, BigDecimal price_at_order) {
+    public void createSupplierOrderItem(int supplier_order_id, int item_id, int quantity, BigDecimal price_at_order) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT supplier_order_item_id FROM SupplierOrderItem;";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-                         
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO SupplierOrderItem (supplier_order_information_id, item_id, quantity, price_at_order) VALUES (?, ?, ?, ?);");
-                stmt.setInt(1, supplier_order_information_id);
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO SupplierOrderItem (supplier_order_id, item_id, quantity, price_at_order) VALUES (?, ?, ?, ?);");
+                stmt.setInt(1,supplier_order_id);
                 stmt.setInt(2, item_id);
                 stmt.setInt(3, quantity);
-                stmt.setBigDecimal (4, price_at_order);
-
-
-
+                stmt.setBigDecimal(4, price_at_order);
 
                 int rowsInserted = stmt.executeUpdate();
                 if (rowsInserted > 0) {
@@ -2356,45 +2261,12 @@ public void createSupplierOrderItem(int supplier_order_item_id, int supplier_ord
                     System.out.println("Error inserting Supplier Order Item.");
                 }
 
-
                 stmt.close();
                 c.close();
 
-
-                try {
-                    //create logincredentials first THEN create user
-                    stmt = null;
-                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-                    stmt.setString(1, first_name);
-                    stmt.setString(2, last_name);
-                    stmt.setString(3, emailInput);
-                    stmt.setString(4, phone_number);
-                    stmt.setString(5, delivery_address);
-       
-                    rowsInserted = 0;
-                    rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("Customer info inserted successfully!");
-                    } else {
-                        System.out.println("Error inserting Customer info.");
-                    }
-       
-                    stmt.close();
-                    c.close();
-                } catch (SQLException e) {
-                    if (e instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("Error inserting Customer info.");
-                        // TODO: Handle the specific exception
-                        System.out.println("Foreign key constraint violation: " + e.getMessage());
-                    } else {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-
-
         } catch (SQLException e) {
+            System.out.println("Error inserting Supplier Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
@@ -2515,70 +2387,29 @@ public void createSupplierOrderItem(int supplier_order_item_id, int supplier_ord
         }
     }
 
-//Buyer Order Payment
-public void createBuyerOrderPayment(int payment_id, int buyer_order_information_id, LocalDate payment_date, String payment_mode, String payment_status) {
+    public void createBuyerOrderPayment(int buyer_order_information_id, Date payment_date, String payment_mode, String payment_status) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT payment_id  FROM BuyerOrderPayment;";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-                         
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO BuyerOrderPayment (buyer_order_information_id, payment_date, payment_mode, payment_status) VALUES (?, ?, ?, ?);");
-                stmt.setInt(1, buyer_order_information_id);
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO SupplierOrderItem (buyer_order_information_id, payment_date, payment_mode, payment_status) VALUES (?, ?, ?, ?);");
+                stmt.setInt(1,buyer_order_information_id);
                 stmt.setDate(2, payment_date);
                 stmt.setString(3, payment_mode);
                 stmt.setString(4, payment_status);
 
-
-
                 int rowsInserted = stmt.executeUpdate();
                 if (rowsInserted > 0) {
-                    System.out.println("BuyerOrderPayment inserted successfully!");
+                    System.out.println("Buyer Order Payment inserted successfully!");
                 } else {
-                    System.out.println("Error inserting BuyerOrderPayment.");
+                    System.out.println("Error inserting Buyer Order Payment.");
                 }
-
 
                 stmt.close();
                 c.close();
 
-
-                try {
-                    //create logincredentials first THEN create user
-                    stmt = null;
-                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-                    stmt.setString(1, first_name);
-                    stmt.setString(2, last_name);
-                    stmt.setString(3, emailInput);
-                    stmt.setString(4, phone_number);
-                    stmt.setString(5, delivery_address);
-       
-                    rowsInserted = 0;
-                    rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("Customer info inserted successfully!");
-                    } else {
-                        System.out.println("Error inserting Customer info.");
-                    }
-       
-                    stmt.close();
-                    c.close();
-                } catch (SQLException e) {
-                    if (e instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("Error inserting Customer info.");
-                        // TODO: Handle the specific exception
-                        System.out.println("Foreign key constraint violation: " + e.getMessage());
-                    } else {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-
-
         } catch (SQLException e) {
+            System.out.println("Error inserting Buyer Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
@@ -2727,23 +2558,15 @@ public void createBuyerOrderPayment(int payment_id, int buyer_order_information_
         }
     }
 
-//SupplierOrderPayment CRUD
-public void createSupplierOrderPayment(int payment_id, int supplier_order_information_id, LocalDate payment_date, String payment_mode, String payment_status) {
+    public void createSupplierOrderPayment(int supplier_order_id, Date payment_date, String payment_mode, String payment_status) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT payment_id  FROM SupplierOrderPayment;";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-                         
-            PreparedStatement stmt = c.prepareStatement("INSERT INTO SupplierOrderPayment (supplier_order_information_id, payment_date, payment_mode, payment_status) VALUES (?, ?, ?, ?);");
-                stmt.setInt(1, supplier_order_information_id);
+            PreparedStatement stmt = c.prepareStatement("INSERT INTO SupplierOrderPayment (supplier_order_id, payment_date, payment_mode, payment_status) VALUES (?, ?, ?, ?);");
+                stmt.setInt(1, supplier_order_id);
                 stmt.setDate(2, payment_date);
                 stmt.setString(3, payment_mode);
                 stmt.setString(4, payment_status);
-
-
 
                 int rowsInserted = stmt.executeUpdate();
                 if (rowsInserted > 0) {
@@ -2752,45 +2575,12 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
                     System.out.println("Error inserting Supplier Order Payment.");
                 }
 
-
                 stmt.close();
                 c.close();
 
-
-                try {
-                    //create logincredentials first THEN create user
-                    stmt = null;
-                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-                    stmt.setString(1, first_name);
-                    stmt.setString(2, last_name);
-                    stmt.setString(3, emailInput);
-                    stmt.setString(4, phone_number);
-                    stmt.setString(5, delivery_address);
-       
-                    rowsInserted = 0;
-                    rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("Customer info inserted successfully!");
-                    } else {
-                        System.out.println("Error inserting Customer info.");
-                    }
-       
-                    stmt.close();
-                    c.close();
-                } catch (SQLException e) {
-                    if (e instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("Error inserting Customer info.");
-                        // TODO: Handle the specific exception
-                        System.out.println("Foreign key constraint violation: " + e.getMessage());
-                    } else {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-
-
         } catch (SQLException e) {
+            System.out.println("Error inserting Supplier Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error inserting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
@@ -2798,7 +2588,6 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
             }
         }
     }
-
 
     public void readSupplierOrderPayment() {        
         try {
