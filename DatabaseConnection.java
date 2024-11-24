@@ -1932,26 +1932,29 @@ public class DatabaseConnection {
         }
     }
 
-
-    public void readBuyerOrderItem() {        
+    public List<List<Object>> readBuyerOrderItem() {
+        List<List<Object>> info = new ArrayList<>();
+        info.add(new ArrayList<>());
+        info.add(new ArrayList<>());
+        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM BuyerOrderItem");
+            int i = 0;
             while (rs.next()) {
-                int buyer_order_item_id = rs.getInt("buyer_order_item_id");
-                int buyer_order_information_id = rs.getInt("buyer_order_information_id");
-                BigDecimal price_at_order = rs.getBigDecimal("price_at_order");
-
-               
-                System.out.println(buyer_order_item_id + "\t" +
-                                   buyer_order_information_id + "\t" +
-                                   price_at_order);
+                info.get(i).add(rs.getInt("buyer_order_item_id"));
+                info.get(i).add(rs.getInt("buyer_order_information_id"));
+                info.get(i).add(rs.getDate("price_at_order"));
+                i++;
             }
+            System.out.println("Success: readBuyerOrderItem");
+            return info;
         } catch (SQLException e) {
-                System.out.println("Error displaying Buyer Order Item.");
+                System.out.println("Error: readBuyerOrderItem.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+                return null;
+        }
     }
 
     public void updateBuyerOrderItem(String specifiedAttribute, int valueToUpdate, int buyer_order_item_id) {        
@@ -2073,29 +2076,32 @@ public class DatabaseConnection {
         }
     }
 
-
-    public void readSupplierOrderInfo() {        
+    public List<List<Object>> readSupplierOrderInfo() {
+        List<List<Object>> info = new ArrayList<>();
+        info.add(new ArrayList<>());
+        info.add(new ArrayList<>());
+        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM SupplierOrderInfo");
+            int i = 0;
             while (rs.next()) {
-                int supplier_order_information_id = rs.getInt("supplier_order_information_id");
-                int supplier_id = rs.getInt("supplier_id");
-                LocalDate order_date = rs.getLocalDate("order_date");
-                int manufacturer_id = rs.getInt("manufacturer_id");
-                BigDecimal total_amount = rs.getBigDecimal("total_amount");
-               
-                System.out.println(supplier_order_information_id + "\t" +
-                                   supplier_id + "\t" +
-                                   order_date  + "\t" +
-                                   manufacturer_id + "\t" +
-                                   total_amount);
+                info.get(i).add(rs.getInt("supplier_order_id"));
+                info.get(i).add(rs.getInt("supplier_id"));
+                info.get(i).add(rs.getDate("order_date"));
+                info.get(i).add(rs.getInt("manufacturer_id"));
+                info.get(i).add(rs.getBigDecimal("total_amount"));
+                info.get(i).add(rs.getString("status"));
+                i++;
             }
+            System.out.println("Success: readSupplierOrderInfo");
+            return info;
         } catch (SQLException e) {
-                System.out.println("Error displaying Supplier Order Information.");
+                System.out.println("Error displaying Supplier Order Info.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+                return null;
+        }
     }
 
     public void updateSupplierOrderInfo(String specifiedAttribute, int valueToUpdate, int supplier_order_information_id) {        
@@ -2275,31 +2281,32 @@ public class DatabaseConnection {
         }
     }
 
-
-    public void readSupplierOrderItem() {        
+    public List<List<Object>> readSupplierOrderItem() {
+        List<List<Object>> info = new ArrayList<>();
+        info.add(new ArrayList<>());
+        info.add(new ArrayList<>());
+        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM SupplierOrderItem");
+            int i = 0;
             while (rs.next()) {
-                int supplier_order_item_id = rs.getInt("supplier_order_item_id");
-                int supplier_order_information_id = rs.getInt("supplier_order_information_id");
-                int item_id = rs.getInt("item_id");
-                int quantity = rs.getInt("quantity");
-                BigDecimal price_at_order = rs.getBigDecimal("price_at_order");
-               
-                System.out.println(supplier_order_item_id + "\t" +
-                                   supplier_order_information_id + "\t" +
-                                   item_id + "\t" +
-                                   quantity  + "\t" +
-                                   price_at_order);
+                info.get(i).add(rs.getInt("supplier_order_item_id"));
+                info.get(i).add(rs.getInt("supplier_order_information_id"));
+                info.get(i).add(rs.getInt("item_id"));
+                info.get(i).add(rs.getInt("quantity"));
+                info.get(i).add(rs.getBigDecimal("price_at_order"));
+                i++;
             }
+            System.out.println("Success: readSupplierOrderItem");
+            return info;
         } catch (SQLException e) {
                 System.out.println("Error displaying Supplier Order Item.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+                return null;
+        }
     }
-
 
     public void updateSupplierOrderItem(String specifiedAttribute, int valueToUpdate, int supplier_order_detail_id) {        
         try {
@@ -2418,31 +2425,32 @@ public class DatabaseConnection {
         }
     }
 
-
-    public void readBuyerOrderPayment() {        
+    public List<List<Object>> readBuyerOrderPayment() {
+        List<List<Object>> info = new ArrayList<>();
+        info.add(new ArrayList<>());
+        info.add(new ArrayList<>());
+        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM BuyerOrderPayment");
+            int i = 0;
             while (rs.next()) {
-                int payment_id = rs.getInt("payment_id");
-                int buyer_order_information_id = rs.getInt("buyer_order_information_id");
-                LocalDate payment_date = rs.getLocalDate("payment_date");
-                String payment_mode = rs.getString("payment_mode");
-                String payment_status = rs.getString("payment_status");
-               
-                System.out.println(payment_id + "\t" +
-                                   buyer_order_information_id + "\t" +
-                                   payment_date  + "\t" +
-                                   payment_mode + "\t" +
-                                   payment_status);
+                info.get(i).add(rs.getInt("payment_id"));
+                info.get(i).add(rs.getInt("buyer_order_information_id"));
+                info.get(i).add(rs.getDate("payment_date"));
+                info.get(i).add(rs.getString("payment_mode"));
+                info.get(i).add(rs.getString("payment_status"));
+                i++;
             }
+            System.out.println("Success: readBuyerOrderPayment");
+            return info;
         } catch (SQLException e) {
                 System.out.println("Error displaying Buyer Order Payment.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+                return null;
+        }
     }
-
 
     public void updateBuyerOrderPayment(String specifiedAttribute, int valueToUpdate, int payment_id) {        
         try {
@@ -2534,7 +2542,6 @@ public class DatabaseConnection {
         }
     }
 
-
     public void deleteBuyerOrderPayment(int payment_id) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -2589,30 +2596,32 @@ public class DatabaseConnection {
         }
     }
 
-    public void readSupplierOrderPayment() {        
+    public List<List<Object>> readSupplierOrderPayment() {
+        List<List<Object>> info = new ArrayList<>();
+        info.add(new ArrayList<>());
+        info.add(new ArrayList<>());
+        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM SupplierOrderPayment");
+            int i = 0;
             while (rs.next()) {
-                int payment_id = rs.getInt("payment_id");
-                int buyer_order_information_id = rs.getInt("supplier_order_information_id");
-                LocalDate payment_date = rs.getLocalDate("payment_date");
-                String payment_mode = rs.getString("payment_mode");
-                String payment_status = rs.getString("payment_status");
-               
-                System.out.println(payment_id + "\t" +
-                                   supplier_order_information_id + "\t" +
-                                   payment_date  + "\t" +
-                                   payment_mode + "\t" +
-                                   payment_status);
+                info.get(i).add(rs.getInt("payment_id"));
+                info.get(i).add(rs.getInt("supplier_order_information_id"));
+                info.get(i).add(rs.getDate("payment_date"));
+                info.get(i).add(rs.getString("payment_mode"));
+                info.get(i).add(rs.getString("payment_status"));
+                i++;
             }
+            System.out.println("Success: readSupplierOrderPayment");
+            return info;
         } catch (SQLException e) {
-                System.out.println("Error displaying Buyer Order Payment.");
+                System.out.println("Error displaying Supplier Order Payment.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+                return null;
+        }
     }
-
 
     public void updateSupplierOrderPayment(String specifiedAttribute, int valueToUpdate, int payment_id) {        
         try {
@@ -2771,7 +2780,7 @@ public class DatabaseConnection {
 
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement()
+            java.sql.Statement queryStatement = c.createStatement();
             String sqlQueryStatement = "SELECT c.customer_id, concat(c.first_name,' ',c.last_name) AS name, c.email, c.phone_number, c.delivery_address, i.name AS item_name, sc.quantity FROM customer c LEFT JOIN shoppingcart sc ON c.customer_id = sc.customer_id LEFT JOIN inventory inv ON inv.inventory_entry_id = sc.inventory_entry_id LEFT JOIN item i ON i.item_id = inv.item_id;";
             ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
             int i = 0;
