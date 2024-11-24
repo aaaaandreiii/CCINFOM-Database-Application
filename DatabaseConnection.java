@@ -453,6 +453,25 @@ public class DatabaseConnection {
         return userInfo;
     }
 
+    public ArrayList<String> findSupplierAddresses() {
+        ArrayList<String> addresses = new ArrayList<>();
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            java.sql.Statement queryStatement = c.createStatement();
+            ResultSet rs = queryStatement.executeQuery("SELECT address FROM supplier;");
+            while (rs.next()) {
+                addresses.add(rs.getString("address"));
+            }
+            System.out.println("Supplier addresses found!");
+            return addresses;
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting Supplier addresses.");
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        }
+    }
+
     public void createSupplier(int customer_id, BigDecimal supplier_rating) {        
         try {
             int supplier_id = -1;
@@ -1680,25 +1699,15 @@ public class DatabaseConnection {
         }
     }
 
-
-//BuyerOrderInfo CRUD
-    public void createBuyerOrderInfo(int buyer_order_information_id, int shoppingcart_id, LocalDate order_date, BigDecimal total_amount, String status ) {
+    public void createBuyerOrderInfo(int shoppingcart_id, Date order_date, BigDecimal total_amount, String status) {
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT email FROM customer;";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-                         
             PreparedStatement stmt = c.prepareStatement("INSERT INTO BuyerOrderInfo (shoppingcart_id, order_date, total_amount, status) VALUES (?, ?, ?, ?);");
                 stmt.setInt(1,shoppingcart_id);
-                stmt.setLocalDate(2, order_date);
+                stmt.setDate(2, order_date);
                 stmt.setBigDecimal(3, total_amount);
                 stmt.setString(4, status);
-
-
-
 
                 int rowsInserted = stmt.executeUpdate();
                 if (rowsInserted > 0) {
@@ -1707,41 +1716,8 @@ public class DatabaseConnection {
                     System.out.println("Error inserting Buyer Order Information.");
                 }
 
-
                 stmt.close();
                 c.close();
-
-                //DIDNT CHANGE
-                try {
-                    //create logincredentials first THEN create user
-                    stmt = null;
-                    stmt = c.prepareStatement("INSERT INTO Customer (first_name, last_name, email, phone_number, delivery_address) VALUES (?, ?, ?, ?, ?);");
-                    stmt.setString(1, first_name);
-                    stmt.setString(2, last_name);
-                    stmt.setString(3, emailInput);
-                    stmt.setString(4, phone_number);
-                    stmt.setString(5, delivery_address);
-       
-                    rowsInserted = 0;
-                    rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("Customer info inserted successfully!");
-                    } else {
-                        System.out.println("Error inserting Customer info.");
-                    }
-       
-                    stmt.close();
-                    c.close();
-                } catch (SQLException e) {
-                    if (e instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("Error inserting Customer info.");
-                        // TODO: Handle the specific exception
-                        System.out.println("Foreign key constraint violation: " + e.getMessage());
-                    } else {
-                        Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-                    }
-                }
-
 
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
@@ -1754,48 +1730,40 @@ public class DatabaseConnection {
         }
     }
 
-
-    public void readBuyerOrderInfo() {        
+    public List<List<Object>> readBuyerOrderInfo() {
+        List<List<Object>> orderInfo = new ArrayList<>();
+        orderInfo.add(new ArrayList<>());
+        orderInfo.add(new ArrayList<>());
+   
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
             java.sql.Statement queryStatement = c.createStatement();
             ResultSet rs = queryStatement.executeQuery("SELECT * FROM BuyerOrderInfo");
+            int i = 0;
             while (rs.next()) {
-                int buyer_order_information_id = rs.getInt("buyer_order_information_id");
-                int shoppingcart_id = rs.getInt("shoppingcart_id");
-                LocalDate order_date = rs.getLocalDate("order_date");
-                BigDecimal total_amount = rs.getBigDecimal("total_amount");
-                String status = rs.getString("status");
-                
-               
-                System.out.println(buyer_order_information_id + "\t" +
-                                   shoppingcart_id + "\t" +
-                                   order_date  + "\t" +
-                                   total_amount + "\t" +
-                                   status);
+                orderInfo.get(i).add(rs.getInt("buyer_order_information_id"));
+                orderInfo.get(i).add(rs.getInt("shoppingcart_id"));
+                orderInfo.get(i).add(rs.getDate("order_date"));
+                orderInfo.get(i).add(rs.getBigDecimal("total_amount"));
+                orderInfo.get(i).add(rs.getString("statusy"));                
+                i++;
             }
+            System.out.println("success: readBuyerOrderInfo");
+            return orderInfo;
         } catch (SQLException e) {
                 System.out.println("Error displaying Buyer Order Information.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
-            }
+                return null;
+        }
     }
 
-
-    public void updateBuyerOrderInfo(int buyer_order_information_id, int shoppingcart_id, LocalDate order_date, BigDecimal total_amount, String status) {        
+    public void updateBuyerOrderInfo(String specifiedAttribute, int valueToUpdate, int buyer_order_information_id) {        
         try {
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = null;
-
-
             String sqlQueryStatement = "UPDATE BuyerOrderInfo SET " + specifiedAttribute + " = ?  WHERE buyer_order_information_id = ?";
-
-
-            stmt = c.prepareStatement(sqlQueryStatement);
-           
-            stmt.setInt(2, shoppingcart_id);
-            stmt.setLocalDate(3, order_date);
-            stmt.setBigDecmial(4, total_amount);
-            stmt.setString(5, status);
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            stmt.setInt(1, valueToUpdate);
+            stmt.setInt(3, buyer_order_information_id);
 
             int rowsInserted = 0;
             rowsInserted = stmt.executeUpdate();
@@ -1804,7 +1772,6 @@ public class DatabaseConnection {
             } else {
                 System.out.println("Error updating Buyer Order Information.");
             }
-
 
             stmt.close();
             c.close();
@@ -1820,22 +1787,99 @@ public class DatabaseConnection {
         }
     }
 
+    public void updateBuyerOrderInfo(String specifiedAttribute, String valueToUpdate, int buyer_order_information_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE BuyerOrderInfo SET " + specifiedAttribute + " = ?  WHERE buyer_order_information_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            stmt.setString(1, valueToUpdate);
+            stmt.setInt(3, buyer_order_information_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Buyer Order Information updated successfully!");
+            } else {
+                System.out.println("Error updating Buyer Order Information.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Buyer Order Information.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+       
+        }
+    }
+
+    public void updateBuyerOrderInfo(String specifiedAttribute, Date valueToUpdate, int buyer_order_information_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE BuyerOrderInfo SET " + specifiedAttribute + " = ?  WHERE buyer_order_information_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            stmt.setDate(1, valueToUpdate);
+            stmt.setInt(3, buyer_order_information_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Buyer Order Information updated successfully!");
+            } else {
+                System.out.println("Error updating Buyer Order Information.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Buyer Order Information.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+       
+        }
+    }
+
+    public void updateBuyerOrderInfo(String specifiedAttribute, BigDecimal valueToUpdate, int buyer_order_information_id) {        
+        try {
+            Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
+            String sqlQueryStatement = "UPDATE BuyerOrderInfo SET " + specifiedAttribute + " = ?  WHERE buyer_order_information_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sqlQueryStatement);
+            stmt.setBigDecimal(1, valueToUpdate);
+            stmt.setInt(3, buyer_order_information_id);
+
+            int rowsInserted = 0;
+            rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Buyer Order Information updated successfully!");
+            } else {
+                System.out.println("Error updating Buyer Order Information.");
+            }
+
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                System.out.println("Error updating Buyer Order Information.");
+                // TODO: Handle the specific exception
+                System.out.println(e.getMessage());
+            } else {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
+            }
+       
+        }
+    }
 
     public void deleteBuyerOrderInformation(int buyer_order_information_id) {
         try {
-            //delete user first THEN logincredentials
-            String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT buyer_order_information_id FROM BuyerOrderInfo WHERE customer_id = " + idToDelete + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-           
-            while (rs.next()) {
-                buyer_order_information_id = rs.getString("buyer_order_information_id");
-            }            
-
 
             PreparedStatement stmt = c.prepareStatement("DELETE FROM BuyerOrderInfo WHERE buyer_order_information_id = ?;");
             stmt.setInt(1, buyer_order_information_id);
@@ -1845,25 +1889,9 @@ public class DatabaseConnection {
             } else {
                 System.out.println("Error deleting Buyer Order Information.");
             }
-           
-           /*
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
-
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
-            }
-
-            */
+            
             stmt.close();
             c.close();
-
 
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
@@ -2178,7 +2206,7 @@ public void createSupplierOrderInfo(int supplier_order_information_id, int suppl
             stmt = c.prepareStatement(sqlQueryStatement);
            
             stmt.setInt(2, supplier_id);
-            stmt.setLocalDate(3, order_date);
+            stmt.setDate(3, order_date);
             stmt.setInt(4, manufacturer_id);
             stmt.setBigDecimal(5, total_amount);
 
@@ -2470,7 +2498,7 @@ public void createBuyerOrderPayment(int payment_id, int buyer_order_information_
                          
             PreparedStatement stmt = c.prepareStatement("INSERT INTO BuyerOrderPayment (buyer_order_information_id, payment_date, payment_mode, payment_status) VALUES (?, ?, ?, ?);");
                 stmt.setInt(1, buyer_order_information_id);
-                stmt.setLocalDate(2, payment_date);
+                stmt.setDate(2, payment_date);
                 stmt.setString(3, payment_mode);
                 stmt.setString(4, payment_status);
 
@@ -2568,7 +2596,7 @@ public void createBuyerOrderPayment(int payment_id, int buyer_order_information_
             stmt = c.prepareStatement(sqlQueryStatement);
            
             stmt.setInt(2, buyer_order_information_id);
-            stmt.setLocalDate(3, payment_date);
+            stmt.setDate(3, payment_date);
             stmt.setString(4, payment_mode);
             stmt.setString(5, payment_status)
 
@@ -2665,7 +2693,7 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
                          
             PreparedStatement stmt = c.prepareStatement("INSERT INTO SupplierOrderPayment (supplier_order_information_id, payment_date, payment_mode, payment_status) VALUES (?, ?, ?, ?);");
                 stmt.setInt(1, supplier_order_information_id);
-                stmt.setLocalDate(2, payment_date);
+                stmt.setDate(2, payment_date);
                 stmt.setString(3, payment_mode);
                 stmt.setString(4, payment_status);
 
@@ -2763,7 +2791,7 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
             stmt = c.prepareStatement(sqlQueryStatement);
            
             stmt.setInt(2, supplier_order_information_id);
-            stmt.setLocalDate(3, payment_date);
+            stmt.setDate(3, payment_date);
             stmt.setString(4, payment_mode);
             stmt.setString(5, payment_status)
 
@@ -2991,85 +3019,85 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
     }
 
 
-    #a
-SELECT 
-    c.customer_id,
-    c.first_name,
-    c.last_name,
-    c.email,
-    c.phone_number,
-    c.delivery_address,
-    sc.shoppingcart_id,
-    sc.quantity,
-    i.name AS product_name
-FROM 
-    Customer c
-JOIN 
-    ShoppingCart sc ON c.customer_id = sc.customer_id
-JOIN 
-    Inventory inv ON sc.inventory_entry_id = inv.inventory_entry_id
-JOIN 
-    Item i ON inv.item_id = i.item_id
-WHERE 
-    sc.quantity > 0;
-#b
-SELECT 
-    s.supplier_id,
-    s.supplier_fname,
-    s.supplier_lname,
-    s.email,
-    s.phone,
-    s.address,
-    s.supplier_rating,
-    i.name AS product_name
-FROM 
-    Supplier s
-JOIN 
-    Inventory inv ON s.supplier_id = inv.supplier_id
-JOIN 
-    Item i ON inv.item_id = i.item_id
-WHERE 
-    s.supplier_rating IS NOT NULL 
-    AND inv.quantity > 0;
-#c
-INSERT INTO BuyerOrderInfo (shoppingcart_id, order_date, status)
-VALUES 
-    (?, ?, ?);
+//     #a
+// SELECT 
+//     c.customer_id,
+//     c.first_name,
+//     c.last_name,
+//     c.email,
+//     c.phone_number,
+//     c.delivery_address,
+//     sc.shoppingcart_id,
+//     sc.quantity,
+//     i.name AS product_name
+// FROM 
+//     Customer c
+// JOIN 
+//     ShoppingCart sc ON c.customer_id = sc.customer_id
+// JOIN 
+//     Inventory inv ON sc.inventory_entry_id = inv.inventory_entry_id
+// JOIN 
+//     Item i ON inv.item_id = i.item_id
+// WHERE 
+//     sc.quantity > 0;
+// #b
+// SELECT 
+//     s.supplier_id,
+//     s.supplier_fname,
+//     s.supplier_lname,
+//     s.email,
+//     s.phone,
+//     s.address,
+//     s.supplier_rating,
+//     i.name AS product_name
+// FROM 
+//     Supplier s
+// JOIN 
+//     Inventory inv ON s.supplier_id = inv.supplier_id
+// JOIN 
+//     Item i ON inv.item_id = i.item_id
+// WHERE 
+//     s.supplier_rating IS NOT NULL 
+//     AND inv.quantity > 0;
+// #c
+// INSERT INTO BuyerOrderInfo (shoppingcart_id, order_date, status)
+// VALUES 
+//     (?, ?, ?);
 
-#d
-UPDATE ShoppingCart
-SET quantity = 0
-WHERE customer_id = ? AND inventory_entry_id = ?;
+// #d
+// UPDATE ShoppingCart
+// SET quantity = 0
+// WHERE customer_id = ? AND inventory_entry_id = ?;
 
-#e
-UPDATE Item i
-SET i.purchase_count = i.purchase_count + 1
-WHERE i.item_id = ?;
+// #e
+// UPDATE Item i
+// SET i.purchase_count = i.purchase_count + 1
+// WHERE i.item_id = ?;
 
-#f
-UPDATE Inventory inv
-SET inv.quantity = inv.quantity - ?
-WHERE inv.supplier_id = ? AND inv.item_id = ?;
+// #f
+// UPDATE Inventory inv
+// SET inv.quantity = inv.quantity - ?
+// WHERE inv.supplier_id = ? AND inv.item_id = ?;
 
-#g
-    UPDATE SupplierOrderInfo soi
-SET soi.total_amount = soi.total_amount + ?, soi.order_date = NOW(), soi.status = 'Pending'
-WHERE soi.supplier_id = ?;
+// #g
+//     UPDATE SupplierOrderInfo soi
+// SET soi.total_amount = soi.total_amount + ?, soi.order_date = NOW(), soi.status = 'Pending'
+// WHERE soi.supplier_id = ?;
 
-    public void transactionsVillanuevaA() {
+//     public void transactionsVillanuevaA() {
 
-    }
+//     }
 
-    -- a
-SELECT * FROM BuyerOrderPayment;
+//     -- a
+// SELECT * FROM BuyerOrderPayment;
 
--- b
-UPDATE BuyerOrderPayment bop
-SET bop.payment_status = 'Refunded'
-WHERE bop.buyer_order_information_id = ?;
-    public void transactionsYoungA() {
+// -- b
+// UPDATE BuyerOrderPayment bop
+// SET bop.payment_status = 'Refunded'
+// WHERE bop.buyer_order_information_id = ?;
+//     public void transactionsYoungA() {
 
-    }
+//     }
 
     public List<List<Object>> reportsVillanueva() {
         //Product Sales for the Week, Month, and Year per Supplier
@@ -3171,17 +3199,14 @@ WHERE bop.buyer_order_information_id = ?;
                     """;
 
             ResultSet resultSet = stmt.executeQuery(query);
-
+            int i = 0;
             while (resultSet.next()) {
                 quarterTrends.get(i).add(resultSet.getString("manufacturer"));
                 quarterTrends.get(i).add(resultSet.getString("quarter"));
                 quarterTrends.get(i).add(resultSet.getInt("year"));
                 quarterTrends.get(i).add(resultSet.getInt("total_quantity_sold"));
                 quarterTrends.get(i).add(resultSet.getDouble("total_sales"));
-
-                System.out.printf(
-                        "Manufacturer: %s, Quarter: %s, Year: %d, Total Quantity Sold: %d, Total Sales: %.2f%n",
-                        manufacturer, quarter, year, totalQuantitySold, totalSales);
+                i++;
             }
             System.out.println("Success: Product Category Trends for the Quarter");
             return quarterTrends;
@@ -3189,7 +3214,6 @@ WHERE bop.buyer_order_information_id = ?;
             e.printStackTrace();
             return null;
         }
-
     }
 
     public List<List<Object>> reportsBalingitWeek() {

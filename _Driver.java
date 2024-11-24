@@ -2,7 +2,10 @@ import java.lang.ModuleLayer.Controller;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.text.View;
 
@@ -24,6 +27,8 @@ public class _Driver {
             System.out.println();
         }
     }
+
+    
 
     public static void main (String[] args){
         ArrayList<Object> userInfo = null;
@@ -87,6 +92,31 @@ public class _Driver {
         
 
 
+
+
+        ArrayList<String> addresses = jdbc.findSupplierAddresses();
+        ArrayList<Address> parsedAddresses = new ArrayList<>();
+        for (String address : addresses) {
+            parsedAddresses.add(Address.fromString(address));
+        }
+
+        HashMap<String, ArrayList<Address>> groupedByProvince = new HashMap<>();
+        for (Address addr : parsedAddresses) {
+            groupedByProvince
+                .computeIfAbsent(addr.getProvince(), k -> new ArrayList<>())
+                .add(addr);
+        }
+
+        for (Map.Entry<String, ArrayList<Address>> entry : groupedByProvince.entrySet()) {
+            String province = entry.getKey();
+            ArrayList<Address> provinceAddresses = entry.getValue();
+            System.out.println("Province: " + province);
+
+            provinceAddresses.sort(Comparator.comparing(Address::getCity).thenComparing(Address::getStreet));
+            for (Address addr : provinceAddresses) {
+                System.out.println(addr);
+            }
+        }
 
 
         // System.out.println("Opening GUI");
