@@ -1,5 +1,5 @@
-import views.ViewMain;
 import controllers.ConMain;
+import views.ViewMain;
 
 public class Main {
     public static void main(String[] args) {
