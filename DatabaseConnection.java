@@ -1,14 +1,10 @@
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 
 //result set for receiving queries
 //prepared statement for instruction queries to insert, delete
@@ -76,7 +72,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error finding user by email.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 System.out.println("Error deleting Log In Credentials.");
@@ -113,7 +108,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error finding user by email.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 System.out.println("Error deleting Log In Credentials.");
@@ -164,7 +158,6 @@ public class DatabaseConnection {
             } catch (SQLException e) {
                 if (e instanceof SQLIntegrityConstraintViolationException) {
                     System.out.println("Error inserting Customer info.");
-                    // TODO: Handle the specific exception
                     System.out.println("Foreign key constraint violation: " + e.getMessage());
                 } else {
                     Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -174,7 +167,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error inserting Log In Credentials.");
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -233,7 +225,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Customer info.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -354,7 +345,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error deleting Log In Credentials.");
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 System.out.println("Error deleting Log In Credentials.");
@@ -443,7 +433,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error finding supplier by name.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -536,7 +525,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error inserting Supplier info.");
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -601,7 +589,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Supplier info.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -628,7 +615,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error deleting Log In Credentials.");
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 System.out.println("Error deleting Log In Credentials.");
@@ -687,7 +673,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error finding item by name.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -720,7 +705,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error inserting Item info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -779,7 +763,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Item info.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -810,7 +793,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Item info.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -841,7 +823,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Item info.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -868,7 +849,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error deleting Log In Credentials.");
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 System.out.println("Error deleting Log In Credentials.");
@@ -977,7 +957,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error finding inventory item/s by supplier_id and item name.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1010,7 +989,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error adding item to cart.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1093,7 +1071,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Customer info.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1126,7 +1103,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Customer info.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1159,7 +1135,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Customer info.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1185,7 +1160,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error removing Item from Shopping Cart.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1234,7 +1208,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error finding Manufacturer by name.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1270,7 +1243,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error inserting Manufacturer Credentials.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1329,7 +1301,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Manufacturer info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1356,7 +1327,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error deleting Manufacturer data.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1420,7 +1390,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error finding inventory item/s by supplier_id and item name.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1452,7 +1421,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error inserting into Inventory.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1506,7 +1474,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Inventory info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1536,7 +1503,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Inventory info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1566,7 +1532,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error deleting Inventory data.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1594,7 +1559,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error inserting into Wishlist.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1661,7 +1625,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Wishlist info.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1690,7 +1653,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error deleting Wishlist.");
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 System.out.println("Error deleting Log In Credentials.");
@@ -1722,7 +1684,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error inserting Log In Credentials.");
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1778,7 +1739,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Buyer Order Information.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1808,7 +1768,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Buyer Order Information.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1838,7 +1797,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Buyer Order Information.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1868,7 +1826,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error updating Buyer Order Information.");
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1896,7 +1853,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error deleting Buyer Order Information.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1924,7 +1880,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error inserting Buyer Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -1979,7 +1934,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Buyer Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2009,7 +1963,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Buyer Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2037,7 +1990,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error deleting Buyer Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2068,7 +2020,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error inserting Supplier Order Information.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2126,7 +2077,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Supplier Order Info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2156,7 +2106,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Supplier Order Info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2186,7 +2135,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Supplier Order Info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2216,7 +2164,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Supplier Order Info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2242,7 +2189,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error deleting Supplier Order Info.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2273,7 +2219,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error inserting Supplier Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2330,7 +2275,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Supplier Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2360,7 +2304,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Buyer Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2386,7 +2329,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error deleting Supplier Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2417,7 +2359,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error inserting Buyer Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2474,7 +2415,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Buyer Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2504,7 +2444,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Buyer Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2534,7 +2473,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Buyer Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2557,7 +2495,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error deleting Buyer Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2588,7 +2525,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error inserting Supplier Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2645,7 +2581,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Supplier Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2675,7 +2610,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Supplier Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -2705,14 +2639,12 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println("Error updating Supplier Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                // TODO: Handle the specific exception
                 System.out.println(e.getMessage());
             } else {
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
     }
-
 
     public void deleteSupplierOrderPayment(int payment_id) {
         try {
@@ -2729,7 +2661,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 System.out.println("Error deleting Log In Credentials.");
-                // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
                 System.out.println("Error deleting Log In Credentials.");
