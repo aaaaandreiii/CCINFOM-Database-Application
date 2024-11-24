@@ -2044,52 +2044,24 @@ public void createBuyerOrderItem(int buyer_order_item_id, int buyer_order_inform
             //delete user first THEN logincredentials
             String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT buyer_order_item_id FROM BuyerOrderItem = " + buyer_order_item_id + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-           
-            while (rs.next()) {
-                buyer_order_item_id = rs.getString("buyer_order_item_id");
-            }            
-
-
             PreparedStatement stmt = c.prepareStatement("DELETE FROM BuyerOrderItem WHERE buyer_order_item_id = ?;");
             stmt.setInt(1, buyer_order_item_id);
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Buyer Order Item deleted successfully!");
             } else {
-                System.out.println("Error deleting Buyer Order Item.");
+                
             }
             
-            /*
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
-
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
-            }
-
-            */
             stmt.close();
             c.close();
 
-
         } catch (SQLException e) {
+            System.out.println("Error deleting Buyer Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error deleting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
-                System.out.println("Error deleting Log In Credentials.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
@@ -2233,63 +2205,31 @@ public void createSupplierOrderInfo(int supplier_order_information_id, int suppl
         }
     }
 
-
-    public void deleteSupplierOrderInfo(int supplier_order_information_id) {
+    public void deleteSupplierOrderInfo(int supplier_order_id) {
         try {
-            //delete user first THEN logincredentials
-            String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT supplier_order_information_id FROM SupplierOrderInfo = " + SupplierOrderInfo + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-           
-            while (rs.next()) {
-                supplier_order_information_id = rs.getString("supplier_order_information_id");
-            }            
-
-
-            PreparedStatement stmt = c.prepareStatement("DELETE FROM SupplierOrderInfo WHERE supplier_order_information_id = ?;");
-            stmt.setInt(1, supplier_order_information_id);
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM SupplierOrderInfo WHERE supplier_order_id = ?;");
+            stmt.setInt(1, supplier_order_id);
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Supplier Order Information deleted successfully!");
             } else {
                 System.out.println("Error deleting Supplier Order Information.");
             }
-           
-            /*
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
-            
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
-            }
-            */
 
             stmt.close();
             c.close();
 
-
         } catch (SQLException e) {
+            System.out.println("Error deleting Supplier Order Information.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error deleting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
-                System.out.println("Error deleting Log In Credentials.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
     }
-
 
 //SupplierOrderItem CRUD
 public void createSupplierOrderItem(int supplier_order_item_id, int supplier_order_information_id, int item_id, int quantity, BigDecimal price_at_order) {
@@ -2429,58 +2369,27 @@ public void createSupplierOrderItem(int supplier_order_item_id, int supplier_ord
         }
     }
 
-
-    public void deleteSuplierOrderItem(int supplier_order_item_id) {
+    public void deleteSuplierOrderItem(int supplier_order_detail_id) {
         try {
-            //delete user first THEN logincredentials
-            String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT supplier_order_item_id FROM SupplierOrderItem = " + supplier_order_item_id + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-           
-            while (rs.next()) {
-                supplier_order_item_id = rs.getString("supplier_order_item_id");
-            }            
-
-
-            PreparedStatement stmt = c.prepareStatement("DELETE FROM SupplierOrderItem WHERE supplier_order_item_id = ?;");
-            stmt.setInt(1, supplier_order_item_id);
+            PreparedStatement stmt = c.prepareStatement("DELETE FROM SupplierOrderItem WHERE supplier_order_detail_id = ?;");
+            stmt.setInt(1, supplier_order_detail_id);
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Supplier Order Item deleted successfully!");
             } else {
                 System.out.println("Error deleting Supplier Order Item.");
             }
-           
-            /*
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
             
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
-            }
-            */
-
             stmt.close();
             c.close();
 
-
         } catch (SQLException e) {
+            System.out.println("Error deleting Supplier Order Item.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error deleting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
-                System.out.println("Error deleting Log In Credentials.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
@@ -2627,20 +2536,7 @@ public void createBuyerOrderPayment(int payment_id, int buyer_order_information_
 
     public void deleteBuyerOrderPayment(int payment_id) {
         try {
-            //delete user first THEN logincredentials
-            String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT payment_id FROM BuyerOrderPayment = " + payment_id + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-           
-            while (rs.next()) {
-                payment_id = rs.getString("payment_id");
-            }            
-
-
             PreparedStatement stmt = c.prepareStatement("DELETE FROM BuyerOrderPayment WHERE payment_id = ?;");
             stmt.setInt(1, payment_id);
             int rowsDeleted = stmt.executeUpdate();
@@ -2649,33 +2545,13 @@ public void createBuyerOrderPayment(int payment_id, int buyer_order_information_
             } else {
                 System.out.println("Error deleting Buyer Order Payment.");
             }
-           
-            /*
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
-
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
-            }
-
-
-            stmt.close();
-            c.close();
-        */
 
         } catch (SQLException e) {
+            System.out.println("Error deleting Buyer Order Payment.");
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                System.out.println("Error deleting Log In Credentials.");
                 // TODO: Handle the specific exception
                 System.out.println("Foreign key constraint violation: " + e.getMessage());
             } else {
-                System.out.println("Error deleting Log In Credentials.");
                 Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, e);
             }
         }
@@ -2822,20 +2698,7 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
 
     public void deleteSupplierOrderPayment(int payment_id) {
         try {
-            //delete user first THEN logincredentials
-            String email = null;
             Connection c = DriverManager.getConnection(URL, USER, PASSWORD);
-            java.sql.Statement queryStatement = c.createStatement();
-
-
-            String sqlQueryStatement = "SELECT payment_id FROM SupplierOrderPayment = " + payment_id + ";";
-            ResultSet rs = queryStatement.executeQuery(sqlQueryStatement);
-           
-            while (rs.next()) {
-                payment_id = rs.getString("payment_id");
-            }            
-
-
             PreparedStatement stmt = c.prepareStatement("DELETE FROM BuyerOrderPayment WHERE payment_id = ?;");
             stmt.setInt(1, payment_id);
             int rowsDeleted = stmt.executeUpdate();
@@ -2844,25 +2707,6 @@ public void createSupplierOrderPayment(int payment_id, int supplier_order_inform
             } else {
                 System.out.println("Error deleting Buyer Order Payment.");
             }
-           
-            /*
-            stmt = null;
-            stmt = c.prepareStatement("DELETE FROM loginCredentials WHERE email = ?;");
-            stmt.setString(1, email);
-
-
-            rowsDeleted = 0;
-            rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Log In Credentials deleted successfully!");
-            } else {
-                System.out.println("Error deleting Log In Credentials.");
-            }
-
-
-            stmt.close();
-            c.close();
-        */
 
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
