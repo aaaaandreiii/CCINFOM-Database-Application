@@ -33,9 +33,9 @@ public class _Driver {
     public static void main (String[] args){
         ArrayList<Object> userInfo = null;
         List<List<Object>> otherInfo = null;
-        _View view;
-        _Model model;
-        _Controller controller;
+        // _View view;
+        // _Model model;
+        // _Controller controller;
 
         // establish connection with database here
         DatabaseConnection jdbc = new DatabaseConnection();
@@ -94,29 +94,29 @@ public class _Driver {
 
 
 
-        ArrayList<String> addresses = jdbc.findSupplierAddresses();
-        ArrayList<Address> parsedAddresses = new ArrayList<>();
-        for (String address : addresses) {
-            parsedAddresses.add(Address.fromString(address));
-        }
+        // ArrayList<String> addresses = jdbc.findSupplierAddresses();
+        // ArrayList<Address> parsedAddresses = new ArrayList<>();
+        // for (String address : addresses) {
+        //     parsedAddresses.add(Address.fromString(address));
+        // }
 
-        HashMap<String, ArrayList<Address>> groupedByProvince = new HashMap<>();
-        for (Address addr : parsedAddresses) {
-            groupedByProvince
-                .computeIfAbsent(addr.getProvince(), k -> new ArrayList<>())
-                .add(addr);
-        }
+        // HashMap<String, ArrayList<Address>> groupedByProvince = new HashMap<>();
+        // for (Address addr : parsedAddresses) {
+        //     groupedByProvince
+        //         .computeIfAbsent(addr.getProvince(), k -> new ArrayList<>())
+        //         .add(addr);
+        // }
 
-        for (Map.Entry<String, ArrayList<Address>> entry : groupedByProvince.entrySet()) {
-            String province = entry.getKey();
-            ArrayList<Address> provinceAddresses = entry.getValue();
-            System.out.println("Province: " + province);
+        // for (Map.Entry<String, ArrayList<Address>> entry : groupedByProvince.entrySet()) {
+        //     String province = entry.getKey();
+        //     ArrayList<Address> provinceAddresses = entry.getValue();
+        //     System.out.println("Province: " + province);
 
-            provinceAddresses.sort(Comparator.comparing(Address::getCity).thenComparing(Address::getStreet));
-            for (Address addr : provinceAddresses) {
-                System.out.println(addr);
-            }
-        }
+        //     provinceAddresses.sort(Comparator.comparing(Address::getCity).thenComparing(Address::getStreet));
+        //     for (Address addr : provinceAddresses) {
+        //         System.out.println(addr);
+        //     }
+        // }
 
 
         // System.out.println("Opening GUI");
