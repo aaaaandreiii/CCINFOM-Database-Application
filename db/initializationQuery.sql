@@ -1,5 +1,3 @@
--- CREATE SCHEMA `ccinfom` ;
--- DROP SCHEMA ccinfom;
 
 -- New Set of Tables
 -- LOGIN CREDENTIALS
@@ -44,12 +42,11 @@ CREATE TABLE IF NOT EXISTS Item (
     name VARCHAR(100),
     manufacturer_id INT,
     srp DECIMAL (10, 2),
-    manu_price DECIMAL (10,2),
     description TEXT,
     FOREIGN KEY (manufacturer_id) REFERENCES Manufacturer (manufacturer_id)
 );
 
--- Table 5: Supplier Inventory
+-- Table 9: Supplier Inventory
 CREATE TABLE IF NOT EXISTS Inventory (
     inventory_entry_id INT AUTO_INCREMENT PRIMARY KEY,
     item_id INT,
@@ -60,7 +57,7 @@ CREATE TABLE IF NOT EXISTS Inventory (
     FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id)
 );
 
--- Table 6: Shopping Cart
+-- Table 5: Shopping Cart
 CREATE TABLE IF NOT EXISTS ShoppingCart (
 	shoppingcart_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT,
@@ -70,7 +67,7 @@ CREATE TABLE IF NOT EXISTS ShoppingCart (
     FOREIGN KEY (inventory_entry_id) REFERENCES Inventory (inventory_entry_id)
 );
 
--- Table 7: Wishlist
+-- Table 6: Wishlist
 CREATE TABLE IF NOT EXISTS Wishlist (
 	wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT,
@@ -79,7 +76,7 @@ CREATE TABLE IF NOT EXISTS Wishlist (
     FOREIGN KEY (inventory_entry_id) REFERENCES Inventory (inventory_entry_id)
 );
 
--- Table 8: Buyer Order Information
+-- Table 7: Buyer Order Information
 -- receipt 
 CREATE TABLE IF NOT EXISTS BuyerOrderInfo (
 	buyer_order_information_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -90,7 +87,7 @@ CREATE TABLE IF NOT EXISTS BuyerOrderInfo (
     FOREIGN KEY (shoppingcart_id) REFERENCES ShoppingCart (shoppingcart_id)
 );
 
--- Table 9: Buyer Order Item
+-- Table 8: Buyer Order Item
 -- has a weak entity relationship with buyer order information
 CREATE TABLE IF NOT EXISTS BuyerOrderItem (
 	buyer_order_item_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -113,7 +110,7 @@ CREATE TABLE IF NOT EXISTS SupplierOrderInfo (
 
 -- Table 11: Supplier Order Item
 CREATE TABLE IF NOT EXISTS SupplierOrderItem (
-	supplier_order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+	supplier_order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
     supplier_order_id INT,
     item_id INT,
     quantity INT,
@@ -135,12 +132,14 @@ CREATE TABLE IF NOT EXISTS BuyerOrderPayment (
 -- Table 13: Supplier Order Payment
 CREATE TABLE IF NOT EXISTS SupplierOrderPayment (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
-    supplier_order_information_id INT,
+    supplier_order_id INT,
     payment_date DATE,
     payment_mode ENUM ('Cash on Delivery', 'Online Payment', 'Credit Card', 'Debit Card'),
     payment_status ENUM ('Unpaid', 'Paid', 'Refunded'),
-    FOREIGN KEY (supplier_order_information_id) REFERENCES SupplierOrderInfo (supplier_order_id)
+    FOREIGN KEY (supplier_order_id) REFERENCES SupplierOrderInfo (supplier_order_id)
 );
+    
+
     
 
 
@@ -434,74 +433,74 @@ VALUES
 ('Madison', 'James', 'madison.james@aol.com', '650-555-1390', '3737 Maple Rd'),
 ('Moo', 'Deng', 'moodeng@viet.com', '305-529-2429', 'Khao Kheow Open Zoo');
 
-INSERT INTO Item (name, manufacturer_id, srp, manu_price, description)
+INSERT INTO Item (name, manufacturer_id, srp, description)
 VALUES
-('RG RX-78-2 Gundam', 1, 29.99, 25.49, 'Real Grade model of the classic RX-78-2 Gundam.'),
-('HGUC Zaku II', 1, 19.99, 16.99, 'High Grade model of the iconic Zaku II.'),
-('MG RX-0 Unicorn Gundam', 1, 74.99, 63.74, 'Master Grade Unicorn Gundam with transformation feature.'),
-('PG 00 Raiser', 1, 199.99, 169.99, 'Perfect Grade model of 00 Raiser with detailed components.'),
-('HG Wing Gundam', 1, 25.99, 22.09, 'High Grade model of the Wing Gundam.'),
-('MG Exia', 1, 64.99, 55.24, 'Master Grade Exia model with multiple weapons.'),
-('HG Aile Strike Gundam', 1, 22.99, 19.54, 'High Grade Aile Strike Gundam model.'),
-('RG Sazabi', 1, 34.99, 29.74, 'Real Grade model of Sazabi.'),
-('HG GM Sniper II', 1, 27.99, 23.79, 'High Grade model of GM Sniper II.'),
-('MG Sinanju', 1, 89.99, 76.49, 'Master Grade Sinanju model with intricate design.'),
-('HG RX-78-2 Gundam (Revive)', 1, 19.99, 16.99, 'Updated High Grade model of RX-78-2.'),
-('HG Dom', 1, 24.99, 21.24, 'High Grade model of the Dom.'),
-('MG Tallgeese', 1, 54.99, 46.74, 'Master Grade Tallgeese model from Gundam Wing.'),
-('HG Barbatos', 1, 22.99, 19.54, 'High Grade model of Barbatos from Iron-Blooded Orphans.'),
-('MG Gundam AGE-1', 1, 59.99, 50.99, 'Master Grade Gundam AGE-1 with detailed mechanics.'),
-('Pikachu (Base Set)', 2, 5.99, 5.39, 'Classic Pikachu card from Base Set.'),
-('Charizard (Base Set)', 2, 299.99, 269.99, 'Rare Charizard card from Base Set.'),
-('Mewtwo (Base Set)', 2, 24.99, 22.49, 'Powerful Mewtwo card from Base Set.'),
-('Eevee (Evolutions)', 2, 9.99, 8.99, 'Eevee card with multiple evolutions.'),
-('Gyarados (Shiny)', 2, 49.99, 44.99, 'Shiny Gyarados card from XY series.'),
-('Lucario (XY)', 2, 14.99, 13.49, 'Lucario card from XY series.'),
-('Dragonite (Base Set)', 2, 19.99, 17.99, 'Dragonite card from Base Set.'),
-('Greninja (XY)', 2, 12.99, 11.69, 'Greninja card with unique abilities.'),
-('Zygarde (XY)', 2, 8.99, 8.09, 'Zygarde card from XY series.'),
-('Umbreon (Evolutions)', 2, 39.99, 35.99, 'Rare Umbreon card from Evolutions.'),
-('Alakazam (Base Set)', 2, 29.99, 26.99, 'Powerful psychic Pokémon card.'),
-('Snorlax (Base Set)', 2, 24.99, 22.49, 'Classic Snorlax card from Base Set.'),
-('Blastoise (Base Set)', 2, 89.99, 80.99, 'Iconic Blastoise card with high defense.'),
-('Venusaur (Base Set)', 2, 49.99, 44.99, 'Strong Grass-type Pokémon card.'),
-('Raichu (Base Set)', 2, 19.99, 17.99, 'Electric-type evolution of Pikachu.'),
-('Hirono Doll - Red', 3, 14.99, 13.04, 'Cute red Hirono plush doll.'),
-('Hirono Doll - Blue', 3, 14.99, 13.04, 'Adorable blue Hirono plush doll.'),
-('Hirono Keychain', 3, 6.99, 6.08, 'Hirono themed keychain.'),
-('Hirono Cup', 3, 12.99, 11.30, 'Hirono themed cup for drinks.'),
-('Hirono T-shirt', 3, 19.99, 17.39, 'T-shirt featuring Hirono design.'),
-('Hirono Hat', 3, 18.99, 16.52, 'Stylish Hirono cap.'),
-('Hirono Backpack', 3, 29.99, 26.09, 'Backpack with Hirono design.'),
-('Hirono Notebook', 3, 9.99, 8.69, 'Notebook featuring Hirono artwork.'),
-('Hirono Stickers', 3, 4.99, 4.34, 'Set of Hirono stickers.'),
-('Hirono Mug', 3, 10.99, 9.56, 'Mug with Hirono graphic.'),
-('Labubu Plush - Pink', 4, 15.99, 13.27, 'Soft pink Labubu plush toy.'),
-('Labubu Plush - Blue', 4, 15.99, 13.27, 'Soft blue Labubu plush toy.'),
-('Labubu Figure', 4, 29.99, 24.89, 'Collectible Labubu figure.'),
-('Labubu Tote Bag', 4, 19.99, 16.59, 'Tote bag featuring Labubu design.'),
-('Labubu Pencil Case', 4, 8.99, 7.46, 'Pencil case with Labubu theme.'),
-('Labubu Phone Case', 4, 12.99, 10.78, 'Phone case with Labubu graphics.'),
-('Labubu Wall Art', 4, 24.99, 20.74, 'Art print featuring Labubu.'),
-('Labubu Keychain', 4, 6.99, 5.80, 'Labubu themed keychain.'),
-('Labubu Sticker Set', 4, 5.99, 4.97, 'Set of stickers featuring Labubu.'),
-('Labubu Cap', 4, 18.99, 15.76, 'Cap with Labubu design.'),
-('Sonny Angel - Series 1', 5, 9.99, 8.79, 'Collectible figure from Series 1.'),
-('Sonny Angel - Animal Series', 5, 12.99, 11.43, 'Animal themed Sonny Angel figure.'),
-('Sonny Angel - Garden Series', 5, 12.99, 11.43, 'Garden themed Sonny Angel figure.'),
-('Sonny Angel - Seasonal Series', 5, 12.99, 11.43, 'Seasonal themed Sonny Angel figure.'),
-('Sonny Angel - Rare Edition', 5, 19.99, 17.59, 'Limited edition rare Sonny Angel.'),
-('Sonny Angel - Superhero Series', 5, 14.99, 13.19, 'Superhero themed Sonny Angel figure.'),
-('Sonny Angel - Sports Series', 5, 14.99, 13.19, 'Sports themed Sonny Angel figure.'),
-('Sonny Angel - Birthday Series', 5, 14.99, 13.19, 'Birthday themed Sonny Angel figure.'),
-('Sonny Angel - Festival Series', 5, 14.99, 13.19, 'Festival themed Sonny Angel figure.'),
-('Sonny Angel - Christmas Series', 5, 14.99, 13.19, 'Christmas themed Sonny Angel figure.'),
-('Smiski - Glow in the Dark', 6, 9.99, 8.59, 'Glow in the dark Smiski figure.'),
-('Smiski - Sitting', 6, 8.99, 7.73, 'Sitting Smiski figure.'),
-('Smiski - Dancing', 6, 8.99, 7.73, 'Dancing Smiski figure.'),
-('Smiski - Sleeping', 6, 8.99, 7.73, 'Sleeping Smiski figure.'),
-('Smiski - Winter Edition', 6, 10.99, 9.45, 'Winter themed Smiski figure.'),
-('Smiski - Summer Edition', 6, 10.99, 9.45, 'Summer themed Smiski figure.');
+('RG RX-78-2 Gundam', 1, 29.99,  'Real Grade model of the classic RX-78-2 Gundam.'),
+('HGUC Zaku II', 1, 19.99,  'High Grade model of the iconic Zaku II.'),
+('MG RX-0 Unicorn Gundam', 1, 74.99,  'Master Grade Unicorn Gundam with transformation feature.'),
+('PG 00 Raiser', 1, 199.99,  'Perfect Grade model of 00 Raiser with detailed components.'),
+('HG Wing Gundam', 1, 25.99,  'High Grade model of the Wing Gundam.'),
+('MG Exia', 1, 64.99,  'Master Grade Exia model with multiple weapons.'),
+('HG Aile Strike Gundam', 1, 22.99,  'High Grade Aile Strike Gundam model.'),
+('RG Sazabi', 1, 34.99,  'Real Grade model of Sazabi.'),
+('HG GM Sniper II', 1, 27.99,  'High Grade model of GM Sniper II.'),
+('MG Sinanju', 1, 89.99,  'Master Grade Sinanju model with intricate design.'),
+('HG RX-78-2 Gundam (Revive)', 1, 19.99,  'Updated High Grade model of RX-78-2.'),
+('HG Dom', 1, 24.99,  'High Grade model of the Dom.'),
+('MG Tallgeese', 1, 54.99,  'Master Grade Tallgeese model from Gundam Wing.'),
+('HG Barbatos', 1, 22.99,  'High Grade model of Barbatos from Iron-Blooded Orphans.'),
+('MG Gundam AGE-1', 1, 59.99,  'Master Grade Gundam AGE-1 with detailed mechanics.'),
+('Pikachu (Base Set)', 2, 5.99,  'Classic Pikachu card from Base Set.'),
+('Charizard (Base Set)', 2, 299.99,  'Rare Charizard card from Base Set.'),
+('Mewtwo (Base Set)', 2, 24.99,  'Powerful Mewtwo card from Base Set.'),
+('Eevee (Evolutions)', 2, 9.99,  'Eevee card with multiple evolutions.'),
+('Gyarados (Shiny)', 2, 49.99,  'Shiny Gyarados card from XY series.'),
+('Lucario (XY)', 2, 14.99,  'Lucario card from XY series.'),
+('Dragonite (Base Set)', 2, 19.99,  'Dragonite card from Base Set.'),
+('Greninja (XY)', 2, 12.99,  'Greninja card with unique abilities.'),
+('Zygarde (XY)', 2, 8.99,  'Zygarde card from XY series.'),
+('Umbreon (Evolutions)', 2, 39.99,  'Rare Umbreon card from Evolutions.'),
+('Alakazam (Base Set)', 2, 29.99,  'Powerful psychic Pokémon card.'),
+('Snorlax (Base Set)', 2, 24.99,  'Classic Snorlax card from Base Set.'),
+('Blastoise (Base Set)', 2, 89.99,  'Iconic Blastoise card with high defense.'),
+('Venusaur (Base Set)', 2, 49.99,  'Strong Grass-type Pokémon card.'),
+('Raichu (Base Set)', 2, 19.99,  'Electric-type evolution of Pikachu.'),
+('Hirono Doll - Red', 3, 14.99,  'Cute red Hirono plush doll.'),
+('Hirono Doll - Blue', 3, 14.99,  'Adorable blue Hirono plush doll.'),
+('Hirono Keychain', 3, 6.99,  'Hirono themed keychain.'),
+('Hirono Cup', 3, 12.99,  'Hirono themed cup for drinks.'),
+('Hirono T-shirt', 3, 19.99,  'T-shirt featuring Hirono design.'),
+('Hirono Hat', 3, 18.99,  'Stylish Hirono cap.'),
+('Hirono Backpack', 3, 29.99,  'Backpack with Hirono design.'),
+('Hirono Notebook', 3, 9.99,  'Notebook featuring Hirono artwork.'),
+('Hirono Stickers', 3, 4.99,  'Set of Hirono stickers.'),
+('Hirono Mug', 3, 10.99,  'Mug with Hirono graphic.'),
+('Labubu Plush - Pink', 4, 15.99,  'Soft pink Labubu plush toy.'),
+('Labubu Plush - Blue', 4, 15.99,  'Soft blue Labubu plush toy.'),
+('Labubu Figure', 4, 29.99,  'Collectible Labubu figure.'),
+('Labubu Tote Bag', 4, 19.99,  'Tote bag featuring Labubu design.'),
+('Labubu Pencil Case', 4, 8.99,  'Pencil case with Labubu theme.'),
+('Labubu Phone Case', 4, 12.99,  'Phone case with Labubu graphics.'),
+('Labubu Wall Art', 4, 24.99,  'Art print featuring Labubu.'),
+('Labubu Keychain', 4, 6.99,  'Labubu themed keychain.'),
+('Labubu Sticker Set', 4, 5.99,  'Set of stickers featuring Labubu.'),
+('Labubu Cap', 4, 18.99,  'Cap with Labubu design.'),
+('Sonny Angel - Series 1', 5, 9.99,  'Collectible figure from Series 1.'),
+('Sonny Angel - Animal Series', 5, 12.99,  'Animal themed Sonny Angel figure.'),
+('Sonny Angel - Garden Series', 5, 12.99,  'Garden themed Sonny Angel figure.'),
+('Sonny Angel - Seasonal Series', 5, 12.99,  'Seasonal themed Sonny Angel figure.'),
+('Sonny Angel - Rare Edition', 5, 19.99,  'Limited edition rare Sonny Angel.'),
+('Sonny Angel - Superhero Series', 5, 14.99,  'Superhero themed Sonny Angel figure.'),
+('Sonny Angel - Sports Series', 5, 14.99,  'Sports themed Sonny Angel figure.'),
+('Sonny Angel - Birthday Series', 5, 14.99,  'Birthday themed Sonny Angel figure.'),
+('Sonny Angel - Festival Series', 5, 14.99,  'Festival themed Sonny Angel figure.'),
+('Sonny Angel - Christmas Series', 5, 14.99,  'Christmas themed Sonny Angel figure.'),
+('Smiski - Glow in the Dark', 6, 9.99,  'Glow in the dark Smiski figure.'),
+('Smiski - Sitting', 6, 8.99,  'Sitting Smiski figure.'),
+('Smiski - Dancing', 6, 8.99,  'Dancing Smiski figure.'),
+('Smiski - Sleeping', 6, 8.99,  'Sleeping Smiski figure.'),
+('Smiski - Winter Edition', 6, 10.99,  'Winter themed Smiski figure.'),
+('Smiski - Summer Edition', 6, 10.99,  'Summer themed Smiski figure.');
 
 INSERT INTO Supplier (supplier_fname, supplier_lname, email, phone, address, supplier_rating) VALUES
 ('Andres', 'Martinez', 'andres.martinez@gmail.com', '(02) 8123-4567', '1234 Rizal Street, Quezon City, Metro Manila', 4.5),
@@ -577,70 +576,6 @@ INSERT INTO Supplier (supplier_fname, supplier_lname, email, phone, address, sup
 ('Jade', 'Rafael', 'jade.rafael@gmail.com', '(02) 8123-4637', '33333 Albay Avenue, Legaspi', 2.4),
 ('Ella', 'Panganiban', 'ella.panganiban@gmail.com', '(02) 8123-4638', '34343 Bayani Road, Manila', 1.2),
 ('Clara', 'Ricardo', 'clara.ricardo@gmail.com', '(02) 8123-4639', '35353 Rizal Avenue, Antipolo', 4.8);
-
-
-INSERT INTO SupplierOrderInfo (supplier_id, order_date, manufacturer_id, total_amount, status) VALUES
-(15, '2024-10-1', 5, 45.72, 'Completed'),
-(7, '2024-10-2', 1, 50.98, 'Pending'),
-(42, '2024-9-30', 2, 71.89, 'Completed'),
-(34, '2024-9-29', 3, 53.03, 'Pending'),
-(8, '2024-9-28', 4, 13.27, 'Completed'),
-(25, '2024-9-27', 6, 67, 'Completed'),
-(11, '2024-9-26', 1, 169.99, 'Cancelled'),
-(5, '2024-9-25', 1, 76.49, 'Pending'),
-(3, '2024-9-24', 2, 80.99, 'Completed'),
-(29, '2024-9-23', 1, 31.48, 'Pending'),
-(19, '2024-9-22', 3, 72.98, 'Completed'),
-(44, '2024-9-21', 4, 19.82, 'Pending'),
-(53, '2024-9-20', 5, 20.5, 'Completed'),
-(13, '2024-9-19', 1, 81.41, 'Cancelled'),
-(39, '2024-9-18', 6, 38.65, 'Completed'),
-(66, '2024-9-17', 1, 64.57, 'Pending'),
-(7, '2024-9-16', 3, 106.92, 'Completed'),
-(22, '2024-9-15', 1, 19.54, 'Completed'),
-(62, '2024-9-14', 5, 283.18, 'Pending'),
-(41, '2024-9-13', 2, 22.49, 'Completed');
-
-
-INSERT INTO SupplierOrderItem (supplier_order_id, item_id, quantity, price_at_order) VALUES
-(1, 53, 3, 11.43),
-(1, 54, 1, 11.43),
-(2, 1, 2, 25.49),
-(3, 30, 1, 17.99),
-(3, 16, 10, 5.39),
-(4, 32, 1, 13.04),
-(4, 34, 2, 11.3),
-(4, 35, 1, 17.39),
-(5, 41, 1, 13.27),
-(6, 66, 1, 9.45),
-(6, 61, 4, 8.59),
-(6, 62, 3, 7.73),
-(7, 4, 1, 169.99),
-(8, 10, 1, 76.49),
-(9, 28, 1, 80.99),
-(10, 18, 1, 22.49),
-(10, 19, 1, 8.99),
-(11, 33, 3, 6.08),
-(11, 39, 5, 4.34),
-(11, 36, 2, 16.52),
-(12, 48, 2, 5.8),
-(13, 31, 1, 13.04),
-(13, 45, 1, 7.46),
-(14, 47, 1, 20.74),
-(14, 52, 3, 11.43),
-(14, 56, 2, 13.19),
-(15, 63, 4, 7.73),
-(15, 64, 1, 7.73),
-(16, 9, 2, 23.79),
-(16, 11, 1, 16.99),
-(17, 37, 1, 26.09),
-(17, 35, 1, 17.39),
-(17, 33, 5, 6.08),
-(17, 36, 2, 16.52),
-(18, 14, 1, 19.54),
-(19, 17, 1, 269.99),
-(19, 60, 1, 13.19),
-(20, 27, 1, 22.49);
 
 
 INSERT INTO Inventory (item_id, supplier_id, quantity,price) VALUES
@@ -1243,94 +1178,29 @@ INSERT INTO Wishlist (customer_id, inventory_entry_id) VALUES
 (69, 145),
 (100, 94);
 
-INSERT INTO BuyerOrderInfo (shoppingcart_id, order_date, total_amount, status) VALUES
-(6, '2024-07-11', 128.32, 'Completed'),
-(131, '2024-09-23', 81.84, 'Completed'),
-(96, '2024-11-20', 239.88, 'Pending'),
-(182, '2024-10-31', 427.92, 'Completed'),
-(165, '2024-10-25', 341.20, 'Completed'),
-(87, '2024-11-17', 389.20, 'Pending'),
-(78, '2024-11-10', 124.25, 'Returned'),
-(64, '2024-09-19', 398.80, 'Completed'),
-(25, '2024-10-04', 1199.6, 'Completed'),
-(38, '2024-11-01', 45.72, 'Completed'),
-(46, '2024-10-13', 413.10, 'Completed'),
-(113, '2024-11-22', 23.70, 'Pending'),
-(151, '2024-11-18', 87.18, 'Pending'),
-(145, '2024-09-27', 214.13, 'Completed'),
-(95, '2024-10-04', 79.92, 'Completed'),
-(15, '2024-11-19', 128.37, 'Pending'),
-(51, '2024-10-03', 61.16, 'Returned'),
-(118, '2024-11-23', 248.31, 'Pending'),	
-(147, '2024-11-22', 121.99, 'Pending'),
-(101, '2024-09-18', 684.64, 'Completed');
-    
 INSERT INTO BuyerOrderItem (buyer_order_information_id, price_at_order) VALUES
-(1, 16.04),
+(1, 344.99),
 (2, 13.64),
-(3, 19.99), 
-(4, 53.49),
-(5, 68.24),
-(6, 13.90),
-(7, 17.75),
-(8, 19.94),
-(9, 29.99),
-(10, 7.62),
-(11, 13.77),
-(12, 7.90),
-(13, 43.59),
-(14, 30.59),
-(15, 9.99),
-(16, 42.79),
-(17, 15.29),
-(18, 27.59),
-(19, 11.09),
-(20, 42.79);
-
-
-INSERT INTO BuyerOrderPayment(buyer_order_information_id, payment_date, payment_mode, payment_status) VALUES
-(1, '2024-07-20', 'Cash On Delivery', 'Paid'),
-(2, '2024-09-30', 'Cash On Delivery', 'Paid'),
-(3, '2024-11-24', 'Online Payment', 'Unpaid'),
-(4, '2024-10-31', 'Credit Card', 'Paid'),
-(5, '2024-10-25', 'Credit Card', 'Paid'),
-(6, '2024-11-25','Cash On Delivery','Unpaid'),
-(7, '2024-11-10', 'Debit Card', 'Refunded'),
-(8, '2024-09-19', 'Credit Card', 'Paid'),
-(9, '2024-10-12', 'Cash On Delivery', 'Paid'),
-(10, '2024-11-01', 'Online Payment', 'Paid'),
-(11, '2024-10-13', 'Credit Card', 'Paid'),
-(12, '2024-11-27', 'Cash On Delivery', 'Unpaid'),
-(13, '2024-11-18', 'Cash On Delivery', 'Paid'),
-(14, '2024-09-27', 'Debit Card', 'Paid'),
-(15, '2024-10-04', 'Cash On Delivery', 'Paid'),
-(16, '2024-11-26', 'Credit Card', 'Unpaid'),
-(17, '2024-10-10', 'Cash On Delivery', 'Refunded'),
-(18, '2024-11-23', 'Credit Card', 'Paid'),
-(19, '2024-11-22', 'Debit Card', 'Paid'),
-(20, '2024-09-18', 'Online Payment', 'Paid');
-
-INSERT INTO SupplierOrderPayment(supplier_order_information_id, payment_date, payment_mode, payment_status) VALUES
-(1, '2024-10-01', 'Cash On Delivery', 'Paid'),
-(2, '2024-10-02', 'Online Payment', 'Unpaid'),
-(3, '2024-09-30', 'Credit Card', 'Paid'),
-(4, '2024-09-29', 'Cash On Delivery', 'Unpaid'),
-(5, '2024-10-04', 'Cash On Delivery', 'Paid'),
-(6, '2024-09-27', 'Online Payment', 'Paid'),
-(7, '2024-09-26', 'Debit Card', 'Refunded'),
-(8, '2024-09-30', 'Cash On Delivery', 'Unpaid'),
-(9, '2024-09-24', 'Online Payment', 'Paid'),
-(10, '2024-09-29', 'Cash On Delivery', 'Paid'),
-(11, '2024-09-22', 'Online Payment', 'Paid'),
-(12, '2024-09-30', 'Cash On Delivery', 'Unpaid'),
-(13, '2024-10-15', 'Cash On Delivery', 'Unpaid'),
-(14, '2024-09-19', 'Credit Card', 'Refunded'),
-(15, '2024-09-25', 'Cash On Delivery', 'Paid'),
-(16, '2024-09-17', 'Debit Card', 'Paid'),
-(17, '2024-09-16', 'Credit Card', 'Paid'),
-(18, '2024-09-15', 'Online Payment', 'Paid'),
-(19, '2024-09-14', 'Credit Card', 'Unpaid'),
-(20, '2024-09-19', 'Cash On Delivery', 'Paid');
+(2, 8.04),
+(3, 94.49),
+(3, 82.49),
+(4, 16.64),
+(4, 13.77),
+(4, 29.99),
+(5, 16.04),
+(6, 13.19),
+(6, 76.28),
+(6, 21.39),
+(6, 24.99),
+(7, 26.24),
+(8, 13.19),
+(9, 22.19),
+(9, 27.24),
+(10, 76.49),
+(10, 22.99),
+(11, 43.59),
+(11, 344.99);
+    
 
 
 SELECT * FROM logincredentials;
@@ -1341,9 +1211,5 @@ SELECT * FROM item;
 SELECT * FROM buyerorderinfo;
 SELECT * FROM buyerorderitem;
 SELECT * FROM shoppingcart;
-SELECT * FROM shoppingcart s
-LEFT JOIN inventory i ON i.inventory_entry_id = s.inventory_entry_id;
-SELECT * FROM supplierorderinfo;
-SELECT * FROM supplierorderitem;
 SELECT * FROM supplier;
 SELECT * FROM wishlist;
